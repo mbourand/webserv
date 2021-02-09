@@ -12,7 +12,6 @@ int main()
 	try
 	{
 		Request req(raw);
-		std::cout << req;
 	}
 	catch(const std::exception& e)
 	{
