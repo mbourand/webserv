@@ -5,6 +5,11 @@
 #include <string>
 #include "Logger.hpp"
 
+#define ABSOLUTE_PATH (1 << 0)
+#define COMPLETE_URL (1 << 1)
+#define URL_AUTHORITY (1 << 2)
+#define ASTERISK_URI (1 << 3)
+
 class Request
 {
 	public:
@@ -27,6 +32,7 @@ class Request
 		size_t count_concurrent_occurences(size_t index, char c) const;
 		std::pair<std::string, size_t> read_charset(size_t index, const std::string& charset) const;
 		std::pair<std::string, size_t> read_until_charset(size_t index, const std::string& charset) const;
+		bool is_valid_URI(const std::string& uri, int mask) const;
 
 	public:
 		Request(const Request& other);

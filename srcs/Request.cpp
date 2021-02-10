@@ -18,7 +18,10 @@ Request::Request(const std::string& raw)
 
 	// Path
 	read_ret = read_until_charset(i, " ");
-	_path = read_ret.first;
+	if (read_ret.first.find("/", 7) != std::string::npos)
+		_path = read_ret.first.substr(read_ret.first.find("/", 7));
+	else
+		_path = "/";
 	i = read_charset(read_ret.second, " ").second;
 	Logger::print("Request path is " + _path, true, INFO, VERBOSE);
 
@@ -35,21 +38,47 @@ Request::Request(const std::string& raw)
 	{
 		while (!is_next_paragraph(i))
 		{
-			std::string header_name = read_ret.first.substr(0, read_ret.first.find(": "));
-			std::string header_val = read_ret.first.substr(read_ret.first.find(": ") + 2, read_ret.first.size());
+			std::string header_name = read_ret.first.substr(0, read_ret.first.find(":"));
+			std::string header_val = read_ret.first.substr(read_ret.first.find(":") + 1);
+			header_val = header_val.substr(header_val.find_first_not_of(" "));
 			_headers[header_name] = header_val;
 			read_ret = read_until_charset(i, "\n");
 			i = read_charset(read_ret.second, "\n").second;
 			Logger::print("Request header: " + header_name + ": " + _headers[header_name], true, INFO, VERBOSE);
 		}
-		std::string header_name = read_ret.first.substr(0, read_ret.first.find(": "));
-		std::string header_val = read_ret.first.substr(read_ret.first.find(": ") + 2, read_ret.first.size());
+		std::string header_name = read_ret.first.substr(0, read_ret.first.find(":"));
+		std::string header_val = read_ret.first.substr(read_ret.first.find(":") + 1);
+		header_val = header_val.substr(header_val.find_first_not_of(" "));
 		_headers[header_name] = header_val;
 		Logger::print("Request header: " + header_name + ": " + _headers[header_name], true, INFO, VERBOSE);
 	}
-	_body = _raw.substr(i, _raw.size());
+	_body = _raw.substr(i);
 	Logger::print("Request body is " + _body, true, INFO, VERBOSE);
 	Logger::print("Request was parsed successfully.", true, SUCCESS, NORMAL);
+}
+
+bool Request::is_valid_URI(const std::string& uri, int mask) const
+{
+	if (mask & ABSOLUTE_PATH)
+	{
+		if (uri[0] == '/')
+			return true;
+	}
+	if (mask & COMPLETE_URL)
+	{
+		if (uri.substr(0, 7) == "http://" && uri.size() > 7)
+			return true;
+	}
+	if (mask & URL_AUTHORITY)
+	{
+
+	}
+	if (mask & ASTERISK_URI)
+	{
+		if (uri == "*")
+			return true;
+	}
+	return false;
 }
 
 bool Request::isValidRequestFormat() const
@@ -61,9 +90,10 @@ bool Request::isValidRequestFormat() const
 
 	// Method
 	std::pair<std::string, size_t> token = read_until_charset(0, " ");
+	std::string method;
 	for (size_t i = 0; i < mth_size; i++)
 	{
-		if (methods[i] == token.first)
+		if ((method = methods[i]) == token.first)
 			break ;
 		if (i == mth_size - 1)
 			return Logger::print("Request method \"" + token.first + "\" could not be recognized.", false, ERROR, VERBOSE);
@@ -75,6 +105,17 @@ bool Request::isValidRequestFormat() const
 
 	// Path
 	token = read_until_charset(read_charset(token.second, " ").second, " ");
+	int mask = 0;
+	if (method == "GET" || method == "POST" || method == "HEAD" || method == "OPTIONS")
+		mask += ABSOLUTE_PATH;
+	if (method == "GET")
+		mask += COMPLETE_URL;
+	if (method == "CONNECT")
+		mask += URL_AUTHORITY;
+	if (method == "OPTIONS")
+		mask += ASTERISK_URI;
+	if (!is_valid_URI(token.first, mask))
+		return Logger::print("Bad URI in request.", false, ERROR, VERBOSE);
 
 	// Space
 	if (count_concurrent_occurences(token.second, ' ') != 1)
@@ -111,13 +152,24 @@ bool Request::isValidRequestFormat() const
 
 bool Request::header_line_valid(const std::string& line) const
 {
-	size_t del_pos = line.find(": ");
+	static const size_t headers_size = 18;
+	static const std::string headers[headers_size] = { "Accept-Charsets", "Accept-Language", "Allow", "Authorization",
+		"Content-Language", "Content-Length", "Content-Location", "Content-Type", "Date", "Host", "Last-Modified", "Location",
+		"Referer", "Retry-After", "Server", "Transfer-Encoding", "User-Agent", "WWW-Authenticate" };
+	size_t del_pos = line.find(":");
 	if (del_pos == std::string::npos)
-		return Logger::print("Header line \"" + line + "\" doesn't contain ': ' delimiter.", false, ERROR, VERBOSE);
+		return Logger::print("Header line \"" + line + "\" doesn't contain ':' delimiter.", false, ERROR, VERBOSE);
 	if (del_pos == 0)
-		return Logger::print("Header line \"" + line + "\" Has nothing before ': ' delimiter.", false, ERROR, VERBOSE);
+		return Logger::print("Header line \"" + line + "\" Has nothing before ':' delimiter.", false, ERROR, VERBOSE);
 	if (del_pos == line.size() - 2)
-		return Logger::print("Header line \"" + line + "\" Has nothing after ': ' delimiter.", false, ERROR, VERBOSE);
+		return Logger::print("Header line \"" + line + "\" Has nothing after ':' delimiter.", false, ERROR, VERBOSE);
+	for (size_t i = 0; i < headers_size; i++)
+	{
+		if (headers[i] == line.substr(0, line.find(":")))
+			break ;
+		if (i == headers_size - 1)
+			return Logger::print("Request header \"" + line.substr(0, line.find(":")) + "\" could not be recognized.", false, ERROR, VERBOSE);
+	}
 	return true;
 }
 
