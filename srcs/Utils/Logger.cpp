@@ -1,4 +1,5 @@
 #include "Logger.hpp"
+#include <stdlib.h>
 
 Logger::Logger() : _mode(NORMAL) {}
 Logger::~Logger() {}
@@ -26,6 +27,15 @@ bool Logger::printImpl(std::string message, bool rval, MessageType type, LoggerM
 	tm *local = localtime(&time_now);
 	char buffer[100];
 	strftime(buffer, 100, "[%d/%h/%Y %T %z]", local);
+
+	ss.str("");
+	for (size_t i = 0; i < message.size(); i++)
+		if (message[i] < 32 || message[i] > 127)
+		{
+			ss << static_cast<int>(message[i]);
+			message.replace(i, 1, "<" + ss.str() + ">");
+			ss.str("");
+		}
 
 	switch (type)
 	{

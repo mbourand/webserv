@@ -10,14 +10,18 @@
 #define URL_AUTHORITY (1 << 2)
 #define ASTERISK_URI (1 << 3)
 
+#include "IMethod.hpp"
+#include "MethodSource.hpp"
+
 class Request
 {
 	public:
 		typedef std::map<std::string, std::string> HeadersMap;
 
 	protected:
+		MethodSource _methodSource;
 		std::string _raw;
-		std::string _method;
+		IMethod* _method;
 		std::string _path;
 		std::string _protocolVersion;
 		HeadersMap _headers;
@@ -38,7 +42,7 @@ class Request
 		Request(const Request& other);
 		virtual ~Request();
 		Request& operator=(const Request& other);
-		Request(const std::string& raw);
+		Request(std::string raw);
 
 		bool operator==(const Request& other) const;
 		bool operator!=(const Request& other) const;

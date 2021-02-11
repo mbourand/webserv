@@ -1,10 +1,16 @@
 #include "Request.hpp"
 
-Request::Request(const Request& other) : _raw(other._raw), _method(other._method), _path(other._path), _protocolVersion(other._protocolVersion), _body(other._body) {}
-Request::~Request() {}
-
-Request::Request(const std::string& raw)
+Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path), _protocolVersion(other._protocolVersion), _body(other._body) {}
+Request::~Request()
 {
+	if (_method)
+		delete _method;
+}
+
+Request::Request(std::string raw)
+{
+	while (raw.find("\r\n") != std::string::npos)
+		raw.replace(raw.find("\r\n"), 2, "\n");
 	size_t i = 0;
 	_raw = raw;
 	if (!isValidRequestFormat())
@@ -12,9 +18,9 @@ Request::Request(const std::string& raw)
 
 	// Method
 	std::pair<std::string, size_t> read_ret = read_until_charset(i, " ");
-	_method = read_ret.first;
+	_method = _methodSource.createByType(read_ret.first);
 	i = read_charset(read_ret.second, " ").second;
-	Logger::print("Request method is " + _method, true, INFO, VERBOSE);
+	Logger::print("Request method is " + _method->getType(), true, INFO, VERBOSE);
 
 	// Path
 	read_ret = read_until_charset(i, " ");
@@ -71,7 +77,7 @@ bool Request::is_valid_URI(const std::string& uri, int mask) const
 	}
 	if (mask & URL_AUTHORITY)
 	{
-
+		return true;
 	}
 	if (mask & ASTERISK_URI)
 	{
@@ -83,21 +89,14 @@ bool Request::is_valid_URI(const std::string& uri, int mask) const
 
 bool Request::isValidRequestFormat() const
 {
-	static const size_t mth_size = 8;
-	static const std::string methods[mth_size] = { "GET", "POST", "TRACE", "HEAD", "OPTIONS", "CONNECT", "PUT", "DELETE" };
 	static const size_t ver_size = 1;
 	static const std::string versions[ver_size] = { "HTTP/1.1" };
 
 	// Method
 	std::pair<std::string, size_t> token = read_until_charset(0, " ");
-	std::string method;
-	for (size_t i = 0; i < mth_size; i++)
-	{
-		if ((method = methods[i]) == token.first)
-			break ;
-		if (i == mth_size - 1)
-			return Logger::print("Request method \"" + token.first + "\" could not be recognized.", false, ERROR, VERBOSE);
-	}
+	if (!_methodSource.contains(token.first))
+		return Logger::print("Request method \"" + token.first + "\" could not be recognized.", false, ERROR, VERBOSE);
+	std::string method = _methodSource.getByType(token.first)->getType();
 
 	// Space
 	if (count_concurrent_occurences(token.second, ' ') != 1)
