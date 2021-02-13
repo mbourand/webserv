@@ -1,0 +1,9 @@
+GET / HTTP/1.1
+Host: localhost
+Accept-Language: fr
+
+Et bonjour
+les 
+amis
+
+ 

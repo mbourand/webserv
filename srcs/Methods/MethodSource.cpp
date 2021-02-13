@@ -35,8 +35,6 @@ MethodSource::~MethodSource()
 
 bool MethodSource::contains(std::string type) const
 {
-	for (size_t i = 0; i < type.size(); i++)
-		type[i] = toupper(type[i]);
 	for (std::set<IMethod*>::iterator it = _methods.begin(); it != _methods.end(); it++)
 	{
 		if ((*it)->getType() == type)
@@ -47,8 +45,6 @@ bool MethodSource::contains(std::string type) const
 
 IMethod* MethodSource::createByType(std::string type) const
 {
-	for (size_t i = 0; i < type.size(); i++)
-		type[i] = toupper(type[i]);
 	for (std::set<IMethod*>::iterator it = _methods.begin(); it != _methods.end(); it++)
 	{
 		if ((*it)->getType() == type)
@@ -59,8 +55,6 @@ IMethod* MethodSource::createByType(std::string type) const
 
 IMethod* MethodSource::getByType(std::string type) const
 {
-	for (size_t i = 0; i < type.size(); i++)
-		type[i] = toupper(type[i]);
 	for (std::set<IMethod*>::iterator it = _methods.begin(); it != _methods.end(); it++)
 	{
 		if ((*it)->getType() == type)

@@ -30,7 +30,7 @@ class Request
 	private:
 		Request() {}
 
-		bool isValidRequestFormat() const;
+		bool isValidRequestFormat();
 		bool header_line_valid(const std::string& line) const;
 		bool is_next_paragraph(size_t i) const;
 		size_t count_concurrent_occurences(size_t index, char c) const;

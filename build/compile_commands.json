@@ -1,0 +1,82 @@
+[
+{
+  "directory": "/f/Projets/C++/webserv/build/tests",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/srcs/tests.cpp.o -c /f/Projets/C++/webserv/tests/srcs/tests.cpp",
+  "file": "/f/Projets/C++/webserv/tests/srcs/tests.cpp"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/ConnectMethod.cpp",
+  "file": "/f/Projets/C++/webserv/srcs/Methods/ConnectMethod.cpp"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/DeleteMethod.cpp",
+  "file": "/f/Projets/C++/webserv/srcs/Methods/DeleteMethod.cpp"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/GetMethod.cpp",
+  "file": "/f/Projets/C++/webserv/srcs/Methods/GetMethod.cpp"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/HeadMethod.cpp",
+  "file": "/f/Projets/C++/webserv/srcs/Methods/HeadMethod.cpp"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/OptionsMethod.cpp",
+  "file": "/f/Projets/C++/webserv/srcs/Methods/OptionsMethod.cpp"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/PostMethod.cpp",
+  "file": "/f/Projets/C++/webserv/srcs/Methods/PostMethod.cpp"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/PutMethod.cpp",
+  "file": "/f/Projets/C++/webserv/srcs/Methods/PutMethod.cpp"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/TraceMethod.cpp",
+  "file": "/f/Projets/C++/webserv/srcs/Methods/TraceMethod.cpp"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/MethodSource.cpp",
+  "file": "/f/Projets/C++/webserv/srcs/Methods/MethodSource.cpp"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o -c /f/Projets/C++/webserv/srcs/Utils/Logger.cpp",
+  "file": "/f/Projets/C++/webserv/srcs/Utils/Logger.cpp"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/__/srcs/Request.cpp.o -c /f/Projets/C++/webserv/srcs/Request.cpp",
+  "file": "/f/Projets/C++/webserv/srcs/Request.cpp"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests/googletest/googlemock",
+  "command": "/usr/bin/clang++-6.0   -isystem /f/Projets/C++/webserv/tests/googletest/googlemock/include -isystem /f/Projets/C++/webserv/tests/googletest/googlemock -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -Wall -Wshadow -Werror -Wconversion -DGTEST_HAS_PTHREAD=1 -fexceptions -W -Wpointer-arith -Wreturn-type -Wcast-qual -Wwrite-strings -Wswitch -Wunused-parameter -Wcast-align -Wchar-subscripts -Winline -Wredundant-decls -std=c++11 -o CMakeFiles/gmock_main.dir/src/gmock_main.cc.o -c /f/Projets/C++/webserv/tests/googletest/googlemock/src/gmock_main.cc",
+  "file": "/f/Projets/C++/webserv/tests/googletest/googlemock/src/gmock_main.cc"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests/googletest/googlemock",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/googlemock/include -I/f/Projets/C++/webserv/tests/googletest/googlemock -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -Wall -Wshadow -Werror -Wconversion -DGTEST_HAS_PTHREAD=1 -fexceptions -W -Wpointer-arith -Wreturn-type -Wcast-qual -Wwrite-strings -Wswitch -Wunused-parameter -Wcast-align -Wchar-subscripts -Winline -Wredundant-decls -std=c++11 -o CMakeFiles/gmock.dir/src/gmock-all.cc.o -c /f/Projets/C++/webserv/tests/googletest/googlemock/src/gmock-all.cc",
+  "file": "/f/Projets/C++/webserv/tests/googletest/googlemock/src/gmock-all.cc"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests/googletest/googletest",
+  "command": "/usr/bin/clang++-6.0   -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -Wall -Wshadow -Werror -Wconversion -DGTEST_HAS_PTHREAD=1 -fexceptions -W -Wpointer-arith -Wreturn-type -Wcast-qual -Wwrite-strings -Wswitch -Wunused-parameter -Wcast-align -Wchar-subscripts -Winline -Wredundant-decls -std=c++11 -o CMakeFiles/gtest_main.dir/src/gtest_main.cc.o -c /f/Projets/C++/webserv/tests/googletest/googletest/src/gtest_main.cc",
+  "file": "/f/Projets/C++/webserv/tests/googletest/googletest/src/gtest_main.cc"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests/googletest/googletest",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/googletest/include -I/f/Projets/C++/webserv/tests/googletest/googletest  -g   -Wall -Wshadow -Werror -Wconversion -DGTEST_HAS_PTHREAD=1 -fexceptions -W -Wpointer-arith -Wreturn-type -Wcast-qual -Wwrite-strings -Wswitch -Wunused-parameter -Wcast-align -Wchar-subscripts -Winline -Wredundant-decls -std=c++11 -o CMakeFiles/gtest.dir/src/gtest-all.cc.o -c /f/Projets/C++/webserv/tests/googletest/googletest/src/gtest-all.cc",
+  "file": "/f/Projets/C++/webserv/tests/googletest/googletest/src/gtest-all.cc"
+}
+]

@@ -42,6 +42,21 @@
 		"sstream": "cpp",
 		"stdexcept": "cpp",
 		"streambuf": "cpp",
-		"typeinfo": "cpp"
-	}
+		"typeinfo": "cpp",
+		"any": "cpp",
+		"chrono": "cpp",
+		"cstring": "cpp",
+		"forward_list": "cpp",
+		"list": "cpp",
+		"unordered_set": "cpp",
+		"functional": "cpp",
+		"iterator": "cpp",
+		"numeric": "cpp",
+		"random": "cpp",
+		"ratio": "cpp",
+		"set": "cpp",
+		"cinttypes": "cpp",
+		"variant": "cpp"
+	},
+	"cmake.configureOnOpen": true
 }
