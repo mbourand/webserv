@@ -5,13 +5,9 @@
 #include <string>
 #include "Logger.hpp"
 
-#define ABSOLUTE_PATH (1 << 0)
-#define COMPLETE_URL (1 << 1)
-#define URL_AUTHORITY (1 << 2)
-#define ASTERISK_URI (1 << 3)
-
-#include "IMethod.hpp"
-#include "MethodSource.hpp"
+#include "Methods.h"
+#include "Headers.h"
+#include "Factory.hpp"
 
 class Request
 {
@@ -19,7 +15,8 @@ class Request
 		typedef std::map<std::string, std::string> HeadersMap;
 
 	protected:
-		MethodSource _methodSource;
+		Factory<IMethod*> _methodFactory;
+		Factory<IHeader*> _headerFactory;
 		std::string _raw;
 		IMethod* _method;
 		std::string _path;
@@ -30,19 +27,31 @@ class Request
 	private:
 		Request() {}
 
-		bool isValidRequestFormat();
 		bool header_line_valid(const std::string& line) const;
 		bool is_next_paragraph(size_t i) const;
 		size_t count_concurrent_occurences(size_t index, char c) const;
 		std::pair<std::string, size_t> read_charset(size_t index, const std::string& charset) const;
 		std::pair<std::string, size_t> read_until_charset(size_t index, const std::string& charset) const;
-		bool is_valid_URI(const std::string& uri, int mask) const;
+		bool is_valid_URI(const std::string& uri) const;
+
+		void parse_method();
+		void parse_uri();
+		void parse_protocol_version();
+		void parse_headers();
+		void parse_body();
+
+		void init_factories();
+
+		size_t parse_start;
 
 	public:
 		Request(const Request& other);
 		virtual ~Request();
 		Request& operator=(const Request& other);
-		Request(std::string raw);
+		Request(std::string raw = "");
+
+		bool append(const std::string& raw);
+		void parse();
 
 		bool operator==(const Request& other) const;
 		bool operator!=(const Request& other) const;

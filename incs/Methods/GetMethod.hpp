@@ -13,6 +13,11 @@ class GetMethod : public IMethod
 
 		std::string getType() const;
 		IMethod* clone() const;
+
+		bool allowAbsolutePath() const;
+		bool allowCompleteURL() const;
+		bool allowAuthorityURI() const;
+		bool allowAsteriskURI() const;
 };
 
 #endif

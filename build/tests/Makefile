@@ -171,6 +171,492 @@ tester/fast:
 	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/build
 .PHONY : tester/fast
 
+__/srcs/Headers/AcceptCharsetsHeader.o: __/srcs/Headers/AcceptCharsetsHeader.cpp.o
+
+.PHONY : __/srcs/Headers/AcceptCharsetsHeader.o
+
+# target to build an object file
+__/srcs/Headers/AcceptCharsetsHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o
+.PHONY : __/srcs/Headers/AcceptCharsetsHeader.cpp.o
+
+__/srcs/Headers/AcceptCharsetsHeader.i: __/srcs/Headers/AcceptCharsetsHeader.cpp.i
+
+.PHONY : __/srcs/Headers/AcceptCharsetsHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/AcceptCharsetsHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.i
+.PHONY : __/srcs/Headers/AcceptCharsetsHeader.cpp.i
+
+__/srcs/Headers/AcceptCharsetsHeader.s: __/srcs/Headers/AcceptCharsetsHeader.cpp.s
+
+.PHONY : __/srcs/Headers/AcceptCharsetsHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/AcceptCharsetsHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.s
+.PHONY : __/srcs/Headers/AcceptCharsetsHeader.cpp.s
+
+__/srcs/Headers/AcceptLanguageHeader.o: __/srcs/Headers/AcceptLanguageHeader.cpp.o
+
+.PHONY : __/srcs/Headers/AcceptLanguageHeader.o
+
+# target to build an object file
+__/srcs/Headers/AcceptLanguageHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o
+.PHONY : __/srcs/Headers/AcceptLanguageHeader.cpp.o
+
+__/srcs/Headers/AcceptLanguageHeader.i: __/srcs/Headers/AcceptLanguageHeader.cpp.i
+
+.PHONY : __/srcs/Headers/AcceptLanguageHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/AcceptLanguageHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.i
+.PHONY : __/srcs/Headers/AcceptLanguageHeader.cpp.i
+
+__/srcs/Headers/AcceptLanguageHeader.s: __/srcs/Headers/AcceptLanguageHeader.cpp.s
+
+.PHONY : __/srcs/Headers/AcceptLanguageHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/AcceptLanguageHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.s
+.PHONY : __/srcs/Headers/AcceptLanguageHeader.cpp.s
+
+__/srcs/Headers/AllowHeader.o: __/srcs/Headers/AllowHeader.cpp.o
+
+.PHONY : __/srcs/Headers/AllowHeader.o
+
+# target to build an object file
+__/srcs/Headers/AllowHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o
+.PHONY : __/srcs/Headers/AllowHeader.cpp.o
+
+__/srcs/Headers/AllowHeader.i: __/srcs/Headers/AllowHeader.cpp.i
+
+.PHONY : __/srcs/Headers/AllowHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/AllowHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.i
+.PHONY : __/srcs/Headers/AllowHeader.cpp.i
+
+__/srcs/Headers/AllowHeader.s: __/srcs/Headers/AllowHeader.cpp.s
+
+.PHONY : __/srcs/Headers/AllowHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/AllowHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.s
+.PHONY : __/srcs/Headers/AllowHeader.cpp.s
+
+__/srcs/Headers/AuthorizationHeader.o: __/srcs/Headers/AuthorizationHeader.cpp.o
+
+.PHONY : __/srcs/Headers/AuthorizationHeader.o
+
+# target to build an object file
+__/srcs/Headers/AuthorizationHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o
+.PHONY : __/srcs/Headers/AuthorizationHeader.cpp.o
+
+__/srcs/Headers/AuthorizationHeader.i: __/srcs/Headers/AuthorizationHeader.cpp.i
+
+.PHONY : __/srcs/Headers/AuthorizationHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/AuthorizationHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.i
+.PHONY : __/srcs/Headers/AuthorizationHeader.cpp.i
+
+__/srcs/Headers/AuthorizationHeader.s: __/srcs/Headers/AuthorizationHeader.cpp.s
+
+.PHONY : __/srcs/Headers/AuthorizationHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/AuthorizationHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.s
+.PHONY : __/srcs/Headers/AuthorizationHeader.cpp.s
+
+__/srcs/Headers/ContentLanguageHeader.o: __/srcs/Headers/ContentLanguageHeader.cpp.o
+
+.PHONY : __/srcs/Headers/ContentLanguageHeader.o
+
+# target to build an object file
+__/srcs/Headers/ContentLanguageHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o
+.PHONY : __/srcs/Headers/ContentLanguageHeader.cpp.o
+
+__/srcs/Headers/ContentLanguageHeader.i: __/srcs/Headers/ContentLanguageHeader.cpp.i
+
+.PHONY : __/srcs/Headers/ContentLanguageHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/ContentLanguageHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.i
+.PHONY : __/srcs/Headers/ContentLanguageHeader.cpp.i
+
+__/srcs/Headers/ContentLanguageHeader.s: __/srcs/Headers/ContentLanguageHeader.cpp.s
+
+.PHONY : __/srcs/Headers/ContentLanguageHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/ContentLanguageHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.s
+.PHONY : __/srcs/Headers/ContentLanguageHeader.cpp.s
+
+__/srcs/Headers/ContentLengthHeader.o: __/srcs/Headers/ContentLengthHeader.cpp.o
+
+.PHONY : __/srcs/Headers/ContentLengthHeader.o
+
+# target to build an object file
+__/srcs/Headers/ContentLengthHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o
+.PHONY : __/srcs/Headers/ContentLengthHeader.cpp.o
+
+__/srcs/Headers/ContentLengthHeader.i: __/srcs/Headers/ContentLengthHeader.cpp.i
+
+.PHONY : __/srcs/Headers/ContentLengthHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/ContentLengthHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.i
+.PHONY : __/srcs/Headers/ContentLengthHeader.cpp.i
+
+__/srcs/Headers/ContentLengthHeader.s: __/srcs/Headers/ContentLengthHeader.cpp.s
+
+.PHONY : __/srcs/Headers/ContentLengthHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/ContentLengthHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.s
+.PHONY : __/srcs/Headers/ContentLengthHeader.cpp.s
+
+__/srcs/Headers/ContentLocationHeader.o: __/srcs/Headers/ContentLocationHeader.cpp.o
+
+.PHONY : __/srcs/Headers/ContentLocationHeader.o
+
+# target to build an object file
+__/srcs/Headers/ContentLocationHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o
+.PHONY : __/srcs/Headers/ContentLocationHeader.cpp.o
+
+__/srcs/Headers/ContentLocationHeader.i: __/srcs/Headers/ContentLocationHeader.cpp.i
+
+.PHONY : __/srcs/Headers/ContentLocationHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/ContentLocationHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.i
+.PHONY : __/srcs/Headers/ContentLocationHeader.cpp.i
+
+__/srcs/Headers/ContentLocationHeader.s: __/srcs/Headers/ContentLocationHeader.cpp.s
+
+.PHONY : __/srcs/Headers/ContentLocationHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/ContentLocationHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.s
+.PHONY : __/srcs/Headers/ContentLocationHeader.cpp.s
+
+__/srcs/Headers/ContentTypeHeader.o: __/srcs/Headers/ContentTypeHeader.cpp.o
+
+.PHONY : __/srcs/Headers/ContentTypeHeader.o
+
+# target to build an object file
+__/srcs/Headers/ContentTypeHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o
+.PHONY : __/srcs/Headers/ContentTypeHeader.cpp.o
+
+__/srcs/Headers/ContentTypeHeader.i: __/srcs/Headers/ContentTypeHeader.cpp.i
+
+.PHONY : __/srcs/Headers/ContentTypeHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/ContentTypeHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.i
+.PHONY : __/srcs/Headers/ContentTypeHeader.cpp.i
+
+__/srcs/Headers/ContentTypeHeader.s: __/srcs/Headers/ContentTypeHeader.cpp.s
+
+.PHONY : __/srcs/Headers/ContentTypeHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/ContentTypeHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.s
+.PHONY : __/srcs/Headers/ContentTypeHeader.cpp.s
+
+__/srcs/Headers/DateHeader.o: __/srcs/Headers/DateHeader.cpp.o
+
+.PHONY : __/srcs/Headers/DateHeader.o
+
+# target to build an object file
+__/srcs/Headers/DateHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o
+.PHONY : __/srcs/Headers/DateHeader.cpp.o
+
+__/srcs/Headers/DateHeader.i: __/srcs/Headers/DateHeader.cpp.i
+
+.PHONY : __/srcs/Headers/DateHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/DateHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.i
+.PHONY : __/srcs/Headers/DateHeader.cpp.i
+
+__/srcs/Headers/DateHeader.s: __/srcs/Headers/DateHeader.cpp.s
+
+.PHONY : __/srcs/Headers/DateHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/DateHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.s
+.PHONY : __/srcs/Headers/DateHeader.cpp.s
+
+__/srcs/Headers/HostHeader.o: __/srcs/Headers/HostHeader.cpp.o
+
+.PHONY : __/srcs/Headers/HostHeader.o
+
+# target to build an object file
+__/srcs/Headers/HostHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o
+.PHONY : __/srcs/Headers/HostHeader.cpp.o
+
+__/srcs/Headers/HostHeader.i: __/srcs/Headers/HostHeader.cpp.i
+
+.PHONY : __/srcs/Headers/HostHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/HostHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.i
+.PHONY : __/srcs/Headers/HostHeader.cpp.i
+
+__/srcs/Headers/HostHeader.s: __/srcs/Headers/HostHeader.cpp.s
+
+.PHONY : __/srcs/Headers/HostHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/HostHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.s
+.PHONY : __/srcs/Headers/HostHeader.cpp.s
+
+__/srcs/Headers/LastModifiedHeader.o: __/srcs/Headers/LastModifiedHeader.cpp.o
+
+.PHONY : __/srcs/Headers/LastModifiedHeader.o
+
+# target to build an object file
+__/srcs/Headers/LastModifiedHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o
+.PHONY : __/srcs/Headers/LastModifiedHeader.cpp.o
+
+__/srcs/Headers/LastModifiedHeader.i: __/srcs/Headers/LastModifiedHeader.cpp.i
+
+.PHONY : __/srcs/Headers/LastModifiedHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/LastModifiedHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.i
+.PHONY : __/srcs/Headers/LastModifiedHeader.cpp.i
+
+__/srcs/Headers/LastModifiedHeader.s: __/srcs/Headers/LastModifiedHeader.cpp.s
+
+.PHONY : __/srcs/Headers/LastModifiedHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/LastModifiedHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.s
+.PHONY : __/srcs/Headers/LastModifiedHeader.cpp.s
+
+__/srcs/Headers/LocationHeader.o: __/srcs/Headers/LocationHeader.cpp.o
+
+.PHONY : __/srcs/Headers/LocationHeader.o
+
+# target to build an object file
+__/srcs/Headers/LocationHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o
+.PHONY : __/srcs/Headers/LocationHeader.cpp.o
+
+__/srcs/Headers/LocationHeader.i: __/srcs/Headers/LocationHeader.cpp.i
+
+.PHONY : __/srcs/Headers/LocationHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/LocationHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.i
+.PHONY : __/srcs/Headers/LocationHeader.cpp.i
+
+__/srcs/Headers/LocationHeader.s: __/srcs/Headers/LocationHeader.cpp.s
+
+.PHONY : __/srcs/Headers/LocationHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/LocationHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.s
+.PHONY : __/srcs/Headers/LocationHeader.cpp.s
+
+__/srcs/Headers/RefererHeader.o: __/srcs/Headers/RefererHeader.cpp.o
+
+.PHONY : __/srcs/Headers/RefererHeader.o
+
+# target to build an object file
+__/srcs/Headers/RefererHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o
+.PHONY : __/srcs/Headers/RefererHeader.cpp.o
+
+__/srcs/Headers/RefererHeader.i: __/srcs/Headers/RefererHeader.cpp.i
+
+.PHONY : __/srcs/Headers/RefererHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/RefererHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.i
+.PHONY : __/srcs/Headers/RefererHeader.cpp.i
+
+__/srcs/Headers/RefererHeader.s: __/srcs/Headers/RefererHeader.cpp.s
+
+.PHONY : __/srcs/Headers/RefererHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/RefererHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.s
+.PHONY : __/srcs/Headers/RefererHeader.cpp.s
+
+__/srcs/Headers/RetryAfterHeader.o: __/srcs/Headers/RetryAfterHeader.cpp.o
+
+.PHONY : __/srcs/Headers/RetryAfterHeader.o
+
+# target to build an object file
+__/srcs/Headers/RetryAfterHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o
+.PHONY : __/srcs/Headers/RetryAfterHeader.cpp.o
+
+__/srcs/Headers/RetryAfterHeader.i: __/srcs/Headers/RetryAfterHeader.cpp.i
+
+.PHONY : __/srcs/Headers/RetryAfterHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/RetryAfterHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.i
+.PHONY : __/srcs/Headers/RetryAfterHeader.cpp.i
+
+__/srcs/Headers/RetryAfterHeader.s: __/srcs/Headers/RetryAfterHeader.cpp.s
+
+.PHONY : __/srcs/Headers/RetryAfterHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/RetryAfterHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.s
+.PHONY : __/srcs/Headers/RetryAfterHeader.cpp.s
+
+__/srcs/Headers/ServerHeader.o: __/srcs/Headers/ServerHeader.cpp.o
+
+.PHONY : __/srcs/Headers/ServerHeader.o
+
+# target to build an object file
+__/srcs/Headers/ServerHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o
+.PHONY : __/srcs/Headers/ServerHeader.cpp.o
+
+__/srcs/Headers/ServerHeader.i: __/srcs/Headers/ServerHeader.cpp.i
+
+.PHONY : __/srcs/Headers/ServerHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/ServerHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.i
+.PHONY : __/srcs/Headers/ServerHeader.cpp.i
+
+__/srcs/Headers/ServerHeader.s: __/srcs/Headers/ServerHeader.cpp.s
+
+.PHONY : __/srcs/Headers/ServerHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/ServerHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.s
+.PHONY : __/srcs/Headers/ServerHeader.cpp.s
+
+__/srcs/Headers/TransferEncodingHeader.o: __/srcs/Headers/TransferEncodingHeader.cpp.o
+
+.PHONY : __/srcs/Headers/TransferEncodingHeader.o
+
+# target to build an object file
+__/srcs/Headers/TransferEncodingHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o
+.PHONY : __/srcs/Headers/TransferEncodingHeader.cpp.o
+
+__/srcs/Headers/TransferEncodingHeader.i: __/srcs/Headers/TransferEncodingHeader.cpp.i
+
+.PHONY : __/srcs/Headers/TransferEncodingHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/TransferEncodingHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.i
+.PHONY : __/srcs/Headers/TransferEncodingHeader.cpp.i
+
+__/srcs/Headers/TransferEncodingHeader.s: __/srcs/Headers/TransferEncodingHeader.cpp.s
+
+.PHONY : __/srcs/Headers/TransferEncodingHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/TransferEncodingHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.s
+.PHONY : __/srcs/Headers/TransferEncodingHeader.cpp.s
+
+__/srcs/Headers/UserAgentHeader.o: __/srcs/Headers/UserAgentHeader.cpp.o
+
+.PHONY : __/srcs/Headers/UserAgentHeader.o
+
+# target to build an object file
+__/srcs/Headers/UserAgentHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o
+.PHONY : __/srcs/Headers/UserAgentHeader.cpp.o
+
+__/srcs/Headers/UserAgentHeader.i: __/srcs/Headers/UserAgentHeader.cpp.i
+
+.PHONY : __/srcs/Headers/UserAgentHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/UserAgentHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.i
+.PHONY : __/srcs/Headers/UserAgentHeader.cpp.i
+
+__/srcs/Headers/UserAgentHeader.s: __/srcs/Headers/UserAgentHeader.cpp.s
+
+.PHONY : __/srcs/Headers/UserAgentHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/UserAgentHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.s
+.PHONY : __/srcs/Headers/UserAgentHeader.cpp.s
+
+__/srcs/Headers/WWWAuthenticateHeader.o: __/srcs/Headers/WWWAuthenticateHeader.cpp.o
+
+.PHONY : __/srcs/Headers/WWWAuthenticateHeader.o
+
+# target to build an object file
+__/srcs/Headers/WWWAuthenticateHeader.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o
+.PHONY : __/srcs/Headers/WWWAuthenticateHeader.cpp.o
+
+__/srcs/Headers/WWWAuthenticateHeader.i: __/srcs/Headers/WWWAuthenticateHeader.cpp.i
+
+.PHONY : __/srcs/Headers/WWWAuthenticateHeader.i
+
+# target to preprocess a source file
+__/srcs/Headers/WWWAuthenticateHeader.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.i
+.PHONY : __/srcs/Headers/WWWAuthenticateHeader.cpp.i
+
+__/srcs/Headers/WWWAuthenticateHeader.s: __/srcs/Headers/WWWAuthenticateHeader.cpp.s
+
+.PHONY : __/srcs/Headers/WWWAuthenticateHeader.s
+
+# target to generate assembly for a file
+__/srcs/Headers/WWWAuthenticateHeader.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.s
+.PHONY : __/srcs/Headers/WWWAuthenticateHeader.cpp.s
+
 __/srcs/Methods/ConnectMethod.o: __/srcs/Methods/ConnectMethod.cpp.o
 
 .PHONY : __/srcs/Methods/ConnectMethod.o
@@ -278,33 +764,6 @@ __/srcs/Methods/HeadMethod.s: __/srcs/Methods/HeadMethod.cpp.s
 __/srcs/Methods/HeadMethod.cpp.s:
 	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.s
 .PHONY : __/srcs/Methods/HeadMethod.cpp.s
-
-__/srcs/Methods/MethodSource.o: __/srcs/Methods/MethodSource.cpp.o
-
-.PHONY : __/srcs/Methods/MethodSource.o
-
-# target to build an object file
-__/srcs/Methods/MethodSource.cpp.o:
-	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o
-.PHONY : __/srcs/Methods/MethodSource.cpp.o
-
-__/srcs/Methods/MethodSource.i: __/srcs/Methods/MethodSource.cpp.i
-
-.PHONY : __/srcs/Methods/MethodSource.i
-
-# target to preprocess a source file
-__/srcs/Methods/MethodSource.cpp.i:
-	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.i
-.PHONY : __/srcs/Methods/MethodSource.cpp.i
-
-__/srcs/Methods/MethodSource.s: __/srcs/Methods/MethodSource.cpp.s
-
-.PHONY : __/srcs/Methods/MethodSource.s
-
-# target to generate assembly for a file
-__/srcs/Methods/MethodSource.cpp.s:
-	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.s
-.PHONY : __/srcs/Methods/MethodSource.cpp.s
 
 __/srcs/Methods/OptionsMethod.o: __/srcs/Methods/OptionsMethod.cpp.o
 
@@ -508,6 +967,60 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... tester"
 	@echo "... install"
+	@echo "... __/srcs/Headers/AcceptCharsetsHeader.o"
+	@echo "... __/srcs/Headers/AcceptCharsetsHeader.i"
+	@echo "... __/srcs/Headers/AcceptCharsetsHeader.s"
+	@echo "... __/srcs/Headers/AcceptLanguageHeader.o"
+	@echo "... __/srcs/Headers/AcceptLanguageHeader.i"
+	@echo "... __/srcs/Headers/AcceptLanguageHeader.s"
+	@echo "... __/srcs/Headers/AllowHeader.o"
+	@echo "... __/srcs/Headers/AllowHeader.i"
+	@echo "... __/srcs/Headers/AllowHeader.s"
+	@echo "... __/srcs/Headers/AuthorizationHeader.o"
+	@echo "... __/srcs/Headers/AuthorizationHeader.i"
+	@echo "... __/srcs/Headers/AuthorizationHeader.s"
+	@echo "... __/srcs/Headers/ContentLanguageHeader.o"
+	@echo "... __/srcs/Headers/ContentLanguageHeader.i"
+	@echo "... __/srcs/Headers/ContentLanguageHeader.s"
+	@echo "... __/srcs/Headers/ContentLengthHeader.o"
+	@echo "... __/srcs/Headers/ContentLengthHeader.i"
+	@echo "... __/srcs/Headers/ContentLengthHeader.s"
+	@echo "... __/srcs/Headers/ContentLocationHeader.o"
+	@echo "... __/srcs/Headers/ContentLocationHeader.i"
+	@echo "... __/srcs/Headers/ContentLocationHeader.s"
+	@echo "... __/srcs/Headers/ContentTypeHeader.o"
+	@echo "... __/srcs/Headers/ContentTypeHeader.i"
+	@echo "... __/srcs/Headers/ContentTypeHeader.s"
+	@echo "... __/srcs/Headers/DateHeader.o"
+	@echo "... __/srcs/Headers/DateHeader.i"
+	@echo "... __/srcs/Headers/DateHeader.s"
+	@echo "... __/srcs/Headers/HostHeader.o"
+	@echo "... __/srcs/Headers/HostHeader.i"
+	@echo "... __/srcs/Headers/HostHeader.s"
+	@echo "... __/srcs/Headers/LastModifiedHeader.o"
+	@echo "... __/srcs/Headers/LastModifiedHeader.i"
+	@echo "... __/srcs/Headers/LastModifiedHeader.s"
+	@echo "... __/srcs/Headers/LocationHeader.o"
+	@echo "... __/srcs/Headers/LocationHeader.i"
+	@echo "... __/srcs/Headers/LocationHeader.s"
+	@echo "... __/srcs/Headers/RefererHeader.o"
+	@echo "... __/srcs/Headers/RefererHeader.i"
+	@echo "... __/srcs/Headers/RefererHeader.s"
+	@echo "... __/srcs/Headers/RetryAfterHeader.o"
+	@echo "... __/srcs/Headers/RetryAfterHeader.i"
+	@echo "... __/srcs/Headers/RetryAfterHeader.s"
+	@echo "... __/srcs/Headers/ServerHeader.o"
+	@echo "... __/srcs/Headers/ServerHeader.i"
+	@echo "... __/srcs/Headers/ServerHeader.s"
+	@echo "... __/srcs/Headers/TransferEncodingHeader.o"
+	@echo "... __/srcs/Headers/TransferEncodingHeader.i"
+	@echo "... __/srcs/Headers/TransferEncodingHeader.s"
+	@echo "... __/srcs/Headers/UserAgentHeader.o"
+	@echo "... __/srcs/Headers/UserAgentHeader.i"
+	@echo "... __/srcs/Headers/UserAgentHeader.s"
+	@echo "... __/srcs/Headers/WWWAuthenticateHeader.o"
+	@echo "... __/srcs/Headers/WWWAuthenticateHeader.i"
+	@echo "... __/srcs/Headers/WWWAuthenticateHeader.s"
 	@echo "... __/srcs/Methods/ConnectMethod.o"
 	@echo "... __/srcs/Methods/ConnectMethod.i"
 	@echo "... __/srcs/Methods/ConnectMethod.s"
@@ -520,9 +1033,6 @@ help:
 	@echo "... __/srcs/Methods/HeadMethod.o"
 	@echo "... __/srcs/Methods/HeadMethod.i"
 	@echo "... __/srcs/Methods/HeadMethod.s"
-	@echo "... __/srcs/Methods/MethodSource.o"
-	@echo "... __/srcs/Methods/MethodSource.i"
-	@echo "... __/srcs/Methods/MethodSource.s"
 	@echo "... __/srcs/Methods/OptionsMethod.o"
 	@echo "... __/srcs/Methods/OptionsMethod.i"
 	@echo "... __/srcs/Methods/OptionsMethod.s"

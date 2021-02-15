@@ -1,195 +1,193 @@
 #include "Request.hpp"
 
-Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path), _protocolVersion(other._protocolVersion), _body(other._body) {}
+Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path), _protocolVersion(other._protocolVersion), _body(other._body)
+{
+	init_factories();
+}
+
 Request::~Request()
 {
 	if (_method)
 		delete _method;
 }
 
-Request::Request(std::string raw)
+Request::Request(std::string raw) : _method(NULL), _path(""), _protocolVersion(""), _body(""), parse_start(0)
 {
-	size_t i = 0;
-	_raw = raw;
-	if (!isValidRequestFormat())
-		throw std::invalid_argument("Request is not in a valid format.");
-
-	// Method
-	std::pair<std::string, size_t> read_ret = read_until_charset(i, " ");
-	_method = _methodSource.createByType(read_ret.first);
-	i = read_charset(read_ret.second, " ").second;
-	Logger::print("Request method is " + _method->getType(), true, INFO, VERBOSE);
-
-
-	// Path
-	read_ret = read_until_charset(i, " ");
-	if (read_ret.first.find("/", 7) != std::string::npos)
-		_path = read_ret.first.substr(read_ret.first.find("/", 7));
-	else
-		_path = "/";
-	i = read_charset(read_ret.second, " ").second;
-	Logger::print("Request path is " + _path, true, INFO, VERBOSE);
-
-
-	// Protocol version
-	read_ret = read_until_charset(i, "\n");
-	_protocolVersion = read_ret.first;
-	i = read_charset(read_ret.second, "\n").second;
-	Logger::print("Request protocol version is " + _protocolVersion, true, INFO, VERBOSE);
-
-
-	// Headers
-	read_ret = read_until_charset(i, "\n");
-	i = read_charset(read_ret.second, "\n").second;
-	if (read_ret.first[0])
-	{
-		std::string header_name, header_val;
-		while (!is_next_paragraph(i))
-		{
-			header_name = read_ret.first.substr(0, read_ret.first.find(":"));
-			header_val = read_ret.first.substr(read_ret.first.find(":") + 1);
-			header_val = header_val.substr(header_val.find_first_not_of(" "));
-			_headers[header_name] = header_val;
-			Logger::print("Request header: " + header_name + ": " + _headers[header_name], true, INFO, VERBOSE);
-			read_ret = read_until_charset(i, "\n");
-			i = read_charset(read_ret.second, "\n").second;
-		}
-		header_name = read_ret.first.substr(0, read_ret.first.find(":"));
-		header_val = read_ret.first.substr(read_ret.first.find(":") + 1);
-		header_val = header_val.substr(header_val.find_first_not_of(" "));
-		_headers[header_name] = header_val;
-		Logger::print("Request header: " + header_name + ": " + _headers[header_name], true, INFO, VERBOSE);
-	}
-
-
-	// Body
-	_body = _raw.substr(i);
-	Logger::print("Request body is " + _body, true, INFO, VERBOSE);
-
-
-	Logger::print("Request was parsed successfully.", true, SUCCESS, NORMAL);
+	init_factories();
+	if (raw == "")
+		return;
+	append(raw);
 }
 
-bool Request::is_valid_URI(const std::string& uri, int mask) const
+void Request::init_factories()
 {
-	if (mask & ABSOLUTE_PATH)
+	_methodFactory.add(new ConnectMethod());
+	_methodFactory.add(new DeleteMethod());
+	_methodFactory.add(new GetMethod());
+	_methodFactory.add(new HeadMethod());
+	_methodFactory.add(new OptionsMethod());
+	_methodFactory.add(new PostMethod());
+	_methodFactory.add(new PutMethod());
+	_methodFactory.add(new TraceMethod());
+
+	_headerFactory.add(new AcceptCharsetsHeader());
+	_headerFactory.add(new AcceptLanguageHeader());
+	_headerFactory.add(new AllowHeader());
+	_headerFactory.add(new AuthorizationHeader());
+	_headerFactory.add(new ContentLanguageHeader());
+	_headerFactory.add(new ContentLengthHeader());
+	_headerFactory.add(new ContentLocationHeader());
+	_headerFactory.add(new ContentTypeHeader());
+	_headerFactory.add(new DateHeader());
+	_headerFactory.add(new HostHeader());
+	_headerFactory.add(new LastModifiedHeader());
+	_headerFactory.add(new LocationHeader());
+	_headerFactory.add(new RefererHeader());
+	_headerFactory.add(new RetryAfterHeader());
+	_headerFactory.add(new ServerHeader());
+	_headerFactory.add(new TransferEncodingHeader());
+	_headerFactory.add(new UserAgentHeader());
+	_headerFactory.add(new WWWAuthenticateHeader());
+}
+
+bool Request::append(const std::string& raw)
+{
+	_raw += raw;
+	parse();
+	return true;
+}
+
+void Request::parse()
+{
+	if (_method == NULL)
+		parse_method();
+	if (_method == NULL)
+		return;
+
+	if (_raw.size() <= parse_start + 1)
+		return;
+	if (_raw[parse_start + 1] == ' ')
+	{
+		Logger::print("Bad whitespace after method.", false, ERROR, VERBOSE);
+		throw std::invalid_argument("Bad whitespace after method.");
+	}
+	parse_start++;
+
+	if (_path == "")
+		parse_uri();
+	if (_path == "")
+		return;
+
+	if (_raw.size() <= parse_start + 1)
+		return;
+	if (_raw[parse_start + 1] == ' ')
+	{
+		Logger::print("Bad whitespace after uri.", false, ERROR, VERBOSE);
+		throw std::invalid_argument("Bad whitespace after uri.");
+	}
+	parse_start++;
+
+	if (_protocolVersion == "")
+		parse_protocol_version();
+	if (_protocolVersion == "")
+		return;
+}
+
+void Request::parse_method()
+{
+	std::string method = _raw.substr(0, _raw.find(' '));
+	if (!_methodFactory.hasCandidates(method))
+	{
+		Logger::print("Request method could not be recognized.", false, ERROR, VERBOSE);
+		throw std::invalid_argument("Method could not be recognized.");
+	}
+	if (_raw.find(' ') != std::string::npos && _methodFactory.getByType(method) != NULL)
+	{
+		Logger::print("Request method is " + method + ".", true, INFO, VERBOSE);
+		_method = _methodFactory.createByType(method);
+		parse_start = _raw.find(' ');
+	}
+}
+
+void Request::parse_uri()
+{
+	if (_raw.find(' ', parse_start))
+	{
+		if (!is_valid_URI(_raw.substr(parse_start, _raw.find(' ', parse_start))))
+		{
+			Logger::print("Bad URI format in request.", false, ERROR, VERBOSE);
+			throw std::invalid_argument("Bad URI format in request.");
+		}
+		else
+		{
+			_path = _raw.substr(parse_start, _raw.find(' ', parse_start));
+			parse_start = _raw.find(' ', parse_start);
+		}
+	}
+}
+
+void Request::parse_protocol_version()
+{
+	std::string version = _raw.substr(0, _raw.find("\r\n", parse_start));
+	if (std::string("HTTP/1.1").substr(0, version.size()) != version)
+	{
+		Logger::print("Request protocol version could not be recognized.", false, ERROR, VERBOSE);
+		throw std::invalid_argument("Request protocol version could not be recognized.");
+	}
+	if (_raw.find("\r\n", parse_start) != std::string::npos && version == "HTTP/1.1")
+	{
+		Logger::print("Request protocol version is HTTP/1.1.", true, INFO, VERBOSE);
+		_protocolVersion = version;
+		parse_start = _raw.find("\r\n") + 2;
+	}
+}
+
+/*
+** header-field = field-name ":" OWS field-value OWS
+** field-name = token
+** field-value = *( field-content / obs-fold )
+** field-content = field-vchar [ 1*( SP / HTAB ) field-vchar ]
+** field-vchar = VCHAR / obs-text
+** obs-fold = CRLF 1*( SP / HTAB )
+** obsolete line folding
+** see Section 3.2.4
+*/
+void Request::parse_headers()
+{
+	if (_raw.find(':', parse_start) == std::string::npos)
+		return;
+	std::string header_name = _raw.substr(parse_start, _raw.find(':', parse_start));
+	if (_headerFactory.contains(header_name))
+	{
+		
+	}
+}
+
+void Request::parse_body()
+{
+
+}
+
+bool Request::is_valid_URI(const std::string& uri) const
+{
+	if (uri.size() > 8000)
+		return false;
+
+	if (_method->allowAbsolutePath())
 		if (uri[0] == '/')
 			return true;
 
-	if (mask & COMPLETE_URL)
+	if (_method->allowCompleteURL())
 		if (uri.substr(0, 7) == "http://" && uri.size() > 7)
 			return true;
 
-	if (mask & URL_AUTHORITY)
+	if (_method->allowAuthorityURI())
 		return true;
 
-	if (mask & ASTERISK_URI)
+	if (_method->allowAsteriskURI())
 		if (uri == "*")
 			return true;
 	return false;
-}
-
-bool Request::isValidRequestFormat()
-{
-	static const size_t ver_size = 1;
-	static const std::string versions[ver_size] = { "HTTP/1.1" };
-
-
-	// Line ending check
-	if (_raw.size() < 4)
-		return Logger::print("Request is too short to be valid.", false, ERROR, VERBOSE);
-	if (_raw.substr(_raw.size() - 4) != "\r\n\r\n")
-		return Logger::print("Request doesn't end with CRLFCRLF.", false, ERROR, VERBOSE);
-	if (_raw[0] == '\n')
-		return Logger::print("Request contains a LF line ending.", false, ERROR, VERBOSE);
-	size_t at = 0;
-	while ((at = _raw.find('\n', at)) != std::string::npos)
-		if (_raw[_raw.find('\n', at++) - 1] != '\r')
-			return Logger::print("Request contains a LF line ending.", false, ERROR, VERBOSE);
-	while (_raw.find("\r\n") != std::string::npos)
-		_raw.replace(_raw.find("\r\n"), 2, "\n");
-
-
-	// Method
-	std::pair<std::string, size_t> token = read_until_charset(0, " ");
-	if (!_methodSource.contains(token.first))
-		return Logger::print("Request method \"" + token.first + "\" could not be recognized.", false, ERROR, VERBOSE);
-	std::string method = _methodSource.getByType(token.first)->getType();
-
-
-	// Space
-	if (count_concurrent_occurences(token.second, ' ') != 1)
-		return Logger::print("Bad space amount in request.", false, ERROR, VERBOSE);
-
-
-	// Path
-	token = read_until_charset(read_charset(token.second, " ").second, " ");
-	int mask = 0;
-	if (method == "GET" || method == "POST" || method == "HEAD" || method == "OPTIONS")
-		mask += ABSOLUTE_PATH;
-	if (method == "GET")
-		mask += COMPLETE_URL;
-	if (method == "CONNECT")
-		mask += URL_AUTHORITY;
-	if (method == "OPTIONS")
-		mask += ASTERISK_URI;
-	if (!is_valid_URI(token.first, mask))
-		return Logger::print("Bad URI in request.", false, ERROR, VERBOSE);
-
-
-	// Space
-	if (count_concurrent_occurences(token.second, ' ') != 1)
-		return Logger::print("Bad space amount in request.", false, ERROR, VERBOSE);
-
-
-	// Protocol Version
-	token = read_until_charset(read_charset(token.second, " ").second, "\n");
-	for (size_t i = 0; i < ver_size; i++)
-	{
-		if (versions[i] == token.first)
-			break ;
-		if (i == ver_size - 1)
-			return Logger::print("Protocol version \"" + token.first + "\" could not be recognized.", false, ERROR, VERBOSE);
-	}
-
-
-	//Headers
-	size_t i = read_charset(token.second, "\n").second;
-	std::pair<std::string, size_t> read_ret = read_until_charset(i, "\n");
-	bool found_host = false;
-	if (read_ret.first[0])
-	{
-		while (!is_next_paragraph(i))
-		{
-			if (!header_line_valid(read_ret.first))
-				return false;
-
-			if (!found_host)
-			{
-				std::string header_name = read_ret.first.substr(0, read_ret.first.find(':'));
-				for (size_t i = 0; i < header_name.size(); i++)
-					header_name[i] = std::toupper(header_name[i]);
-				if (header_name == "HOST")
-					found_host = true;
-			}
-
-			read_ret = read_until_charset(i, "\n");
-			i = read_charset(read_ret.second, "\n").second;
-		}
-		if (!header_line_valid(read_ret.first))
-			return false;
-		if (!found_host)
-		{
-			std::string header_name = read_ret.first.substr(0, read_ret.first.find(':'));
-			for (size_t i = 0; i < header_name.size(); i++)
-				header_name[i] = std::toupper(header_name[i]);
-			if (header_name == "HOST")
-				found_host = true;
-		}
-		if (!found_host)
-			return Logger::print("Request doesn't contain Host header field.", false, ERROR, VERBOSE);
-	}
-	return Logger::print("Request format is valid.", true, SUCCESS, VERBOSE);
 }
 
 bool Request::header_line_valid(const std::string& line) const

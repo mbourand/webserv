@@ -81,9 +81,441 @@ tests/CMakeFiles/tester.dir/srcs/tests.cpp.o.provides: tests/CMakeFiles/tester.d
 tests/CMakeFiles/tester.dir/srcs/tests.cpp.o.provides.build: tests/CMakeFiles/tester.dir/srcs/tests.cpp.o
 
 
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o: ../srcs/Headers/AcceptCharsetsHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/AcceptCharsetsHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/AcceptCharsetsHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/AcceptCharsetsHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o: ../srcs/Headers/AcceptLanguageHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/AcceptLanguageHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/AcceptLanguageHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/AcceptLanguageHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o: ../srcs/Headers/AllowHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/AllowHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/AllowHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/AllowHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o: ../srcs/Headers/AuthorizationHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/AuthorizationHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/AuthorizationHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/AuthorizationHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o: ../srcs/Headers/ContentLanguageHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/ContentLanguageHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/ContentLanguageHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/ContentLanguageHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o: ../srcs/Headers/ContentLengthHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/ContentLengthHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/ContentLengthHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/ContentLengthHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o: ../srcs/Headers/ContentLocationHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/ContentLocationHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/ContentLocationHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/ContentLocationHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o: ../srcs/Headers/ContentTypeHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/ContentTypeHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/ContentTypeHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/ContentTypeHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o: ../srcs/Headers/DateHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/DateHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/DateHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/DateHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o: ../srcs/Headers/HostHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/HostHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/HostHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/HostHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o: ../srcs/Headers/LastModifiedHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/LastModifiedHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/LastModifiedHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/LastModifiedHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o: ../srcs/Headers/LocationHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/LocationHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/LocationHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/LocationHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o: ../srcs/Headers/RefererHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/RefererHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/RefererHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/RefererHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o: ../srcs/Headers/RetryAfterHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/RetryAfterHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/RetryAfterHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/RetryAfterHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o: ../srcs/Headers/ServerHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/ServerHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/ServerHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/ServerHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o: ../srcs/Headers/TransferEncodingHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/TransferEncodingHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/TransferEncodingHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/TransferEncodingHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o: ../srcs/Headers/UserAgentHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/UserAgentHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/UserAgentHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/UserAgentHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o
+
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o: ../srcs/Headers/WWWAuthenticateHeader.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/WWWAuthenticateHeader.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/WWWAuthenticateHeader.cpp > CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/WWWAuthenticateHeader.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o
+
+
 tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o: ../srcs/Methods/ConnectMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/ConnectMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.i: cmake_force
@@ -107,7 +539,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o.provides.build: 
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o: ../srcs/Methods/DeleteMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/DeleteMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.i: cmake_force
@@ -131,7 +563,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o.provides.build: t
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o: ../srcs/Methods/GetMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/GetMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.i: cmake_force
@@ -155,7 +587,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o.provides.build: test
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.o: ../srcs/Methods/HeadMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/HeadMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.i: cmake_force
@@ -179,7 +611,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.o.provides.build: tes
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o: ../srcs/Methods/OptionsMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/OptionsMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.i: cmake_force
@@ -203,7 +635,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o.provides.build: 
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o: ../srcs/Methods/PostMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/PostMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.i: cmake_force
@@ -227,7 +659,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o.provides.build: tes
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o: ../srcs/Methods/PutMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/PutMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.i: cmake_force
@@ -251,7 +683,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o.provides.build: test
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o: ../srcs/Methods/TraceMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/TraceMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.i: cmake_force
@@ -273,33 +705,9 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o.provides: tests/CM
 tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o
 
 
-tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o: tests/CMakeFiles/tester.dir/flags.make
-tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o: ../srcs/Methods/MethodSource.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o"
-	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/MethodSource.cpp
-
-tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.i"
-	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Methods/MethodSource.cpp > CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.i
-
-tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.s"
-	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Methods/MethodSource.cpp -o CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.s
-
-tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o.requires:
-
-.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o.requires
-
-tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o.requires
-	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o.provides.build
-.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o.provides
-
-tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o
-
-
 tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o: ../srcs/Utils/Logger.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o -c /f/Projets/C++/webserv/srcs/Utils/Logger.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.i: cmake_force
@@ -323,7 +731,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o.provides.build: tests/CMa
 
 tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.o: ../srcs/Request.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Request.cpp.o -c /f/Projets/C++/webserv/srcs/Request.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.i: cmake_force
@@ -348,6 +756,24 @@ tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.o.provides.build: tests/CMakeFil
 # Object files for target tester
 tester_OBJECTS = \
 "CMakeFiles/tester.dir/srcs/tests.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o" \
 "CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o" \
 "CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o" \
 "CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o" \
@@ -356,7 +782,6 @@ tester_OBJECTS = \
 "CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o" \
 "CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o" \
 "CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o" \
-"CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o" \
 "CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o" \
 "CMakeFiles/tester.dir/__/srcs/Request.cpp.o"
 
@@ -364,6 +789,24 @@ tester_OBJECTS = \
 tester_EXTERNAL_OBJECTS =
 
 tests/tester: tests/CMakeFiles/tester.dir/srcs/tests.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o
@@ -372,13 +815,12 @@ tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o
-tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/build.make
 tests/tester: lib/libgtestd.a
 tests/tester: tests/CMakeFiles/tester.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable tester"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Linking CXX executable tester"
 	cd /f/Projets/C++/webserv/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/tester.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -387,6 +829,24 @@ tests/CMakeFiles/tester.dir/build: tests/tester
 .PHONY : tests/CMakeFiles/tester.dir/build
 
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/srcs/tests.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o.requires
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o.requires
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o.requires
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o.requires
@@ -395,7 +855,6 @@ tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Method
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o.requires
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o.requires
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o.requires
-tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Methods/MethodSource.cpp.o.requires
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o.requires
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.o.requires
 
