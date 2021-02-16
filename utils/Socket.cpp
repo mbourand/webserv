@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/16 01:59:46 by nforay           ###   ########.fr       */
+/*   Updated: 2021/02/16 02:42:47 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ bool					Socket::Create(void)
 	//ne pas attendre la fin d'une précédente connexion https://bousk.developpez.com/cours/reseau-c++/TCP/08-premier-serveur-mini-serveur/
 	if (setsockopt(this->m_sockfd, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&optval), sizeof(optval)))
 		return (false);
-	fcntl(this->m_sockfd, F_SETFL, O_NONBLOCK); //Voir sujet, utile quand même sur Linux ?
+	//re-enable fcntl after select() is implemented, socket timeout is 2min
+	//fcntl(this->m_sockfd, F_SETFL, O_NONBLOCK); //Voir sujet, utile quand même sur Linux ?
 	return (true);
 }
 
@@ -73,9 +74,7 @@ bool					Socket::Bind(int const port)
 	this->m_addr_in.sin_family = AF_INET;//https://youtu.be/bdIiTxtMaKA?t=207
 	this->m_addr_in.sin_addr.s_addr = INADDR_ANY;
 	this->m_addr_in.sin_port = (port >> 8) | (port << 8);//byte swap 1234 -> 4321
-	std::cout << "port " << port << " is " << this->m_addr_in.sin_port << std::endl;
-	std::cout << "sockfd is " << this->m_sockfd << std::endl;
-	if (bind(this->m_sockfd, reinterpret_cast<sockaddr*>(&this->m_addr_in), sizeof(this->m_addr_in) != 0))
+	if (bind(this->m_sockfd, reinterpret_cast<sockaddr*>(&this->m_addr_in), sizeof(this->m_addr_in)) != 0)
 		return (false);
 	return (true);
 }

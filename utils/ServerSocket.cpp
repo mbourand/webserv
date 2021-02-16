@@ -6,11 +6,13 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/16 01:38:01 by nforay           ###   ########.fr       */
+/*   Updated: 2021/02/16 02:36:19 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerSocket.hpp"
+#include <errno.h>
+#include <string.h>
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -89,7 +91,7 @@ const ServerSocket& ServerSocket::operator >> ( std::string& s ) const
 void					ServerSocket::Accept(ServerSocket &connection)
 {
 	if (!Socket::Accept(connection))
-		throw ServerSocketException("Couldn't accept socket.");
+		throw ServerSocketException("Couldn't accept socket: "+std::string(strerror(errno)));
 }
 
 /*
