@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/15 21:53:31 by nforay           ###   ########.fr       */
+/*   Updated: 2021/02/16 01:57:25 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <arpa/inet.h>
-#include <strings.h> //bzero, remplacer par libft.
+# include <strings.h> //bzero, remplacer par libft.
 
 const int MAX_HOSTNAME = 200;
 const int MAX_CONNECTIONS = 10;
@@ -44,7 +44,7 @@ class Socket
 		bool	Connect(std::string const &host, int const port);
 
 		bool	Listen(void) const;
-		bool	Accept(Socket &connection) const;
+		bool	Accept(Socket &connection);
 		bool	Send(std::string const msg) const;
 		int		Recieve(std::string &str) const;
 		bool	Success(void) const;

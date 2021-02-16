@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/15 21:54:16 by nforay           ###   ########.fr       */
+/*   Updated: 2021/02/16 01:39:50 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ class ServerSocket : public Socket
 
 	public:
 
+		ServerSocket(void) {};
 		ServerSocket(int port);
 		ServerSocket(ServerSocket const &src);
 		virtual ~ServerSocket();

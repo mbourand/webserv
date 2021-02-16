@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/15 21:53:25 by nforay           ###   ########.fr       */
+/*   Updated: 2021/02/16 01:59:46 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ Socket::~Socket()
 
 Socket &				Socket::operator=(Socket const &rhs)
 {
+	(void)rhs;
 	//if ( this != &rhs )
 	//{
 		//this->_value = rhs.getValue();
@@ -71,6 +72,9 @@ bool					Socket::Bind(int const port)
 		return (false);
 	this->m_addr_in.sin_family = AF_INET;//https://youtu.be/bdIiTxtMaKA?t=207
 	this->m_addr_in.sin_addr.s_addr = INADDR_ANY;
+	this->m_addr_in.sin_port = (port >> 8) | (port << 8);//byte swap 1234 -> 4321
+	std::cout << "port " << port << " is " << this->m_addr_in.sin_port << std::endl;
+	std::cout << "sockfd is " << this->m_sockfd << std::endl;
 	if (bind(this->m_sockfd, reinterpret_cast<sockaddr*>(&this->m_addr_in), sizeof(this->m_addr_in) != 0))
 		return (false);
 	return (true);
@@ -78,10 +82,12 @@ bool					Socket::Bind(int const port)
 
 bool					Socket::Connect(std::string const &host, int const port)
 {
+	(void)host;
 	if (!this->Success())
 		return (false);
 	this->m_addr_in.sin_family = AF_INET;//https://youtu.be/bdIiTxtMaKA?t=207
 	this->m_addr_in.sin_addr.s_addr = INADDR_ANY;
+	this->m_addr_in.sin_port = (port>>8) | (port<<8);//byte swap 1234 -> 4321
 	if (connect(this->m_sockfd, reinterpret_cast<sockaddr*>(&this->m_addr_in), sizeof(this->m_addr_in)) != 0)
 		return (false);
 	return (true);
@@ -96,10 +102,10 @@ bool					Socket::Listen(void) const
 	return (true);
 }
 
-bool					Socket::Accept(Socket &connection) const
+bool					Socket::Accept(Socket &connection)
 {
 	int	addr_length = sizeof(this->m_addr_in);
-	connection.m_sockfd = accept(this->m_sockfd, reinterpret_cast<sockaddr*>(&this->m_addr_in), reinterpret_cast<socklen_t*>(&addr_length));
+	connection.m_sockfd = accept(this->m_sockfd, reinterpret_cast<sockaddr *>(&this->m_addr_in), reinterpret_cast<socklen_t*>(&addr_length));
 	if (connection.m_sockfd <= 0)
 		return (false);
 	return (true);
@@ -107,7 +113,7 @@ bool					Socket::Accept(Socket &connection) const
 
 bool					Socket::Send(std::string const msg) const
 {
-	if (send(this->m_sockfd, msg.c_str(), msg.size(, MSG_NOSIGNAL)) == -1)
+	if (send(this->m_sockfd, msg.c_str(), msg.size(), MSG_NOSIGNAL) == -1)
 		return (false);
 	return (true);
 }
