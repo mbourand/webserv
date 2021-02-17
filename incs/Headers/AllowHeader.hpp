@@ -1,9 +1,9 @@
 #ifndef ALLOW_HEADER_HPP
 #define ALLOW_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class AllowHeader : public IHeader
+class AllowHeader : public Header
 {
 	public:
 		AllowHeader();
@@ -11,8 +11,8 @@ class AllowHeader : public IHeader
 		virtual ~AllowHeader();
 		AllowHeader& operator=(const AllowHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

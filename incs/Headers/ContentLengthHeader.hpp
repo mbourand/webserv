@@ -1,9 +1,9 @@
 #ifndef CONTENT_LENGTH_HEADER_HPP
 #define CONTENT_LENGTH_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class ContentLengthHeader : public IHeader
+class ContentLengthHeader : public Header
 {
 	public:
 		ContentLengthHeader();
@@ -11,8 +11,8 @@ class ContentLengthHeader : public IHeader
 		virtual ~ContentLengthHeader();
 		ContentLengthHeader& operator=(const ContentLengthHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

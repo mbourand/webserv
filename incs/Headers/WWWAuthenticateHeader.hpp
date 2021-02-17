@@ -1,9 +1,9 @@
 #ifndef WWW_AUTHENTICATE_HEADER_HPP
 #define WWW_AUTHENTICATE_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class WWWAuthenticateHeader : public IHeader
+class WWWAuthenticateHeader : public Header
 {
 	public:
 		WWWAuthenticateHeader();
@@ -11,8 +11,8 @@ class WWWAuthenticateHeader : public IHeader
 		virtual ~WWWAuthenticateHeader();
 		WWWAuthenticateHeader& operator=(const WWWAuthenticateHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

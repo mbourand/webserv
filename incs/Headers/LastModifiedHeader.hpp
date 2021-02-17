@@ -1,9 +1,9 @@
 #ifndef LAST_MODIFIED_HEADER_HPP
 #define LAST_MODIFIED_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class LastModifiedHeader : public IHeader
+class LastModifiedHeader : public Header
 {
 	public:
 		LastModifiedHeader();
@@ -11,8 +11,8 @@ class LastModifiedHeader : public IHeader
 		virtual ~LastModifiedHeader();
 		LastModifiedHeader& operator=(const LastModifiedHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

@@ -1,9 +1,9 @@
 #ifndef RETRY_AFTER_HEADER_HPP
 #define RETRY_AFTER_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class RetryAfterHeader : public IHeader
+class RetryAfterHeader : public Header
 {
 	public:
 		RetryAfterHeader();
@@ -11,8 +11,8 @@ class RetryAfterHeader : public IHeader
 		virtual ~RetryAfterHeader();
 		RetryAfterHeader& operator=(const RetryAfterHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

@@ -1,9 +1,9 @@
 #ifndef LOCATION_HEADER_HPP
 #define LOCATION_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class LocationHeader : public IHeader
+class LocationHeader : public Header
 {
 	public:
 		LocationHeader();
@@ -11,8 +11,8 @@ class LocationHeader : public IHeader
 		virtual ~LocationHeader();
 		LocationHeader& operator=(const LocationHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

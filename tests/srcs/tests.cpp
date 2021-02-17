@@ -62,7 +62,8 @@ TEST(request_parser, missing_parts)
 
 int main(int argc, char **argv)
 {
-	Logger::setMode(SILENT);
+	Logger::setMode(VERBOSE);
 	testing::InitGoogleTest(&argc, argv);
+	
 	return RUN_ALL_TESTS();
 }

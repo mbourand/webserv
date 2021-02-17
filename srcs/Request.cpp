@@ -1,6 +1,6 @@
 #include "Request.hpp"
 
-Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path), _protocolVersion(other._protocolVersion), _body(other._body)
+Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path), _protocolVersion(other._protocolVersion), _body(other._body), _header_section_finished(false), _parse_start(0)
 {
 	init_factories();
 }
@@ -9,14 +9,14 @@ Request::~Request()
 {
 	if (_method)
 		delete _method;
+	for (HeadersVector::iterator it = _headers.begin(); it != _headers.end(); it++)
+		if (*it)
+			delete *it;
 }
 
-Request::Request(std::string raw) : _method(NULL), _path(""), _protocolVersion(""), _body(""), parse_start(0)
+Request::Request() : _method(NULL), _header_section_finished(false), _parse_start(0)
 {
 	init_factories();
-	if (raw == "")
-		return;
-	append(raw);
 }
 
 void Request::init_factories()
@@ -64,33 +64,54 @@ void Request::parse()
 	if (_method == NULL)
 		return;
 
-	if (_raw.size() <= parse_start + 1)
+	if (_raw.size() <= _parse_start + 1)
 		return;
-	if (_raw[parse_start + 1] == ' ')
+	if (_raw[_parse_start + 1] == ' ')
 	{
 		Logger::print("Bad whitespace after method.", false, ERROR, VERBOSE);
 		throw std::invalid_argument("Bad whitespace after method.");
 	}
-	parse_start++;
+	_parse_start++;
 
 	if (_path == "")
 		parse_uri();
 	if (_path == "")
 		return;
 
-	if (_raw.size() <= parse_start + 1)
+	if (_raw.size() <= _parse_start + 1)
 		return;
-	if (_raw[parse_start + 1] == ' ')
+	if (_raw[_parse_start + 1] == ' ')
 	{
 		Logger::print("Bad whitespace after uri.", false, ERROR, VERBOSE);
 		throw std::invalid_argument("Bad whitespace after uri.");
 	}
-	parse_start++;
+	_parse_start++;
 
 	if (_protocolVersion == "")
 		parse_protocol_version();
 	if (_protocolVersion == "")
 		return;
+
+	while (!_header_section_finished && parse_headers())
+		;
+
+	size_t cnt = 0;
+	for (size_t i = 0; i < _headers.size(); i++)
+	{
+		if (_headers[i]->getType() == HostHeader().getType())
+			if (++cnt > 1)
+				break ;
+	}
+	if (cnt > 1)
+	{
+		Logger::print("Multiple Host header in request.", false, ERROR, VERBOSE);
+		throw std::invalid_argument("Multiple Host header in request");
+	}
+	if (cnt == 0)
+	{
+		Logger::print("No Host header in request.", false, ERROR, VERBOSE);
+		throw std::invalid_argument("No Host header in request");
+	}
 }
 
 void Request::parse_method()
@@ -105,41 +126,57 @@ void Request::parse_method()
 	{
 		Logger::print("Request method is " + method + ".", true, INFO, VERBOSE);
 		_method = _methodFactory.createByType(method);
-		parse_start = _raw.find(' ');
+		_parse_start = _raw.find(' ');
 	}
 }
 
 void Request::parse_uri()
 {
-	if (_raw.find(' ', parse_start))
+	if (_raw.find(' ', _parse_start))
 	{
-		if (!is_valid_URI(_raw.substr(parse_start, _raw.find(' ', parse_start))))
+		if (!is_valid_URI(_raw.substr(_parse_start, _raw.find(' ', _parse_start))))
 		{
 			Logger::print("Bad URI format in request.", false, ERROR, VERBOSE);
 			throw std::invalid_argument("Bad URI format in request.");
 		}
 		else
 		{
-			_path = _raw.substr(parse_start, _raw.find(' ', parse_start));
-			parse_start = _raw.find(' ', parse_start);
+			_path = _raw.substr(_parse_start, _raw.find(' ', _parse_start) - _parse_start);
+			_parse_start = _raw.find(' ', _parse_start);
+			Logger::print("URI is " + _path + ".", true, INFO, VERBOSE);
 		}
 	}
 }
 
 void Request::parse_protocol_version()
 {
-	std::string version = _raw.substr(0, _raw.find("\r\n", parse_start));
+	std::string version = _raw.substr(_parse_start, _raw.find("\r\n", _parse_start) - _parse_start);
 	if (std::string("HTTP/1.1").substr(0, version.size()) != version)
 	{
-		Logger::print("Request protocol version could not be recognized.", false, ERROR, VERBOSE);
+		Logger::print("Request protocol version " + version + " could not be recognized.", false, ERROR, VERBOSE);
 		throw std::invalid_argument("Request protocol version could not be recognized.");
 	}
-	if (_raw.find("\r\n", parse_start) != std::string::npos && version == "HTTP/1.1")
+	if (_raw.find("\r\n", _parse_start) != std::string::npos && version == "HTTP/1.1")
 	{
 		Logger::print("Request protocol version is HTTP/1.1.", true, INFO, VERBOSE);
 		_protocolVersion = version;
-		parse_start = _raw.find("\r\n") + 2;
+		_parse_start = _raw.find("\r\n") + 2;
 	}
+}
+
+bool is_header_field_finished(std::string str)
+{
+	size_t i = 0;
+
+	while (str.find("\r\n", i) != std::string::npos)
+	{
+		if (!str[str.find("\r\n", i) + 2])
+			return Logger::print("Header field is not finished", false, INFO, VERBOSE);
+		if (str[str.find("\r\n", i) + 2] != ' ' && str[str.find("\r\n", i) + 2] != '\t')
+			return Logger::print("Header field is finished", true, INFO, VERBOSE);;
+		i = str.find("\r\n", i) + 2;
+	}
+	return Logger::print("Header field is not finished", false, INFO, VERBOSE);;
 }
 
 /*
@@ -152,15 +189,40 @@ void Request::parse_protocol_version()
 ** obsolete line folding
 ** see Section 3.2.4
 */
-void Request::parse_headers()
+bool Request::parse_headers()
 {
-	if (_raw.find(':', parse_start) == std::string::npos)
-		return;
-	std::string header_name = _raw.substr(parse_start, _raw.find(':', parse_start));
+	if (!is_header_field_finished(_raw.substr(_parse_start)))
+		return false;
+	if (_raw.find(':', _parse_start) == std::string::npos)
+	{
+		Logger::print("Invalid header field in request", false, ERROR, VERBOSE);
+		throw std::invalid_argument("Invalid header field in request");
+	}
+	std::string header_name = _raw.substr(_parse_start, _raw.find(':', _parse_start) - _parse_start);
 	if (_headerFactory.contains(header_name))
 	{
-		
+		Header* header = _headerFactory.createByType(header_name);
+		if (header == NULL)
+		{
+			Logger::print("Invalid header name in request", false, ERROR, VERBOSE);
+			throw std::invalid_argument("Invalid header name in request");
+		}
+		try
+		{
+			_parse_start += header_name.size() + 1;
+			_parse_start += header->parse(_raw.substr(_parse_start));
+			Logger::print("Request header : " + header->getType() + " -> " + header->getValue(), true, INFO, VERBOSE);
+			_headers.push_back(header);
+		}
+		catch(const std::exception& e)
+		{
+			Logger::print("Invalid header field in request", false, ERROR, VERBOSE);
+			throw std::invalid_argument("Invalid header field in request");
+		}
 	}
+	if (_raw[_parse_start] == '\r' && _raw[_parse_start + 1] == '\n')
+		return (_header_section_finished = Logger::print("Header section is finished", false, INFO, VERBOSE));
+	return true;
 }
 
 void Request::parse_body()
@@ -190,45 +252,12 @@ bool Request::is_valid_URI(const std::string& uri) const
 	return false;
 }
 
-bool Request::header_line_valid(const std::string& line) const
-{
-	size_t del_pos = line.find(":");
-	if (del_pos == std::string::npos)
-		return Logger::print("Header line \"" + line + "\" doesn't contain ':' delimiter.", false, ERROR, VERBOSE);
-	if (del_pos == 0)
-		return Logger::print("Header line \"" + line + "\" Has nothing before ':' delimiter.", false, ERROR, VERBOSE);
-	if (del_pos == line.size() - 1)
-		return Logger::print("Header line \"" + line + "\" Has nothing after ':' delimiter.", false, ERROR, VERBOSE);
-	return true;
-}
-
-bool Request::is_next_paragraph(size_t i) const
-{
-	return _raw[i - 1] == '\n' && _raw[i - 2] == '\n';
-}
-
 size_t Request::count_concurrent_occurences(size_t index, char c) const
 {
 	size_t cnt = 0;
 	while (_raw[index + cnt] == c)
 		cnt++;
 	return cnt;
-}
-
-std::pair<std::string, size_t> Request::read_charset(size_t index, const std::string& charset) const
-{
-	std::string res;
-	while (_raw[index] && charset.find(_raw[index]) != std::string::npos)
-		res += _raw[index++];
-	return std::make_pair(res, index);
-}
-
-std::pair<std::string, size_t> Request::read_until_charset(size_t index, const std::string& charset) const
-{
-	std::string res;
-	while (_raw[index] && charset.find(_raw[index]) == std::string::npos)
-		res += _raw[index++];
-	return std::make_pair(res, index);
 }
 
 Request& Request::operator=(const Request& other)
@@ -257,8 +286,8 @@ std::ostream& operator<<(std::ostream& out, const Request& request)
 			"Path: " << request._path << '\n' <<
 			"Protocol Version: " << request._protocolVersion << '\n' <<
 			"Headers: " << std::endl;
-	for (Request::HeadersMap::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
-		out << "  \"" << it->first << "\" -> \"" << it->second << '"' << std::endl;
+	for (Request::HeadersVector::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
+		out << "  \"" << (*it)->getType() << "\" -> \"" << (*it)->getValue() << '"' << std::endl;
 	out << "Body:\n" << request._body << std::endl;
 	return out;
 }

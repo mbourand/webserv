@@ -5,9 +5,6 @@ AcceptCharsetsHeader::AcceptCharsetsHeader(const AcceptCharsetsHeader& other) {}
 AcceptCharsetsHeader::~AcceptCharsetsHeader() {}
 AcceptCharsetsHeader& AcceptCharsetsHeader::operator=(const AcceptCharsetsHeader& other) { return *this; }
 
-std::string AcceptCharsetsHeader::getType() { return "Accept-Charsets"; }
+std::string AcceptCharsetsHeader::getType() const { return "Accept-Charsets"; }
 
-void AcceptCharsetsHeader::parse(std::string content)
-{
-
-}
+Header* AcceptCharsetsHeader::clone() const { return new AcceptCharsetsHeader(); }

@@ -11,7 +11,8 @@ int main()
 		raw += line + '\n';
 	try
 	{
-		Request req(raw);
+		Request req;
+		req.append(raw);
 	}
 	catch(const std::exception& e)
 	{

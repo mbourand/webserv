@@ -1,9 +1,9 @@
 #ifndef HOST_HEADER_HPP
 #define HOST_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class HostHeader : public IHeader
+class HostHeader : public Header
 {
 	public:
 		HostHeader();
@@ -11,8 +11,8 @@ class HostHeader : public IHeader
 		virtual ~HostHeader();
 		HostHeader& operator=(const HostHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

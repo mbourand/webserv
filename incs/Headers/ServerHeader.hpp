@@ -1,9 +1,9 @@
 #ifndef SERVER_HEADER_HPP
 #define SERVER_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class ServerHeader : public IHeader
+class ServerHeader : public Header
 {
 	public:
 		ServerHeader();
@@ -11,8 +11,8 @@ class ServerHeader : public IHeader
 		virtual ~ServerHeader();
 		ServerHeader& operator=(const ServerHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

@@ -1,9 +1,9 @@
 #ifndef ACCEPT_CHARSETS_HEADER_HPP
 #define ACCEPT_CHARSETS_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class AcceptCharsetsHeader : public IHeader
+class AcceptCharsetsHeader : public Header
 {
 	public:
 		AcceptCharsetsHeader();
@@ -11,8 +11,8 @@ class AcceptCharsetsHeader : public IHeader
 		virtual ~AcceptCharsetsHeader();
 		AcceptCharsetsHeader& operator=(const AcceptCharsetsHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

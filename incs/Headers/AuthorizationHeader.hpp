@@ -1,9 +1,9 @@
 #ifndef AUTHORIZATION_HEADER_HPP
 #define AUTHORIZATION_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class AuthorizationHeader : public IHeader
+class AuthorizationHeader : public Header
 {
 	public:
 		AuthorizationHeader();
@@ -11,8 +11,8 @@ class AuthorizationHeader : public IHeader
 		virtual ~AuthorizationHeader();
 		AuthorizationHeader& operator=(const AuthorizationHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

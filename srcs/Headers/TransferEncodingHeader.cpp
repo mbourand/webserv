@@ -5,9 +5,5 @@ TransferEncodingHeader::TransferEncodingHeader(const TransferEncodingHeader& oth
 TransferEncodingHeader::~TransferEncodingHeader() {}
 TransferEncodingHeader& TransferEncodingHeader::operator=(const TransferEncodingHeader& other) { return *this; }
 
-std::string TransferEncodingHeader::getType() { return "Transfer-Encoding"; }
-
-void TransferEncodingHeader::parse(std::string content)
-{
-
-}
+std::string TransferEncodingHeader::getType() const { return "Transfer-Encoding"; }
+Header* TransferEncodingHeader::clone() const { return new TransferEncodingHeader(); }

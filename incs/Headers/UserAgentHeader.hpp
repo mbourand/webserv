@@ -1,9 +1,9 @@
 #ifndef USER_AGENT_HEADER_HPP
 #define USER_AGENT_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class UserAgentHeader : public IHeader
+class UserAgentHeader : public Header
 {
 	public:
 		UserAgentHeader();
@@ -11,8 +11,8 @@ class UserAgentHeader : public IHeader
 		virtual ~UserAgentHeader();
 		UserAgentHeader& operator=(const UserAgentHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

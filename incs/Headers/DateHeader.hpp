@@ -1,9 +1,9 @@
 #ifndef DATE_HEADER_HPP
 #define DATE_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class DateHeader : public IHeader
+class DateHeader : public Header
 {
 	public:
 		DateHeader();
@@ -11,8 +11,8 @@ class DateHeader : public IHeader
 		virtual ~DateHeader();
 		DateHeader& operator=(const DateHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

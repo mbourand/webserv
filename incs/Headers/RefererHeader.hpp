@@ -1,9 +1,9 @@
 #ifndef REFERER_HEADER_HPP
 #define REFERER_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class RefererHeader : public IHeader
+class RefererHeader : public Header
 {
 	public:
 		RefererHeader();
@@ -11,8 +11,8 @@ class RefererHeader : public IHeader
 		virtual ~RefererHeader();
 		RefererHeader& operator=(const RefererHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

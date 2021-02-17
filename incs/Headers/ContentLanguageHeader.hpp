@@ -1,9 +1,9 @@
 #ifndef CONTENT_LANGUAGE_HEADER_HPP
 #define CONTENT_LANGUAGE_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class ContentLanguageHeader : public IHeader
+class ContentLanguageHeader : public Header
 {
 	public:
 		ContentLanguageHeader();
@@ -11,8 +11,8 @@ class ContentLanguageHeader : public IHeader
 		virtual ~ContentLanguageHeader();
 		ContentLanguageHeader& operator=(const ContentLanguageHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

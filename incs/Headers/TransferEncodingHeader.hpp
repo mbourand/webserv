@@ -1,9 +1,9 @@
 #ifndef TRANSFER_ENCODING_HEADER_HPP
 #define TRANSFER_ENCODING_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class TransferEncodingHeader : public IHeader
+class TransferEncodingHeader : public Header
 {
 	public:
 		TransferEncodingHeader();
@@ -11,8 +11,8 @@ class TransferEncodingHeader : public IHeader
 		virtual ~TransferEncodingHeader();
 		TransferEncodingHeader& operator=(const TransferEncodingHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif

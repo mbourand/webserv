@@ -5,9 +5,5 @@ RetryAfterHeader::RetryAfterHeader(const RetryAfterHeader& other) {}
 RetryAfterHeader::~RetryAfterHeader() {}
 RetryAfterHeader& RetryAfterHeader::operator=(const RetryAfterHeader& other) { return *this; }
 
-std::string RetryAfterHeader::getType() { return "Retry-After"; }
-
-void RetryAfterHeader::parse(std::string content)
-{
-
-}
+std::string RetryAfterHeader::getType() const { return "Retry-After"; }
+Header* RetryAfterHeader::clone() const { return new RetryAfterHeader(); }

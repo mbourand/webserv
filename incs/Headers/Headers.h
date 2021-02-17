@@ -1,7 +1,7 @@
 #ifndef HEADERS_H
 #define HEADERS_H
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 #include "AcceptCharsetsHeader.hpp"
 #include "AcceptLanguageHeader.hpp"
 #include "AllowHeader.hpp"

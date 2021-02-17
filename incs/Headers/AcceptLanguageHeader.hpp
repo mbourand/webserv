@@ -1,9 +1,9 @@
 #ifndef ACCEPT_LANGUAGE_HEADER_HPP
 #define ACCEPT_LANGUAGE_HEADER_HPP
 
-#include "IHeader.hpp"
+#include "Header.hpp"
 
-class AcceptLanguageHeader : public IHeader
+class AcceptLanguageHeader : public Header
 {
 	public:
 		AcceptLanguageHeader();
@@ -11,8 +11,8 @@ class AcceptLanguageHeader : public IHeader
 		virtual ~AcceptLanguageHeader();
 		AcceptLanguageHeader& operator=(const AcceptLanguageHeader& other);
 
-		std::string getType();
-		void parse(std::string content);
+		std::string getType() const;
+		Header* clone() const;
 };
 
 #endif
