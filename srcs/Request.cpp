@@ -64,28 +64,22 @@ void Request::parse()
 	if (_method == NULL)
 		return;
 
-	if (_raw.size() <= _parse_start + 1)
-		return;
-	if (_raw[_parse_start + 1] == ' ')
-	{
-		Logger::print("Bad whitespace after method.", false, ERROR, VERBOSE);
-		throw std::invalid_argument("Bad whitespace after method.");
-	}
-	_parse_start++;
-
 	if (_path == "")
+	{
+		if (_raw.size() <= _parse_start + 1)
+			return;
+		if (_raw[_parse_start + 1] == ' ')
+			throw std::invalid_argument("Bad whitespace after method.");
+
 		parse_uri();
+	}
 	if (_path == "")
 		return;
 
 	if (_raw.size() <= _parse_start + 1)
 		return;
 	if (_raw[_parse_start + 1] == ' ')
-	{
-		Logger::print("Bad whitespace after uri.", false, ERROR, VERBOSE);
 		throw std::invalid_argument("Bad whitespace after uri.");
-	}
-	_parse_start++;
 
 	if (_protocolVersion == "")
 		parse_protocol_version();
@@ -95,22 +89,19 @@ void Request::parse()
 	while (!_header_section_finished && parse_headers())
 		;
 
-	size_t cnt = 0;
-	for (size_t i = 0; i < _headers.size(); i++)
+	if (_header_section_finished)
 	{
-		if (_headers[i]->getType() == HostHeader().getType())
-			if (++cnt > 1)
-				break ;
-	}
-	if (cnt > 1)
-	{
-		Logger::print("Multiple Host header in request.", false, ERROR, VERBOSE);
-		throw std::invalid_argument("Multiple Host header in request");
-	}
-	if (cnt == 0)
-	{
-		Logger::print("No Host header in request.", false, ERROR, VERBOSE);
-		throw std::invalid_argument("No Host header in request");
+		size_t cnt = 0;
+		for (size_t i = 0; i < _headers.size(); i++)
+		{
+			if (_headers[i]->getType() == HostHeader().getType())
+				if (++cnt > 1)
+					break ;
+		}
+		if (cnt > 1)
+			throw std::invalid_argument("Multiple Host header in request");
+		if (cnt == 0)
+			throw std::invalid_argument("No Host header in request");
 	}
 }
 
@@ -118,10 +109,7 @@ void Request::parse_method()
 {
 	std::string method = _raw.substr(0, _raw.find(' '));
 	if (!_methodFactory.hasCandidates(method))
-	{
-		Logger::print("Request method could not be recognized.", false, ERROR, VERBOSE);
 		throw std::invalid_argument("Method could not be recognized.");
-	}
 	if (_raw.find(' ') != std::string::npos && _methodFactory.getByType(method) != NULL)
 	{
 		Logger::print("Request method is " + method + ".", true, INFO, VERBOSE);
@@ -132,17 +120,14 @@ void Request::parse_method()
 
 void Request::parse_uri()
 {
-	if (_raw.find(' ', _parse_start))
+	if (_raw.find(' ', _parse_start + 1) != std::string::npos)
 	{
-		if (!is_valid_URI(_raw.substr(_parse_start, _raw.find(' ', _parse_start))))
-		{
-			Logger::print("Bad URI format in request.", false, ERROR, VERBOSE);
+		if (!is_valid_URI(_raw.substr(_parse_start + 1, _raw.find(' ', _parse_start + 1))))
 			throw std::invalid_argument("Bad URI format in request.");
-		}
 		else
 		{
-			_path = _raw.substr(_parse_start, _raw.find(' ', _parse_start) - _parse_start);
-			_parse_start = _raw.find(' ', _parse_start);
+			_path = _raw.substr(_parse_start + 1, _raw.find(' ', _parse_start + 1) - (_parse_start + 1));
+			_parse_start = _raw.find(' ', _parse_start + 1);
 			Logger::print("URI is " + _path + ".", true, INFO, VERBOSE);
 		}
 	}
@@ -150,13 +135,13 @@ void Request::parse_uri()
 
 void Request::parse_protocol_version()
 {
-	std::string version = _raw.substr(_parse_start, _raw.find("\r\n", _parse_start) - _parse_start);
+	// _parse_start + 1 is the first character of the protocol version
+	if (_raw.find("\r", _parse_start + 1) != std::string::npos && _raw.find("\r\n", _parse_start + 1) == std::string::npos)
+		return;
+	std::string version = _raw.substr(_parse_start + 1, _raw.find("\r\n", _parse_start + 1) - (_parse_start + 1));
 	if (std::string("HTTP/1.1").substr(0, version.size()) != version)
-	{
-		Logger::print("Request protocol version " + version + " could not be recognized.", false, ERROR, VERBOSE);
 		throw std::invalid_argument("Request protocol version could not be recognized.");
-	}
-	if (_raw.find("\r\n", _parse_start) != std::string::npos && version == "HTTP/1.1")
+	if (_raw.find("\r\n", _parse_start + 1) != std::string::npos && version == "HTTP/1.1")
 	{
 		Logger::print("Request protocol version is HTTP/1.1.", true, INFO, VERBOSE);
 		_protocolVersion = version;
@@ -176,7 +161,7 @@ bool is_header_field_finished(std::string str)
 			return Logger::print("Header field is finished", true, INFO, VERBOSE);;
 		i = str.find("\r\n", i) + 2;
 	}
-	return Logger::print("Header field is not finished", false, INFO, VERBOSE);;
+	return Logger::print("Header field is not finished", false, INFO, VERBOSE);
 }
 
 /*
@@ -194,19 +179,13 @@ bool Request::parse_headers()
 	if (!is_header_field_finished(_raw.substr(_parse_start)))
 		return false;
 	if (_raw.find(':', _parse_start) == std::string::npos)
-	{
-		Logger::print("Invalid header field in request", false, ERROR, VERBOSE);
 		throw std::invalid_argument("Invalid header field in request");
-	}
 	std::string header_name = _raw.substr(_parse_start, _raw.find(':', _parse_start) - _parse_start);
 	if (_headerFactory.contains(header_name))
 	{
 		Header* header = _headerFactory.createByType(header_name);
 		if (header == NULL)
-		{
-			Logger::print("Invalid header name in request", false, ERROR, VERBOSE);
-			throw std::invalid_argument("Invalid header name in request");
-		}
+			throw std::invalid_argument("Out of memory");
 		try
 		{
 			_parse_start += header_name.size() + 1;
@@ -216,9 +195,12 @@ bool Request::parse_headers()
 		}
 		catch(const std::exception& e)
 		{
-			Logger::print("Invalid header field in request", false, ERROR, VERBOSE);
 			throw std::invalid_argument("Invalid header field in request");
 		}
+	}
+	else
+	{
+
 	}
 	if (_raw[_parse_start] == '\r' && _raw[_parse_start + 1] == '\n')
 		return (_header_section_finished = Logger::print("Header section is finished", false, INFO, VERBOSE));

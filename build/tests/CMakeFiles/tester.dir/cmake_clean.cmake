@@ -18,6 +18,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o"
   "CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o"
   "CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o"
+  "CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o"
   "CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o"
   "CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o"
   "CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o"

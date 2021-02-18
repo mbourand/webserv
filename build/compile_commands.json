@@ -96,6 +96,11 @@
 },
 {
   "directory": "/f/Projets/C++/webserv/build/tests",
+  "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -I/f/Projets/C++/webserv/tests/../incs/Headers -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/Header.cpp",
+  "file": "/f/Projets/C++/webserv/srcs/Headers/Header.cpp"
+},
+{
+  "directory": "/f/Projets/C++/webserv/build/tests",
   "command": "/usr/bin/clang++-6.0   -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -I/f/Projets/C++/webserv/tests/../incs/Headers -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest  -g   -std=gnu++11 -o CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/ConnectMethod.cpp",
   "file": "/f/Projets/C++/webserv/srcs/Methods/ConnectMethod.cpp"
 },

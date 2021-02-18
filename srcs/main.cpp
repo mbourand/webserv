@@ -2,20 +2,33 @@
 #include <iostream>
 #include "Logger.hpp"
 #include "Request.hpp"
+#include <strings.h>
+#include <fstream>
 
 int main()
 {
-	std::string raw, line;
 	Logger::setMode(VERBOSE);
-	while (std::getline(std::cin, line))
-		raw += line + '\n';
 	try
 	{
-		Request req;
-		req.append(raw);
+		for (size_t buff_size = 1; buff_size < 500; buff_size = (buff_size << 1))
+		{
+			Request req;
+			char* buf = new char[buff_size + 1];
+			bzero(buf, buff_size + 1);
+			std::fstream file("tests/request_parser/valid/valid_1");
+			while (file.read(buf, buff_size))
+			{
+				req.append(std::string(buf));
+				bzero(buf, buff_size + 1);
+			}
+			req.append(buf);
+			file.close();
+			Logger::print("Success", NULL, SUCCESS, NORMAL);
+			delete[] buf;
+		}
 	}
 	catch(const std::exception& e)
 	{
-		std::cerr << e.what() << '\n';
+		Logger::print(e.what(), NULL, ERROR, NORMAL);
 	}
 }

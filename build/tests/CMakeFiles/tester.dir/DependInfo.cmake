@@ -13,6 +13,7 @@ set(CMAKE_DEPENDS_CHECK_CXX
   "/f/Projets/C++/webserv/srcs/Headers/ContentLocationHeader.cpp" "/f/Projets/C++/webserv/build/tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o"
   "/f/Projets/C++/webserv/srcs/Headers/ContentTypeHeader.cpp" "/f/Projets/C++/webserv/build/tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o"
   "/f/Projets/C++/webserv/srcs/Headers/DateHeader.cpp" "/f/Projets/C++/webserv/build/tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o"
+  "/f/Projets/C++/webserv/srcs/Headers/Header.cpp" "/f/Projets/C++/webserv/build/tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o"
   "/f/Projets/C++/webserv/srcs/Headers/HostHeader.cpp" "/f/Projets/C++/webserv/build/tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o"
   "/f/Projets/C++/webserv/srcs/Headers/LastModifiedHeader.cpp" "/f/Projets/C++/webserv/build/tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o"
   "/f/Projets/C++/webserv/srcs/Headers/LocationHeader.cpp" "/f/Projets/C++/webserv/build/tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o"

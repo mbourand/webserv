@@ -513,9 +513,33 @@ tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o.provides
 tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o
 
 
+tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o: tests/CMakeFiles/tester.dir/flags.make
+tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o: ../srcs/Headers/Header.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o -c /f/Projets/C++/webserv/srcs/Headers/Header.cpp
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.i"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /f/Projets/C++/webserv/srcs/Headers/Header.cpp > CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.i
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.s"
+	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /f/Projets/C++/webserv/srcs/Headers/Header.cpp -o CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.s
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o.requires:
+
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o.requires
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o.provides: tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o.requires
+	$(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o.provides.build
+.PHONY : tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o.provides
+
+tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o.provides.build: tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o
+
+
 tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o: ../srcs/Methods/ConnectMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/ConnectMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.i: cmake_force
@@ -539,7 +563,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o.provides.build: 
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o: ../srcs/Methods/DeleteMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/DeleteMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.i: cmake_force
@@ -563,7 +587,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o.provides.build: t
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o: ../srcs/Methods/GetMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/GetMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.i: cmake_force
@@ -587,7 +611,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o.provides.build: test
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.o: ../srcs/Methods/HeadMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/HeadMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.i: cmake_force
@@ -611,7 +635,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/HeadMethod.cpp.o.provides.build: tes
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o: ../srcs/Methods/OptionsMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/OptionsMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.i: cmake_force
@@ -635,7 +659,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/OptionsMethod.cpp.o.provides.build: 
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o: ../srcs/Methods/PostMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/PostMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.i: cmake_force
@@ -659,7 +683,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/PostMethod.cpp.o.provides.build: tes
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o: ../srcs/Methods/PutMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/PutMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.i: cmake_force
@@ -683,7 +707,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/PutMethod.cpp.o.provides.build: test
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o: ../srcs/Methods/TraceMethod.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o -c /f/Projets/C++/webserv/srcs/Methods/TraceMethod.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.i: cmake_force
@@ -707,7 +731,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Methods/TraceMethod.cpp.o.provides.build: te
 
 tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o: ../srcs/Utils/Logger.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o -c /f/Projets/C++/webserv/srcs/Utils/Logger.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.i: cmake_force
@@ -731,7 +755,7 @@ tests/CMakeFiles/tester.dir/__/srcs/Utils/Logger.cpp.o.provides.build: tests/CMa
 
 tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.o: tests/CMakeFiles/tester.dir/flags.make
 tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.o: ../srcs/Request.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.o"
 	cd /f/Projets/C++/webserv/build/tests && /usr/bin/clang++-6.0  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tester.dir/__/srcs/Request.cpp.o -c /f/Projets/C++/webserv/srcs/Request.cpp
 
 tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.i: cmake_force
@@ -774,6 +798,7 @@ tester_OBJECTS = \
 "CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o" \
 "CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o" \
 "CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o" \
+"CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o" \
 "CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o" \
 "CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o" \
 "CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o" \
@@ -807,6 +832,7 @@ tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o
+tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o
@@ -820,7 +846,7 @@ tests/tester: tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.o
 tests/tester: tests/CMakeFiles/tester.dir/build.make
 tests/tester: lib/libgtestd.a
 tests/tester: tests/CMakeFiles/tester.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Linking CXX executable tester"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/f/Projets/C++/webserv/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Linking CXX executable tester"
 	cd /f/Projets/C++/webserv/build/tests && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/tester.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -847,6 +873,7 @@ tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Header
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o.requires
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o.requires
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o.requires
+tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o.requires
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o.requires
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Methods/DeleteMethod.cpp.o.requires
 tests/CMakeFiles/tester.dir/requires: tests/CMakeFiles/tester.dir/__/srcs/Methods/GetMethod.cpp.o.requires

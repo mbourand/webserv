@@ -20,7 +20,7 @@ static std::string read_file(const char *name)
 	return content;
 }
 
-TEST(request_parser, bad_whitespaces)
+/*TEST(request_parser, bad_whitespaces)
 {
 	ASSERT_ANY_THROW(Request req(read_file("request_parser/bad_whitespaces/invalid_bad_whitespace1")));
 	ASSERT_ANY_THROW(Request req(read_file("request_parser/bad_whitespaces/invalid_bad_whitespace2")));
@@ -58,6 +58,23 @@ TEST(request_parser, missing_parts)
 	ASSERT_ANY_THROW(Request req(read_file("request_parser/missing_parts/invalid_no_header")));
 	ASSERT_ANY_THROW(Request req(read_file("request_parser/missing_parts/invalid_no_header_no_body")));
 	ASSERT_NO_THROW(Request req(read_file("request_parser/missing_parts/valid_no_body")));
+}*/
+
+TEST(request_parser, simple_valid_case)
+{
+	for (size_t buff_size = 1; buff_size < 1000000000; buff_size = (buff_size << 1))
+	{
+		Request req;
+		char buf[buff_size];
+		bzero(buf, buff_size);
+		std::fstream file("request_parser/valid/valid_1");
+		while (file.read(buf, buff_size))
+		{
+			ASSERT_NO_THROW(req.append(buf));
+			bzero(buf, buff_size);
+		}
+		req.append(buf);
+	}
 }
 
 int main(int argc, char **argv)

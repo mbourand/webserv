@@ -23,6 +23,7 @@ set(SOURCES_LIST
 	${INCLUDES}/Headers/RetryAfterHeader.hpp
 	${INCLUDES}/Headers/ServerHeader.hpp
 	${INCLUDES}/Headers/TransferEncodingHeader.hpp
+	${INCLUDES}/Headers/Header.hpp
 	${INCLUDES}/Headers/UserAgentHeader.hpp
 	${INCLUDES}/Headers/WWWAuthenticateHeader.hpp
 	${INCLUDES}/Methods/ConnectMethod.hpp
@@ -55,6 +56,7 @@ set(SOURCES_LIST
 	${SOURCES}/Headers/TransferEncodingHeader.cpp
 	${SOURCES}/Headers/UserAgentHeader.cpp
 	${SOURCES}/Headers/WWWAuthenticateHeader.cpp
+	${SOURCES}/Headers/Header.cpp
 	${SOURCES}/Methods/ConnectMethod.cpp
 	${SOURCES}/Methods/DeleteMethod.cpp
 	${SOURCES}/Methods/GetMethod.cpp

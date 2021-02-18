@@ -3,74 +3,77 @@
 
 tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptCharsetsHeader.cpp.o
  ../tests/../incs/Headers/AcceptCharsetsHeader.hpp
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  /f/Projets/C++/webserv/srcs/Headers/AcceptCharsetsHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/AcceptLanguageHeader.cpp.o
  ../tests/../incs/Headers/AcceptLanguageHeader.hpp
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  /f/Projets/C++/webserv/srcs/Headers/AcceptLanguageHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/AllowHeader.cpp.o
  ../tests/../incs/Headers/AllowHeader.hpp
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  /f/Projets/C++/webserv/srcs/Headers/AllowHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/AuthorizationHeader.cpp.o
  ../tests/../incs/Headers/AuthorizationHeader.hpp
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  /f/Projets/C++/webserv/srcs/Headers/AuthorizationHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLanguageHeader.cpp.o
  ../tests/../incs/Headers/ContentLanguageHeader.hpp
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  /f/Projets/C++/webserv/srcs/Headers/ContentLanguageHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLengthHeader.cpp.o
  ../tests/../incs/Headers/ContentLengthHeader.hpp
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  /f/Projets/C++/webserv/srcs/Headers/ContentLengthHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentLocationHeader.cpp.o
  ../tests/../incs/Headers/ContentLocationHeader.hpp
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  /f/Projets/C++/webserv/srcs/Headers/ContentLocationHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/ContentTypeHeader.cpp.o
  ../tests/../incs/Headers/ContentTypeHeader.hpp
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  /f/Projets/C++/webserv/srcs/Headers/ContentTypeHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.o
  ../tests/../incs/Headers/DateHeader.hpp
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  /f/Projets/C++/webserv/srcs/Headers/DateHeader.cpp
+tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o
+ ../tests/../incs/Headers/Header.hpp
+ /f/Projets/C++/webserv/srcs/Headers/Header.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/HostHeader.cpp.o
+ ../tests/../incs/Headers/Header.hpp
  ../tests/../incs/Headers/HostHeader.hpp
- ../tests/../incs/Headers/IHeader.hpp
  /f/Projets/C++/webserv/srcs/Headers/HostHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/LastModifiedHeader.cpp.o
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  ../tests/../incs/Headers/LastModifiedHeader.hpp
  /f/Projets/C++/webserv/srcs/Headers/LastModifiedHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/LocationHeader.cpp.o
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  ../tests/../incs/Headers/LocationHeader.hpp
  /f/Projets/C++/webserv/srcs/Headers/LocationHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/RefererHeader.cpp.o
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  ../tests/../incs/Headers/RefererHeader.hpp
  /f/Projets/C++/webserv/srcs/Headers/RefererHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/RetryAfterHeader.cpp.o
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  ../tests/../incs/Headers/RetryAfterHeader.hpp
  /f/Projets/C++/webserv/srcs/Headers/RetryAfterHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/ServerHeader.cpp.o
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  ../tests/../incs/Headers/ServerHeader.hpp
  /f/Projets/C++/webserv/srcs/Headers/ServerHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/TransferEncodingHeader.cpp.o
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  ../tests/../incs/Headers/TransferEncodingHeader.hpp
  /f/Projets/C++/webserv/srcs/Headers/TransferEncodingHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/UserAgentHeader.cpp.o
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  ../tests/../incs/Headers/UserAgentHeader.hpp
  /f/Projets/C++/webserv/srcs/Headers/UserAgentHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Headers/WWWAuthenticateHeader.cpp.o
- ../tests/../incs/Headers/IHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  ../tests/../incs/Headers/WWWAuthenticateHeader.hpp
  /f/Projets/C++/webserv/srcs/Headers/WWWAuthenticateHeader.cpp
 tests/CMakeFiles/tester.dir/__/srcs/Methods/ConnectMethod.cpp.o
@@ -115,9 +118,9 @@ tests/CMakeFiles/tester.dir/__/srcs/Request.cpp.o
  ../tests/../incs/Headers/ContentLocationHeader.hpp
  ../tests/../incs/Headers/ContentTypeHeader.hpp
  ../tests/../incs/Headers/DateHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  ../tests/../incs/Headers/Headers.h
  ../tests/../incs/Headers/HostHeader.hpp
- ../tests/../incs/Headers/IHeader.hpp
  ../tests/../incs/Headers/LastModifiedHeader.hpp
  ../tests/../incs/Headers/LocationHeader.hpp
  ../tests/../incs/Headers/RefererHeader.hpp
@@ -153,9 +156,9 @@ tests/CMakeFiles/tester.dir/srcs/tests.cpp.o
  ../tests/../incs/Headers/ContentLocationHeader.hpp
  ../tests/../incs/Headers/ContentTypeHeader.hpp
  ../tests/../incs/Headers/DateHeader.hpp
+ ../tests/../incs/Headers/Header.hpp
  ../tests/../incs/Headers/Headers.h
  ../tests/../incs/Headers/HostHeader.hpp
- ../tests/../incs/Headers/IHeader.hpp
  ../tests/../incs/Headers/LastModifiedHeader.hpp
  ../tests/../incs/Headers/LocationHeader.hpp
  ../tests/../incs/Headers/RefererHeader.hpp

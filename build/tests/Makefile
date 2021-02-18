@@ -414,6 +414,33 @@ __/srcs/Headers/DateHeader.cpp.s:
 	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/DateHeader.cpp.s
 .PHONY : __/srcs/Headers/DateHeader.cpp.s
 
+__/srcs/Headers/Header.o: __/srcs/Headers/Header.cpp.o
+
+.PHONY : __/srcs/Headers/Header.o
+
+# target to build an object file
+__/srcs/Headers/Header.cpp.o:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.o
+.PHONY : __/srcs/Headers/Header.cpp.o
+
+__/srcs/Headers/Header.i: __/srcs/Headers/Header.cpp.i
+
+.PHONY : __/srcs/Headers/Header.i
+
+# target to preprocess a source file
+__/srcs/Headers/Header.cpp.i:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.i
+.PHONY : __/srcs/Headers/Header.cpp.i
+
+__/srcs/Headers/Header.s: __/srcs/Headers/Header.cpp.s
+
+.PHONY : __/srcs/Headers/Header.s
+
+# target to generate assembly for a file
+__/srcs/Headers/Header.cpp.s:
+	cd /f/Projets/C++/webserv/build && $(MAKE) -f tests/CMakeFiles/tester.dir/build.make tests/CMakeFiles/tester.dir/__/srcs/Headers/Header.cpp.s
+.PHONY : __/srcs/Headers/Header.cpp.s
+
 __/srcs/Headers/HostHeader.o: __/srcs/Headers/HostHeader.cpp.o
 
 .PHONY : __/srcs/Headers/HostHeader.o
@@ -994,6 +1021,9 @@ help:
 	@echo "... __/srcs/Headers/DateHeader.o"
 	@echo "... __/srcs/Headers/DateHeader.i"
 	@echo "... __/srcs/Headers/DateHeader.s"
+	@echo "... __/srcs/Headers/Header.o"
+	@echo "... __/srcs/Headers/Header.i"
+	@echo "... __/srcs/Headers/Header.s"
 	@echo "... __/srcs/Headers/HostHeader.o"
 	@echo "... __/srcs/Headers/HostHeader.i"
 	@echo "... __/srcs/Headers/HostHeader.s"

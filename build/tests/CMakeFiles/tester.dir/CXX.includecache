@@ -7,44 +7,48 @@
 #IncludeRegexTransform: 
 
 ../tests/../incs/Headers/AcceptCharsetsHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/AcceptLanguageHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/AllowHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/AuthorizationHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/ContentLanguageHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/ContentLengthHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/ContentLocationHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/ContentTypeHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/DateHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
+
+../tests/../incs/Headers/Header.hpp
+string
+-
 
 ../tests/../incs/Headers/Headers.h
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 AcceptCharsetsHeader.hpp
 ../tests/../incs/Headers/AcceptCharsetsHeader.hpp
 AcceptLanguageHeader.hpp
@@ -83,44 +87,40 @@ WWWAuthenticateHeader.hpp
 ../tests/../incs/Headers/WWWAuthenticateHeader.hpp
 
 ../tests/../incs/Headers/HostHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
-
-../tests/../incs/Headers/IHeader.hpp
-string
--
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/LastModifiedHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/LocationHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/RefererHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/RetryAfterHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/ServerHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/TransferEncodingHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/UserAgentHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Headers/WWWAuthenticateHeader.hpp
-IHeader.hpp
-../tests/../incs/Headers/IHeader.hpp
+Header.hpp
+../tests/../incs/Headers/Header.hpp
 
 ../tests/../incs/Methods/ConnectMethod.hpp
 IMethod.hpp
@@ -572,9 +572,15 @@ ContentTypeHeader.hpp
 DateHeader.hpp
 /f/Projets/C++/webserv/srcs/Headers/DateHeader.hpp
 
+/f/Projets/C++/webserv/srcs/Headers/Header.cpp
+Header.hpp
+/f/Projets/C++/webserv/srcs/Headers/Header.hpp
+
 /f/Projets/C++/webserv/srcs/Headers/HostHeader.cpp
 HostHeader.hpp
 /f/Projets/C++/webserv/srcs/Headers/HostHeader.hpp
+iostream
+-
 
 /f/Projets/C++/webserv/srcs/Headers/LastModifiedHeader.cpp
 LastModifiedHeader.hpp
