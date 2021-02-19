@@ -13,3 +13,10 @@ bool PostMethod::allowAbsolutePath() const { return true; }
 bool PostMethod::allowCompleteURL() const { return true; }
 bool PostMethod::allowAuthorityURI() const { return false; }
 bool PostMethod::allowAsteriskURI() const { return false; }
+
+bool PostMethod::requestHasBody() const { return true; }
+bool PostMethod::successfulResponseHasBody() const { return true; }
+bool PostMethod::isSafe() const { return false; }
+bool PostMethod::isIdempotent() const { return false; }
+bool PostMethod::isCacheable() const { return true; }
+bool PostMethod::isAllowedInHTMLForms() const { return true; }

@@ -13,3 +13,10 @@ bool ConnectMethod::allowAbsolutePath() const { return false; }
 bool ConnectMethod::allowCompleteURL() const { return false; }
 bool ConnectMethod::allowAuthorityURI() const { return true; }
 bool ConnectMethod::allowAsteriskURI() const { return false; }
+
+bool ConnectMethod::requestHasBody() const { return false; }
+bool ConnectMethod::successfulResponseHasBody() const { return true; }
+bool ConnectMethod::isSafe() const { return false; }
+bool ConnectMethod::isIdempotent() const { return false; }
+bool ConnectMethod::isCacheable() const { return false; }
+bool ConnectMethod::isAllowedInHTMLForms() const { return false; }

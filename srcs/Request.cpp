@@ -102,7 +102,11 @@ void Request::parse()
 			throw std::invalid_argument("Multiple Host header in request");
 		if (cnt == 0)
 			throw std::invalid_argument("No Host header in request");
+
 	}
+
+	if (_header_section_finished && _raw.find("\r\n\r\n", _parse_start) != std::string::npos)
+		_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size() - 2);
 }
 
 void Request::parse_method()
@@ -149,19 +153,19 @@ void Request::parse_protocol_version()
 	}
 }
 
-bool is_header_field_finished(std::string str)
+size_t is_header_field_finished(std::string str)
 {
 	size_t i = 0;
 
 	while (str.find("\r\n", i) != std::string::npos)
 	{
 		if (!str[str.find("\r\n", i) + 2])
-			return Logger::print("Header field is not finished", false, INFO, VERBOSE);
+			return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
 		if (str[str.find("\r\n", i) + 2] != ' ' && str[str.find("\r\n", i) + 2] != '\t')
-			return Logger::print("Header field is finished", true, INFO, VERBOSE);;
+			return Logger::print("Header field is finished", str.find("\r\n", i) + 2, INFO, VERBOSE);
 		i = str.find("\r\n", i) + 2;
 	}
-	return Logger::print("Header field is not finished", false, INFO, VERBOSE);
+	return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
 }
 
 /*
@@ -176,7 +180,9 @@ bool is_header_field_finished(std::string str)
 */
 bool Request::parse_headers()
 {
-	if (!is_header_field_finished(_raw.substr(_parse_start)))
+	size_t header_len = is_header_field_finished(_raw.substr(_parse_start));
+
+	if (header_len == size_t(-1))
 		return false;
 	if (_raw.find(':', _parse_start) == std::string::npos)
 		throw std::invalid_argument("Invalid header field in request");
@@ -199,9 +205,7 @@ bool Request::parse_headers()
 		}
 	}
 	else
-	{
-
-	}
+		_parse_start += header_len;
 	if (_raw[_parse_start] == '\r' && _raw[_parse_start + 1] == '\n')
 		return (_header_section_finished = Logger::print("Header section is finished", false, INFO, VERBOSE));
 	return true;
