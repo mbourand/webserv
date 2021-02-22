@@ -26,6 +26,7 @@ class Request
 		HeadersVector _headers;
 		std::string _body;
 		bool _header_section_finished;
+		bool _finished_parsing;
 		size_t _parse_start;
 
 	private:

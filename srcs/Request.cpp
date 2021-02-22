@@ -1,6 +1,8 @@
 #include "Request.hpp"
 
-Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path), _protocolVersion(other._protocolVersion), _body(other._body), _header_section_finished(false), _parse_start(0)
+Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path),
+	_protocolVersion(other._protocolVersion), _body(other._body), _header_section_finished(other._header_section_finished),
+	_parse_start(other._parse_start), _finished_parsing(other._finished_parsing)
 {
 	init_factories();
 }
@@ -14,7 +16,7 @@ Request::~Request()
 			delete *it;
 }
 
-Request::Request() : _method(NULL), _header_section_finished(false), _parse_start(0)
+Request::Request() : _method(NULL), _header_section_finished(false), _parse_start(0), _finished_parsing(false)
 {
 	init_factories();
 }
@@ -52,6 +54,8 @@ void Request::init_factories()
 
 bool Request::append(const std::string& raw)
 {
+	if (_finished_parsing)
+		return false;
 	_raw += raw;
 	parse();
 	return true;
@@ -59,6 +63,8 @@ bool Request::append(const std::string& raw)
 
 void Request::parse()
 {
+	if (_finished_parsing)
+		return;
 	if (_method == NULL)
 		parse_method();
 	if (_method == NULL)
@@ -66,7 +72,7 @@ void Request::parse()
 
 	if (_path == "")
 	{
-		if (_raw.size() <= _parse_start + 1)
+		if (_parse_start + 1 >= _raw.size())
 			return;
 		if (_raw[_parse_start + 1] == ' ')
 			throw std::invalid_argument("Bad whitespace after method.");
@@ -76,13 +82,14 @@ void Request::parse()
 	if (_path == "")
 		return;
 
-	if (_raw.size() <= _parse_start + 1)
-		return;
-	if (_raw[_parse_start + 1] == ' ')
-		throw std::invalid_argument("Bad whitespace after uri.");
-
 	if (_protocolVersion == "")
+	{
+		if (_parse_start + 1 >= _raw.size())
+			return;
+		if (_raw[_parse_start + 1] == ' ')
+			throw std::invalid_argument("Bad whitespace after uri.");
 		parse_protocol_version();
+	}
 	if (_protocolVersion == "")
 		return;
 
@@ -105,8 +112,12 @@ void Request::parse()
 
 	}
 
-	if (_header_section_finished && _raw.find("\r\n\r\n", _parse_start) != std::string::npos)
+	if (_header_section_finished && _raw.find("\r\n\r\n", _parse_start) != std::string::npos && _method->requestHasBody())
+	{
 		_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size() - 2);
+		Logger::print("Request body is " + _body, NULL, INFO, VERBOSE);
+		_finished_parsing = true;
+	}
 }
 
 void Request::parse_method()
@@ -187,6 +198,8 @@ bool Request::parse_headers()
 	if (_raw.find(':', _parse_start) == std::string::npos)
 		throw std::invalid_argument("Invalid header field in request");
 	std::string header_name = _raw.substr(_parse_start, _raw.find(':', _parse_start) - _parse_start);
+	if (header_name.find(' ') != std::string::npos)
+		throw std::invalid_argument("Bad whitespace before delimiter");
 	if (_headerFactory.contains(header_name))
 	{
 		Header* header = _headerFactory.createByType(header_name);

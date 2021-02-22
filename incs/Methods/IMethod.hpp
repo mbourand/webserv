@@ -14,12 +14,13 @@ class IMethod
 		virtual bool allowAuthorityURI() const = 0;
 		virtual bool allowAsteriskURI() const = 0;
 
-		virtual bool requestHasBody() const;
-		virtual bool successfulResponseHasBody() const;
-		virtual bool isSafe() const;
-		virtual bool isIdempotent() const;
-		virtual bool isCacheable() const;
-		virtual bool isAllowedInHTMLForms() const;
+		// From https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
+		virtual bool requestHasBody() const = 0;
+		virtual bool successfulResponseHasBody() const = 0;
+		virtual bool isSafe() const = 0;
+		virtual bool isIdempotent() const = 0;
+		virtual bool isCacheable() const = 0;
+		virtual bool isAllowedInHTMLForms() const = 0;
 };
 
 #endif
