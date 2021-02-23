@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/16 02:38:09 by nforay           ###   ########.fr       */
+/*   Updated: 2021/02/16 04:10:00 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ int	main(void)
 	std::cout << "Webserv is starting..." << std::endl;
 	try
 	{
-		ServerSocket server(18000);
+		ServerSocket server(8000);
+		std::cout << "Webserv is ready, waiting for connection..." << std::endl;
 		while (42)
 		{
 			ServerSocket new_connection;
-			std::cout << "Webserv is ready, waiting for connection..." << std::endl;
 			server.Accept(new_connection);
 			try
 			{

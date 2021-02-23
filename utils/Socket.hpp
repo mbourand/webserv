@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/16 01:57:25 by nforay           ###   ########.fr       */
+/*   Updated: 2021/02/16 03:57:27 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 
 const int MAX_HOSTNAME = 200;
 const int MAX_CONNECTIONS = 10;
-const int MAX_RECIEVE = 4096;
+const int MAX_RECIEVE = 500;
 
 class Socket
 {
