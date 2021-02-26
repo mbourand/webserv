@@ -47,13 +47,53 @@ class Logger
 
 		static const LoggerMode& getMode() { return getInstance().getModeImpl(); }
 		static void setMode(const LoggerMode& mode) { getInstance().setModeImpl(mode); }
-		static bool print(std::string message, bool rval, MessageType type = INFO, LoggerMode messagePriority = NORMAL) { return getInstance().printImpl(message, rval, type, messagePriority); }
+		template<class T>
+		static T print(std::string message, T rval, MessageType type = INFO, LoggerMode messagePriority = NORMAL) { return getInstance().printImpl(message, rval, type, messagePriority); }
 
 	private:
 		const LoggerMode& getModeImpl() const;
 		void setModeImpl(const LoggerMode& mode);
 
-		bool printImpl(std::string message, bool rval, MessageType type, LoggerMode messagePriority);
+		template<class T>
+		T printImpl(std::string message, T rval, MessageType type, LoggerMode messagePriority)
+		{
+			if (messagePriority < _mode)
+				return rval;
+
+			// Format timestamp
+			std::stringstream ss;
+			std::time_t time_now = std::time(0);
+			tm *local = localtime(&time_now);
+			char buffer[100];
+			strftime(buffer, 100, "[%d/%h/%Y %T %z]", local);
+
+			// Replace non-printable characters by their code
+			ss.str("");
+			for (size_t i = 0; i < message.size(); i++)
+				if (message[i] < 32 || message[i] > 127)
+				{
+					ss << static_cast<int>(message[i]);
+					message.replace(i, 1, "<" + ss.str() + ">");
+					ss.str("");
+				}
+
+			switch (type)
+			{
+				case INFO:
+					std::cout << RES << "[webserv] " << buffer << " (INFO): " << message << RES << std::endl;
+					break;
+				case SUCCESS:
+					std::cout << GRN << "[webserv] " << buffer << " (SUCCESS): " << message << RES << std::endl;
+					break;
+				case WARNING:
+					std::cerr << YLW << "[webserv] " << buffer << " (WARNING): " << message << RES << std::endl;
+					break;
+				case ERROR:
+					std::cerr << RED << "[webserv] " << buffer << " (ERROR): " << message << RES << std::endl;
+					break;
+			}
+			return rval;
+		}
 };
 
 #endif

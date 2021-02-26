@@ -56,7 +56,8 @@
 		"ratio": "cpp",
 		"set": "cpp",
 		"cinttypes": "cpp",
-		"variant": "cpp"
+		"variant": "cpp",
+		"thread": "cpp"
 	},
 	"cmake.configureOnOpen": true
 }

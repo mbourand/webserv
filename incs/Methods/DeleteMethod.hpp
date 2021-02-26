@@ -13,6 +13,18 @@ class DeleteMethod : public IMethod
 
 		std::string getType() const;
 		IMethod* clone() const;
+
+		bool allowAbsolutePath() const;
+		bool allowCompleteURL() const;
+		bool allowAuthorityURI() const;
+		bool allowAsteriskURI() const;
+
+		bool requestHasBody() const;
+		bool successfulResponseHasBody() const;
+		bool isSafe() const;
+		bool isIdempotent() const;
+		bool isCacheable() const;
+		bool isAllowedInHTMLForms() const;
 };
 
 #endif

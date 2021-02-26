@@ -6,5 +6,5 @@ CXX_FLAGS = -g   -std=gnu++11
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest 
+CXX_INCLUDES = -I/f/Projets/C++/webserv/tests/googletest/include -I/f/Projets/C++/webserv/tests/../incs -I/f/Projets/C++/webserv/tests/../incs/Utils -I/f/Projets/C++/webserv/tests/../incs/Methods -I/f/Projets/C++/webserv/tests/../incs/Headers -isystem /f/Projets/C++/webserv/tests/googletest/googletest/include -isystem /f/Projets/C++/webserv/tests/googletest/googletest 
 
