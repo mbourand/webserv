@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 19:27:25 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/23 19:37:36 by nforay           ###   ########.fr       */
+/*   Updated: 2021/02/23 20:14:04 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ const ClientSocket &		ClientSocket::operator<< (const std::string &str) const
 
 const ClientSocket &		ClientSocket::operator>> (std::string &str) const
 {
-	if ( ! Socket::Recieve(str))
+	if (!Socket::Recieve(str))
     {
 		throw ClientSocketException("Could not read from socket.");
     }
