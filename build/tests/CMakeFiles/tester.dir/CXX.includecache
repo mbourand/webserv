@@ -575,6 +575,8 @@ DateHeader.hpp
 /f/Projets/C++/webserv/srcs/Headers/Header.cpp
 Header.hpp
 /f/Projets/C++/webserv/srcs/Headers/Header.hpp
+stdexcept
+-
 
 /f/Projets/C++/webserv/srcs/Headers/HostHeader.cpp
 HostHeader.hpp

@@ -198,8 +198,6 @@ bool Request::parse_headers()
 	if (_raw.find(':', _parse_start) == std::string::npos)
 		throw std::invalid_argument("Invalid header field in request");
 	std::string header_name = _raw.substr(_parse_start, _raw.find(':', _parse_start) - _parse_start);
-	if (header_name.find(' ') != std::string::npos)
-		throw std::invalid_argument("Bad whitespace before delimiter");
 	if (_headerFactory.contains(header_name))
 	{
 		Header* header = _headerFactory.createByType(header_name);

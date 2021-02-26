@@ -60,7 +60,6 @@ TEST(request_parser, header_delimiter)
 {
 	for (int i = 1; i <= 1024; i = (i << 1))
 	{
-		ASSERT_ANY_THROW(request_from_file("request_parser/header_delimiter/invalid_header_delimiter1", i));
 		ASSERT_ANY_THROW(request_from_file("request_parser/header_delimiter/invalid_header_delimiter2", i));
 		ASSERT_ANY_THROW(request_from_file("request_parser/header_delimiter/invalid_header_delimiter3", i));
 		ASSERT_NO_THROW(request_from_file("request_parser/header_delimiter/valid_header_delimiter1", i));
@@ -68,13 +67,14 @@ TEST(request_parser, header_delimiter)
 	}
 }
 
-TEST(request_parser, missing_parts)
+TEST(request_parser, line_folding)
 {
 	for (int i = 1; i <= 1024; i = (i << 1))
 	{
-		ASSERT_ANY_THROW(request_from_file("request_parser/missing_parts/invalid_no_header", i));
-		ASSERT_ANY_THROW(request_from_file("request_parser/missing_parts/invalid_no_header_no_body", i));
-		ASSERT_NO_THROW(request_from_file("request_parser/missing_parts/valid_no_body", i));
+		ASSERT_NO_THROW(request_from_file("request_parser/line_folding/valid_line_folding1", i));
+		ASSERT_NO_THROW(request_from_file("request_parser/line_folding/valid_line_folding2", i));
+		ASSERT_NO_THROW(request_from_file("request_parser/line_folding/valid_line_folding3", i));
+		ASSERT_ANY_THROW(request_from_file("request_parser/line_folding/invalid_line_folding4", i));
 	}
 }
 
