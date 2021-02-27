@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 19:27:25 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/23 20:14:04 by nforay           ###   ########.fr       */
+/*   Updated: 2021/02/27 17:44:04 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ ClientSocket::ClientSocket(std::string host, int port)
 
 ClientSocket::ClientSocket(const ClientSocket &src)
 {
+	(void)src;
 }
 
 
@@ -56,6 +57,7 @@ ClientSocket &				ClientSocket::operator=( ClientSocket const & rhs )
 	//{
 		//this->_value = rhs.getValue();
 	//}
+	(void)rhs;
 	return *this;
 }
 
