@@ -49,7 +49,9 @@ std::string Response::getResponseText()
 	std::stringstream ss;
 	ss << _code;
 
-	std::string str = "HTTP/1.1 " + ss.str() + " " + _message + "\r\n";
+	std::string code_str = ss.str();
+
+	std::string str = "HTTP/1.1 " + code_str + " " + _message + "\r\n";
 
 	for (std::map<std::string, std::string>::iterator it = _headers.begin(); it != _headers.end(); it++)
 	{
@@ -59,6 +61,17 @@ std::string Response::getResponseText()
 
 	if (_body != "")
 		str += _body;
+	if (_body == "" && _code >= 300)
+	{
+		str = str +
+				"<html>\r\n" +
+				"<head><title>" + code_str + " " + _message + "</title></head>\r\n" +
+				"<body>\r\n" +
+				"<center><h1>" + code_str + " " + _message + "</h1></center>\r\n" +
+				"<hr><center>Webserv 1.0.0</center>\r\n" +
+				"</body>\r\n" +
+				"</html>\r\n";
+	}
 	return str;
 }
 
