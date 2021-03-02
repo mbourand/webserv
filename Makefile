@@ -11,7 +11,7 @@ INC_DIR=	$(addprefix $(INC_PATH),$(MODULES))
 OBJ_DIRS=	$(addprefix $(OBJ_PATH),$(MODULES))
 
 SRC=	$(foreach sdir,$(SRC_DIR),$(wildcard $(sdir)/*.cpp))
-SRC+= $(SRC_PATH)tcp-server.cpp $(SRC_PATH)Request.cpp
+SRC+= $(SRC_PATH)tcp-server.cpp $(SRC_PATH)Request.cpp  $(SRC_PATH)Response.cpp
 
 INC= -I incs/ $(foreach sdir,$(INC_DIR),-I $(wildcard $(sdir))/)
 OBJ= $(patsubst $(SRC_PATH)%.cpp,$(OBJ_PATH)%.o,$(SRC))

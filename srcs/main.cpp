@@ -5,7 +5,7 @@
 #include <strings.h>
 #include <fstream>
 
-int main()
+int maina()
 {
 	Logger::setMode(VERBOSE);
 	try

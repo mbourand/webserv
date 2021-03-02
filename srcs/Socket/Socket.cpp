@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/26 19:31:46 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/01 23:35:40 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
+#include "Logger.hpp"
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -119,16 +120,13 @@ bool					Socket::Send(std::string const msg) const
 
 int						Socket::Recieve(std::string &str) const
 {
-	char	buff[MAX_RECIEVE];
+	char	buff[MAX_RECIEVE + 1];
 
 	str = "";
-	bzero(buff, MAX_RECIEVE);
+	bzero(buff, MAX_RECIEVE + 1);
 	int ret = recv(this->m_sockfd, buff, MAX_RECIEVE, 0);
 	if (ret == -1)
-	{//use logger instead
-		std::cout << "Error in Socket::Recieve" << std::endl;
-		return (0);
-	}
+		return Logger::print("Error in Socket::Recieve", 0, ERROR, NORMAL);
 	else if (ret == 0)
 		return (0);
 	else
