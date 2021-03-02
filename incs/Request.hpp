@@ -52,6 +52,7 @@ class Request
 
 		bool append(const std::string& raw);
 		void parse();
+		bool isfinished(void) const;
 
 		bool operator==(const Request& other) const;
 		bool operator!=(const Request& other) const;

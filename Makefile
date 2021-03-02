@@ -1,6 +1,6 @@
 NAME	= webserv
 CC		= clang++
-CFLAGS	= -fsanitize=address -std=c++98
+CFLAGS	= -g3 -fsanitize=address -std=c++98
 SRC_PATH= srcs/
 OBJ_PATH= objs/
 INC_PATH= incs/
