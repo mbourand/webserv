@@ -1,7 +1,10 @@
-#ifndef METHOD_HPP
-#define METHOD_HPP
+#ifndef IMETHOD_HPP
+#define IMETHOD_HPP
 
 #include <string>
+#include "Response.hpp"
+
+class Request;
 
 class IMethod
 {
@@ -21,6 +24,8 @@ class IMethod
 		virtual bool isIdempotent() const = 0;
 		virtual bool isCacheable() const = 0;
 		virtual bool isAllowedInHTMLForms() const = 0;
+
+		virtual Response process(const Request& request) = 0;
 };
 
 #endif

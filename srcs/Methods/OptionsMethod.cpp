@@ -20,3 +20,8 @@ bool OptionsMethod::isSafe() const { return true; }
 bool OptionsMethod::isIdempotent() const { return true; }
 bool OptionsMethod::isCacheable() const { return false; }
 bool OptionsMethod::isAllowedInHTMLForms() const { return false; }
+
+Response OptionsMethod::process(const Request&)
+{
+	return Response();
+}

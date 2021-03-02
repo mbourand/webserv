@@ -16,7 +16,7 @@ class Request
 	public:
 		typedef std::vector<Header*> HeadersVector;
 
-	protected:
+	public:
 		Factory<IMethod*> _methodFactory;
 		Factory<Header*> _headerFactory;
 		std::string _raw;

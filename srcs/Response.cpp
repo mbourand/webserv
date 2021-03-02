@@ -26,6 +26,7 @@ Response& Response::operator=(const Response& other)
 	_code = other._code;
 	_message = other._message;
 	_headers = other._headers;
+	_body = other._body;
 	return *this;
 }
 
@@ -48,12 +49,13 @@ std::string Response::getResponseText()
 	std::stringstream ss;
 	ss << _code;
 
-	std::string str = "HTTP/1.1 " + ss.str() + " " + _message + "\r\n\r\n";
+	std::string str = "HTTP/1.1 " + ss.str() + " " + _message + "\r\n";
 
 	for (std::map<std::string, std::string>::iterator it = _headers.begin(); it != _headers.end(); it++)
 	{
 		str += it->first + ": " + it->second + "\r\n";
 	}
+	str += "\r\n";
 
 	if (_body != "")
 		str += _body;

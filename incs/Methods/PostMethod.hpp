@@ -2,6 +2,7 @@
 #define POST_METHOD_HPP
 
 #include "IMethod.hpp"
+#include "Request.hpp"
 
 class PostMethod : public IMethod
 {
@@ -25,6 +26,8 @@ class PostMethod : public IMethod
 		bool isIdempotent() const;
 		bool isCacheable() const;
 		bool isAllowedInHTMLForms() const;
+
+		Response process(const Request& request);
 };
 
 #endif

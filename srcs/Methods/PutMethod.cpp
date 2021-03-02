@@ -20,3 +20,8 @@ bool PutMethod::isSafe() const { return false; }
 bool PutMethod::isIdempotent() const { return true; }
 bool PutMethod::isCacheable() const { return false; }
 bool PutMethod::isAllowedInHTMLForms() const { return false; }
+
+Response PutMethod::process(const Request&)
+{
+	return Response();
+}

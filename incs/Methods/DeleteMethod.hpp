@@ -25,6 +25,8 @@ class DeleteMethod : public IMethod
 		bool isIdempotent() const;
 		bool isCacheable() const;
 		bool isAllowedInHTMLForms() const;
+
+		Response process(const Request& request);
 };
 
 #endif

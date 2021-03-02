@@ -20,3 +20,8 @@ bool DeleteMethod::isSafe() const { return false; }
 bool DeleteMethod::isIdempotent() const { return true; }
 bool DeleteMethod::isCacheable() const { return false; }
 bool DeleteMethod::isAllowedInHTMLForms() const { return false; }
+
+Response DeleteMethod::process(const Request&)
+{
+	return Response();
+}

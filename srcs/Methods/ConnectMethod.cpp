@@ -20,3 +20,8 @@ bool ConnectMethod::isSafe() const { return false; }
 bool ConnectMethod::isIdempotent() const { return false; }
 bool ConnectMethod::isCacheable() const { return false; }
 bool ConnectMethod::isAllowedInHTMLForms() const { return false; }
+
+Response ConnectMethod::process(const Request&)
+{
+	return Response();
+}

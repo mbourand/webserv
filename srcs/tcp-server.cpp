@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/02 01:28:39 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/02 04:33:29 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,12 @@
 #include "Response.hpp"
 #include <string>
 #include <iostream>
+#include <fstream>
 
 int	main(void)
 {
 	Logger::setMode(NORMAL);
+
 	Logger::print("Webserv is starting...", NULL, INFO, NORMAL);
 	try
 	{
@@ -35,12 +37,9 @@ int	main(void)
 				std::string	data;
 				new_connection >> data;
 				req.append(data);
-
 				Logger::print("Client Request:\nStart>|\n" + data + "\n|<End", NULL, INFO, VERBOSE);
 
-				Response response(200, "OK");
-				response.setBody("Welcome to Webserv!");
-
+				Response response = req._method->process(req);
 				new_connection << response.getResponseText();
 				Logger::print("Response sent successfully", NULL, SUCCESS, NORMAL);
 			}
