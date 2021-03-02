@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/26 19:31:46 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/02 03:50:07 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,7 @@ bool					Socket::Create(void)
 	//ne pas attendre la fin d'une précédente connexion https://bousk.developpez.com/cours/reseau-c++/TCP/08-premier-serveur-mini-serveur/
 	if (setsockopt(this->m_sockfd, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&optval), sizeof(optval)))
 		return (false);
-	//re-enable fcntl after select() is implemented, socket timeout is 2min
-	//fcntl(this->m_sockfd, F_SETFL, O_NONBLOCK); //Voir sujet, utile quand même sur Linux ?
+	fcntl(this->m_sockfd, F_SETFL, O_NONBLOCK);
 	return (true);
 }
 
@@ -119,10 +118,10 @@ bool					Socket::Send(std::string const msg) const
 
 int						Socket::Recieve(std::string &str) const
 {
-	char	buff[MAX_RECIEVE];
+	char	buff[MAX_RECIEVE + 1];
 
 	str = "";
-	bzero(buff, MAX_RECIEVE);
+	bzero(buff, MAX_RECIEVE + 1);
 	int ret = recv(this->m_sockfd, buff, MAX_RECIEVE, 0);
 	if (ret == -1)
 	{//use logger instead
@@ -147,6 +146,11 @@ bool					Socket::Success(void) const
 	if (this->m_sockfd != -1)
 		return (true);
 	return (false);
+}
+
+int						Socket::GetSocket(void) const
+{
+	return (this->m_sockfd);
 }
 
 
