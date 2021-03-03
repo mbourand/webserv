@@ -1,5 +1,6 @@
 #include "GetMethod.hpp"
 #include <fstream>
+#include <sstream>
 #include <errno.h>
 #include <string.h>
 #include "Logger.hpp"
@@ -39,6 +40,9 @@ Response GetMethod::process(const Request& request)
 	}
 	std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
 	Response response(200, "OK");
+	std::ostringstream size;
+	size << content.size();
+	response.addHeader("Content-Length", size.str());
 	response.setBody(content);
 	return response;
 }
