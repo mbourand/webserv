@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/16 03:57:27 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/02 20:44:26 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 
 const int MAX_HOSTNAME = 200;
 const int MAX_CONNECTIONS = 10;
-const int MAX_RECIEVE = 500;
+const int MAX_RECIEVE = 16;
 
 class Socket
 {
@@ -48,6 +48,7 @@ class Socket
 		bool	Send(std::string const msg) const;
 		int		Recieve(std::string &str) const;
 		bool	Success(void) const;
+		int		GetSocket(void) const;
 
 	private:
 

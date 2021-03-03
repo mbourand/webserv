@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/16 02:36:19 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/02 15:46:45 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,16 +68,15 @@ ServerSocket &				ServerSocket::operator=( ServerSocket const & rhs )
 	return o;
 }*/
 
-const ServerSocket& ServerSocket::operator << ( const std::string& s ) const
+const ServerSocket &	ServerSocket::operator<<(const std::string& s) const
 {
 	if (!Socket::Send(s))
 		throw ServerSocketException("Couldn't write to socket.");
 	return *this;
-
 }
 
 
-const ServerSocket& ServerSocket::operator >> ( std::string& s ) const
+const ServerSocket &	ServerSocket::operator>>(std::string& s) const
 {
 	if (!Socket::Recieve(s))
 		throw ServerSocketException("Couldn't read from socket.");

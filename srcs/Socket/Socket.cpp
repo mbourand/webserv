@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/01 23:35:40 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/03 19:33:27 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,7 @@ bool					Socket::Create(void)
 	//ne pas attendre la fin d'une précédente connexion https://bousk.developpez.com/cours/reseau-c++/TCP/08-premier-serveur-mini-serveur/
 	if (setsockopt(this->m_sockfd, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&optval), sizeof(optval)))
 		return (false);
-	//re-enable fcntl after select() is implemented, socket timeout is 2min
-	//fcntl(this->m_sockfd, F_SETFL, O_NONBLOCK); //Voir sujet, utile quand même sur Linux ?
-	return (true);
+	return (fcntl(this->m_sockfd, F_SETFL, O_NONBLOCK) != -1);
 }
 
 bool					Socket::Bind(int const port)
@@ -145,6 +143,11 @@ bool					Socket::Success(void) const
 	if (this->m_sockfd != -1)
 		return (true);
 	return (false);
+}
+
+int						Socket::GetSocket(void) const
+{
+	return (this->m_sockfd);
 }
 
 

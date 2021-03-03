@@ -1,6 +1,6 @@
 NAME	= webserv
 CC		= clang++
-CFLAGS	= -std=c++98
+CFLAGS	= -g3 -fsanitize=address -std=c++98
 SRC_PATH= srcs/
 OBJ_PATH= objs/
 INC_PATH= incs/
@@ -41,6 +41,9 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.cpp
 client: $(NAME)
 		@$(CC) $(CFLAGS) $(INC) -o $(OBJ_PATH)tcp-client.o -c $(SRC_PATH)tcp-client.cpp
 		@$(CC) $(CFLAGS) $(INC) -o client $(OBJ_PATH)tcp-client.o $(OBJ_PATH)/Socket/Socket.o $(OBJ_PATH)/Socket/ClientSocket.o
+
+strace: $(NAME)
+		strace -f -e accept,socket,close,shutdown ./$(NAME)
 
 clean:
 	@rm -rf $(OBJ_PATH)

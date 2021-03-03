@@ -112,10 +112,13 @@ void Request::parse()
 
 	}
 
-	if (_header_section_finished && _raw.find("\r\n\r\n", _parse_start) != std::string::npos && _method->requestHasBody())
+	if (_header_section_finished && _raw.find("\r\n", _parse_start) != std::string::npos)
 	{
-		_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size() - 2);
-		Logger::print("Request body is " + _body, NULL, INFO, VERBOSE);
+		if (_method->requestHasBody())
+		{
+			_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size() - 2);
+			Logger::print("Request body is " + _body, NULL, INFO, VERBOSE);
+		}
 		_finished_parsing = true;
 	}
 }
@@ -218,7 +221,10 @@ bool Request::parse_headers()
 	else
 		_parse_start += header_len;
 	if (_raw[_parse_start] == '\r' && _raw[_parse_start + 1] == '\n')
-		return (_header_section_finished = Logger::print("Header section is finished", false, INFO, VERBOSE));
+	{
+		Logger::print("Header section is finished", false, INFO, VERBOSE);
+		return (_header_section_finished = true);
+	}
 	return true;
 }
 
@@ -247,6 +253,11 @@ bool Request::is_valid_URI(const std::string& uri) const
 		if (uri == "*")
 			return true;
 	return false;
+}
+
+bool Request::isfinished(void) const
+{
+	return (_finished_parsing);
 }
 
 size_t Request::count_concurrent_occurences(size_t index, char c) const
@@ -279,7 +290,7 @@ bool Request::operator!=(const Request& other) const
 
 std::ostream& operator<<(std::ostream& out, const Request& request)
 {
-	out <<	"Method: " << request._method << '\n' <<
+	out <<	"Method: " << request._method->getType() << '\n' <<
 			"Path: " << request._path << '\n' <<
 			"Protocol Version: " << request._protocolVersion << '\n' <<
 			"Headers: " << std::endl;
