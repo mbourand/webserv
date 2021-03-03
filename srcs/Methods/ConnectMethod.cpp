@@ -1,4 +1,5 @@
 #include "ConnectMethod.hpp"
+#include "Logger.hpp"
 
 ConnectMethod::ConnectMethod() {}
 ConnectMethod::ConnectMethod(const ConnectMethod&) {}

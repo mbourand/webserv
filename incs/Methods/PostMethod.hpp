@@ -2,7 +2,8 @@
 #define POST_METHOD_HPP
 
 #include "IMethod.hpp"
-#include "Request.hpp"
+
+class Request;
 
 class PostMethod : public IMethod
 {

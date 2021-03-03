@@ -1,4 +1,5 @@
 #include "DeleteMethod.hpp"
+#include "Logger.hpp"
 
 DeleteMethod::DeleteMethod() {}
 DeleteMethod::DeleteMethod(const DeleteMethod&) {}

@@ -3,6 +3,8 @@
 
 #include "IMethod.hpp"
 
+class Request;
+
 class ConnectMethod : public IMethod
 {
 	public:

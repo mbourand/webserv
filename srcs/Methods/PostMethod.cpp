@@ -1,4 +1,5 @@
 #include "PostMethod.hpp"
+#include "Logger.hpp"
 
 PostMethod::PostMethod() {}
 PostMethod::PostMethod(const PostMethod&) {}

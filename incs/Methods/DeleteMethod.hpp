@@ -3,6 +3,8 @@
 
 #include "IMethod.hpp"
 
+class Request;
+
 class DeleteMethod : public IMethod
 {
 	public:

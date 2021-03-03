@@ -2,7 +2,8 @@
 #define PUT_METHOD_HPP
 
 #include "IMethod.hpp"
-#include "Request.hpp"
+
+class Request;
 
 class PutMethod : public IMethod
 {

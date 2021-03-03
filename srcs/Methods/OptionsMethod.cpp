@@ -1,4 +1,5 @@
 #include "OptionsMethod.hpp"
+#include "Logger.hpp"
 
 OptionsMethod::OptionsMethod() {}
 OptionsMethod::OptionsMethod(const OptionsMethod&) {}

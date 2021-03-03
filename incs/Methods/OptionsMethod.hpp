@@ -2,7 +2,8 @@
 #define OPTIONS_METHOD_HPP
 
 #include "IMethod.hpp"
-#include "Request.hpp"
+
+class Request;
 
 class OptionsMethod : public IMethod
 {

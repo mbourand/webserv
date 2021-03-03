@@ -1,4 +1,5 @@
 #include "PutMethod.hpp"
+#include "Logger.hpp"
 
 PutMethod::PutMethod() {}
 PutMethod::PutMethod(const PutMethod&) {}

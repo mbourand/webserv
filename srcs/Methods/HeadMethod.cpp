@@ -21,7 +21,9 @@ bool HeadMethod::isIdempotent() const { return true; }
 bool HeadMethod::isCacheable() const { return true; }
 bool HeadMethod::isAllowedInHTMLForms() const { return false; }
 
-Response HeadMethod::process(const Request&)
+Response HeadMethod::process(const Request& request)
 {
-	return Response();
+	Response response = _getMethod.process(request);
+	response.setBody("");
+	return response;
 }

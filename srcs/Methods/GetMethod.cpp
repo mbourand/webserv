@@ -2,6 +2,8 @@
 #include <fstream>
 #include <errno.h>
 #include <string.h>
+#include "Logger.hpp"
+#include "Request.hpp"
 
 GetMethod::GetMethod() {}
 GetMethod::GetMethod(const GetMethod&) {}

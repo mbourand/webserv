@@ -1,4 +1,5 @@
 #include "TraceMethod.hpp"
+#include "Logger.hpp"
 
 TraceMethod::TraceMethod() {}
 TraceMethod::TraceMethod(const TraceMethod&) {}

@@ -2,10 +2,15 @@
 #define HEAD_METHOD_HPP
 
 #include "IMethod.hpp"
-#include "Request.hpp"
+#include "GetMethod.hpp"
+
+class Request;
 
 class HeadMethod : public IMethod
 {
+	private:
+		GetMethod _getMethod;
+
 	public:
 		HeadMethod();
 		HeadMethod(const HeadMethod& other);
