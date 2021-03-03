@@ -28,6 +28,7 @@ class Response
 		void setBody(const std::string& body);
 
 		std::string getResponseText();
+		int			getCode(void) const;
 };
 
 #endif

@@ -75,6 +75,11 @@ std::string Response::getResponseText()
 	return str;
 }
 
+int	Response::getCode() const
+{
+	return (_code);
+}
+
 /*
 ** ------------------------------- ACCESSORS --------------------------------
 */
