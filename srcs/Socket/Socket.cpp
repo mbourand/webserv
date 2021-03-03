@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/02 03:50:07 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/03 18:50:57 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,7 @@ bool					Socket::Create(void)
 	//ne pas attendre la fin d'une précédente connexion https://bousk.developpez.com/cours/reseau-c++/TCP/08-premier-serveur-mini-serveur/
 	if (setsockopt(this->m_sockfd, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&optval), sizeof(optval)))
 		return (false);
-	fcntl(this->m_sockfd, F_SETFL, O_NONBLOCK);
-	return (true);
+	return (fcntl(this->m_sockfd, F_SETFL, O_NONBLOCK) != -1);
 }
 
 bool					Socket::Bind(int const port)

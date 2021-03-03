@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/02 21:48:47 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/03 18:50:22 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <iostream>
 #include <iomanip>
 #include <list>
+#include <string.h>
+#include <errno.h>
 
 struct Client {
 	ServerSocket	*sckt;
@@ -62,8 +64,6 @@ int	main(void)
 		ServerSocket server(8080);
 		Logger::print("Webserv is ready, waiting for connection...", NULL, SUCCESS, NORMAL);
 		fd_set	read_sockets, read_sockets_z, write_sockets, write_sockets_z, error_sockets, error_sockets_z;
-		struct timeval timeout;// 2mins timeout
-		timeout.tv_sec = 5;
 		FD_ZERO(&read_sockets_z);
 		FD_ZERO(&write_sockets_z);
 		FD_ZERO(&error_sockets_z);
@@ -87,12 +87,10 @@ int	main(void)
 			read_sockets = read_sockets_z;
 			write_sockets = write_sockets_z;
 			error_sockets = error_sockets_z;
-			if (select(highestFd + 1, &read_sockets, &write_sockets, &error_sockets, &timeout) < 0)
+			if (select(highestFd + 1, &read_sockets, &write_sockets, &error_sockets, NULL) < 0)
 			{
-				if (selecterror)
-					Logger::print("select() returned -1", NULL, ERROR, NORMAL);
-				selecterror = false;
-				//break; //? Subject: "Your server should never die."
+				Logger::print("select() returned -1 : "+std::string(strerror(errno)), NULL, ERROR, NORMAL);
+				continue; //? Subject: "Your server should never die."
 			}
 			else
 			{
@@ -129,7 +127,7 @@ int	main(void)
 							catch(ServerSocket::ServerSocketException &e)
 							{
 								Logger::print(e.what(), NULL, ERROR, NORMAL);
-								//error = true;
+								error = true;
 							}
 							catch(std::invalid_argument &)
 							{}
@@ -139,7 +137,7 @@ int	main(void)
 								{
 									std::cout << *(*it).req << std::endl;
 									std::string	data;
-									data = "HTTP/1.1 200 OK\r\n\r\nWelcome to Webserv!";
+									data = "HTTP/1.1 200 OK\r\n\r\nWelcome to Webserv!\r\n";
 									*(*it).sckt << data;
 									Logger::print("Success", NULL, SUCCESS, NORMAL);
 								}
@@ -154,6 +152,9 @@ int	main(void)
 						if (error)
 						{
 							Logger::print("Client Disconnected", NULL, SUCCESS, NORMAL);
+							FD_CLR((*it).sckt->GetSocket(), &read_sockets_z);
+							FD_CLR((*it).sckt->GetSocket(), &write_sockets_z);
+							FD_CLR((*it).sckt->GetSocket(), &error_sockets_z);
 							delete (*it).sckt;
 							delete (*it).req;
 							it = clients.erase(it);
