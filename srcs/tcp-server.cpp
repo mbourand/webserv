@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/03 23:35:20 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/04 16:37:52 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,14 @@ int	main(int argc, char **argv)
 	std::string config_path = "config/default.conf";
 	if (argc >= 2)
 		config_path = argv[1];
-	std::fstream config_file(config_path.c_str());
+	std::ifstream config_file(config_path.c_str(), std::ifstream::in);
 	std::string config_content((std::istreambuf_iterator<char>(config_file)), (std::istreambuf_iterator<char>()));
 
 	Config config(config_content);
+
+	std::cout << config.getServers().size() << std::endl;
+	for (std::list<ServerConfig>::iterator it = config.getServers().begin(); it != config.getServers().end(); it++)
+		std::cout << it->getLocations().size() << " " << it->getParams().size() << std::endl;
 
 	Logger::setMode(NORMAL);
 	Logger::print("Webserv is starting...", NULL, INFO, NORMAL);

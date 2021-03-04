@@ -15,6 +15,8 @@ class Config
 		Config(const std::string& raw);
 		virtual ~Config();
 		Config& operator=(const Config& other);
+
+		std::list<ServerConfig>& getServers();
 };
 
 #endif

@@ -2,6 +2,10 @@
 #include <stdexcept>
 #include <iostream>
 
+/*
+** -------------------------------- CONSTRUCTOR ------------------------------
+*/
+
 Config::Config()
 {}
 
@@ -57,8 +61,21 @@ Config::Config(const std::string& raw)
 	}
 }
 
+/*
+** -------------------------------- OPERATOR ------------------------------
+*/
+
 Config& Config::operator=(const Config& other)
 {
 	_servers = other._servers;
 	return *this;
+}
+
+/*
+** -------------------------------- ACCESSORS ------------------------------
+*/
+
+std::list<ServerConfig>& Config::getServers()
+{
+	return _servers;
 }
