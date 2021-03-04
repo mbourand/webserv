@@ -14,6 +14,11 @@
 */
 
 #include "ServerConfig.hpp"
+#include "Logger.hpp"
+
+/*
+** ---------------------------------- CONSTRUCTOR --------------------------------------
+*/
 
 ServerConfig::ServerConfig()
 {
@@ -46,13 +51,18 @@ ServerConfig::ServerConfig(const std::string& raw)
 	{
 		while (raw[i] == ' ' || raw[i] == '\t')
 			i++;
+		if (raw[i] == '\n')
+		{
+			i++;
+			continue;
+		}
 		if (raw[i] == '#')
 		{
 			i = raw.find('\n', i) + 1;
 			continue;
 		}
 		if (raw.find_first_of(" \t", i) > raw.find('\n', i))
-			throw std::invalid_argument("Invalid config file");
+			throw std::invalid_argument("ServerConfig: Constructor: Invalid config file");
 
 		std::string directive_name = raw.substr(i, raw.find_first_of(" \t", i) - i);
 		i += directive_name.size();
@@ -66,15 +76,40 @@ ServerConfig::ServerConfig(const std::string& raw)
 			while (raw[i] == ' ' || raw[i] == '\t')
 				i++;
 			if (raw[i] != '{')
-				throw std::invalid_argument("Invalid config file");
-			std::string location_raw = raw.substr(i, raw.find("}", i) - i - 1);
+				throw std::invalid_argument("ServerConfig: Constructor: Invalid config file");
+			i += 2;
+			std::string location_raw = raw.substr(i, raw.find("}", i) - i - 2);
 			_locations.push_back(LocationConfig(location_name, location_raw));
+			i += location_raw.size() + 2;
 		}
 
 		std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
-		if (directive_value != "{")
-			_params.insert(std::make_pair(directive_name, directive_value));
+		_params.insert(std::make_pair(directive_name, directive_value));
 		i = raw.find('\n', i) + 1;
 	}
 }
 
+/*
+** ---------------------------------- ACCESSOR --------------------------------------
+*/
+
+int ServerConfig::getInt(const std::string& param)
+{
+	for (size_t i = 0; i < _params[param].size(); i++)
+		if (!std::isdigit(_params[param][i]))
+			throw std::invalid_argument("ServerConfig: GetInt: parameter is not an integer");
+	int ret;
+	std::istringstream(_params[param]) >> ret;
+
+	return ret;
+}
+
+std::string& ServerConfig::getString(const std::string& param)
+{
+	return _params.at(param);
+}
+
+std::list<LocationConfig>& ServerConfig::getLocations(const std::string& param)
+{
+	return _locations;
+}

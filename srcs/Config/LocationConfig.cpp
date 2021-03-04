@@ -1,4 +1,5 @@
 #include "LocationConfig.hpp"
+#include "Logger.hpp"
 
 LocationConfig::LocationConfig()
 {
@@ -21,6 +22,7 @@ LocationConfig::LocationConfig(const LocationConfig& other)
 LocationConfig& LocationConfig::operator=(const LocationConfig& other)
 {
 	_params = other._params;
+	return *this;
 }
 
 LocationConfig::LocationConfig(const std::string& path, const std::string& raw)

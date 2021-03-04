@@ -22,6 +22,10 @@ class ServerConfig
 		ServerConfig(const std::string& raw);
 		virtual ~ServerConfig();
 		ServerConfig& operator=(const ServerConfig& other);
+
+		int getInt(const std::string& param);
+		std::string& getString(const std::string& param);
+		std::list<LocationConfig>& getLocations(const std::string& param);
 };
 
 #endif

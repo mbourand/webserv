@@ -5,7 +5,7 @@ SRC_PATH= srcs/
 OBJ_PATH= objs/
 INC_PATH= incs/
 
-MODULES=	Headers Methods Socket Utils
+MODULES=	Headers Methods Socket Utils Config
 SRC_DIR=	$(addprefix $(SRC_PATH),$(MODULES))
 INC_DIR=	$(addprefix $(INC_PATH),$(MODULES))
 OBJ_DIRS=	$(addprefix $(OBJ_PATH),$(MODULES))

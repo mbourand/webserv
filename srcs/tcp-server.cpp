@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/02 04:33:29 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/03 23:35:20 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,22 @@
 #include "Logger.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
+#include "Config.hpp"
 #include <string>
 #include <iostream>
 #include <fstream>
 
-int	main(void)
+int	main(int argc, char **argv)
 {
-	Logger::setMode(NORMAL);
+	std::string config_path = "config/default.conf";
+	if (argc >= 2)
+		config_path = argv[1];
+	std::fstream config_file(config_path.c_str());
+	std::string config_content((std::istreambuf_iterator<char>(config_file)), (std::istreambuf_iterator<char>()));
 
+	Config config(config_content);
+
+	Logger::setMode(NORMAL);
 	Logger::print("Webserv is starting...", NULL, INFO, NORMAL);
 	try
 	{
