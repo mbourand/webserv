@@ -1,10 +1,15 @@
 #include "GetMethod.hpp"
+#include "Logger.hpp"
+#include "Request.hpp"
 #include <fstream>
 #include <sstream>
 #include <errno.h>
 #include <string.h>
-#include "Logger.hpp"
-#include "Request.hpp"
+#include <time.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 GetMethod::GetMethod() {}
 GetMethod::GetMethod(const GetMethod&) {}
@@ -40,9 +45,33 @@ Response GetMethod::process(const Request& request)
 	}
 	std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
 	Response response(200, "OK");
-	std::ostringstream size;
-	size << content.size(); //BAAAAAAAD, use lstat to get the size.
-	response.addHeader("Content-Length", size.str());
+	std::ostringstream convert;
+	struct stat file_stats;
+	lstat((std::string("www/") + request._path).c_str(), &file_stats);
+	convert << file_stats.st_size;
+	response.addHeader("Content-Length", convert.str());
+	convert.str("");
+	convert << file_stats.st_mtime;
+	struct tm	time;
+	strptime(std::string(convert.str()).c_str(), "%s", &time);
+	if (time.tm_gmtoff > 0) // convert to GMT
+		file_stats.st_mtim.tv_sec -= time.tm_gmtoff;
+	if (time.tm_isdst) // substract Daylight saving time
+		file_stats.st_mtim.tv_sec -= 3600;
+	convert.str("");
+	convert << file_stats.st_mtime;
+	strptime(std::string(convert.str()).c_str(), "%s", &time);
+	char		buffer[1024];
+	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);
+	response.addHeader("Last-Modified", buffer);
+	convert.str("");
+	struct timeval 	tv;
+	gettimeofday(&tv, NULL);
+	tv.tv_sec -= 3600; // assume we're GMT+1
+	convert << tv.tv_sec;
+	strptime(std::string(convert.str()).c_str(), "%s", &time);
+	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);
+	response.addHeader("Date", buffer);
 	response.setBody(content);
 	return response;
 }
