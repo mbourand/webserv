@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/03 21:13:40 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/05 19:50:29 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 #include <list>
 #include <string.h>
 #include <errno.h>
+#include <signal.h>
+
+int	g_run = 42;
 
 struct Client {
 	ServerSocket	*sckt;
@@ -56,10 +59,21 @@ std::string string_strip_undisplayable(const std::string& input)
     return output;
 }
 
+static void	sig_int(int sig)
+{
+	(void)sig;
+	signal(SIGINT, SIG_IGN);
+	std:: cout << "\b\b" << std::flush;
+	Logger::print("Interrupt signal was caught.", NULL, WARNING, SILENT);
+	g_run = 0;
+	signal(SIGINT, &sig_int);
+}
+
 int	main(void)
 {
 	Logger::setMode(NORMAL);
-	Logger::print("Webserv is starting...", NULL, INFO, NORMAL);
+	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
+	signal(SIGINT, &sig_int);
 	try
 	{
 		bool selecterror = true;
@@ -73,11 +87,13 @@ int	main(void)
 		FD_SET(server.GetSocket(), &write_sockets_z);
 		FD_SET(server.GetSocket(), &error_sockets_z);
 		std::list<Client> clients;
-		while (42)
+		std::list<Client>::iterator			it;
+		std::list<Client>::iterator			end;
+		while (g_run)
 		{
+			it = clients.begin();
+			end = clients.end();
 			int highestFd = server.GetSocket();
-			std::list<Client>::iterator			it = clients.begin();
-			std::list<Client>::iterator			end = clients.end();
 			for (; it != end; ++it)
 			{
 				FD_SET((*it).sckt->GetSocket(), &read_sockets_z);
@@ -91,7 +107,8 @@ int	main(void)
 			error_sockets = error_sockets_z;
 			if (select(highestFd + 1, &read_sockets, &write_sockets, &error_sockets, NULL) < 0)
 			{
-				Logger::print("select() returned -1 : "+std::string(strerror(errno)), NULL, ERROR, NORMAL);
+				if (g_run)
+					Logger::print("Error select(): "+std::string(strerror(errno)), NULL, ERROR, NORMAL);
 				continue; //? Subject: "Your server should never die."
 			}
 			else
@@ -103,7 +120,7 @@ int	main(void)
 					new_client.req = new Request;
 					server.Accept(*new_client.sckt);
 					clients.push_back(new_client);
-					Logger::print("Client Connected", NULL, SUCCESS, NORMAL);
+					Logger::print("New Client Connected", NULL, SUCCESS, NORMAL);
 				}
 				else
 				{
@@ -159,7 +176,7 @@ int	main(void)
 						}
 						if (error)
 						{
-							Logger::print("Client Disconnected", NULL, SUCCESS, NORMAL);
+							Logger::print("Client Disconnected", NULL, SUCCESS, VERBOSE);
 							FD_CLR((*it).sckt->GetSocket(), &read_sockets_z);
 							FD_CLR((*it).sckt->GetSocket(), &write_sockets_z);
 							FD_CLR((*it).sckt->GetSocket(), &error_sockets_z);
@@ -175,10 +192,22 @@ int	main(void)
 				}
 			}
 		}
+		Logger::print("Webserv is shutting down...", NULL, INFO, NORMAL);
+		it = clients.begin();
+		end = clients.end();
+		while (!clients.empty())
+		{
+			Logger::print("Socket closed", NULL, SUCCESS, VERBOSE);
+			delete (*it).sckt;
+			delete (*it).req;
+			it = clients.erase(it);
+		}
 	}
 	catch(ServerSocket::ServerSocketException& e)
 	{
 		Logger::print(e.what(), NULL, ERROR, NORMAL);
 	}
+	Logger::print("Webserv Shutdown complete", NULL, SUCCESS, SILENT);
+	std::cout << std::flush;
 	return (0);
 }
