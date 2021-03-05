@@ -17,6 +17,7 @@ class Config
 		Config& operator=(const Config& other);
 
 		std::list<ServerConfig>& getServers();
+		ServerConfig& getServer(const std::string& uri);
 };
 
 #endif

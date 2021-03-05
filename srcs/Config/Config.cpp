@@ -79,3 +79,28 @@ std::list<ServerConfig>& Config::getServers()
 {
 	return _servers;
 }
+
+ServerConfig& Config::getServer(const std::string& uri)
+{
+	std::string domain = uri;
+	if (domain.substr(0, 7) == "http://")
+		domain = domain.substr(7);
+
+	if (domain[0] == '/')
+		throw std::invalid_argument("Config: GetServer: Bad URI");
+	domain = domain.substr(domain.find('/') - 1);
+
+	for (std::list<ServerConfig>::iterator it = _servers.begin(); it != _servers.end(); it++)
+	{
+		size_t token = 0;
+		try
+		{
+			while (42)
+				if (it->getString("server_name", token++) == domain)
+					return *it;
+		}
+		catch (const std::exception& e)
+		{}
+	}
+	throw std::invalid_argument("Config: GetServer: No server_name compatible with uri");
+}
