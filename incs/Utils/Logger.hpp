@@ -4,7 +4,8 @@
 #include <string>
 #include <iostream>
 #include <sstream>
-#include <ctime>
+#include <sys/time.h>
+#include <time.h>
 #include <iomanip>
 
 #define RED "\033[31m"
@@ -62,10 +63,13 @@ class Logger
 
 			// Format timestamp
 			std::stringstream ss;
-			std::time_t time_now = std::time(0);
-			tm *local = localtime(&time_now);
+			struct timeval 	tv;
+			tm time;
+			gettimeofday(&tv, NULL);
+			ss << tv.tv_sec;
+			strptime(std::string(ss.str()).c_str(), "%s", &time);
 			char buffer[100];
-			strftime(buffer, 100, "[%d/%h/%Y %T %z]", local);
+			strftime(buffer, 100, "[%d/%h/%Y %T %z]", &time);
 
 			// Replace non-printable characters by their code
 			ss.str("");
