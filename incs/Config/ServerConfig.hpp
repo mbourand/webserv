@@ -17,6 +17,8 @@ class ServerConfig
 		std::map<std::string, std::string> _params;
 		std::list<LocationConfig> _locations;
 		std::map<int, std::string> _error_pages;
+		std::list<std::string> _names;
+		std::list<int> _ports;
 
 	public:
 		ServerConfig();
@@ -31,8 +33,14 @@ class ServerConfig
 		std::list<LocationConfig>& getLocations();
 		std::string getErrorPage(int code);
 		std::string getErrorMessage(int code);
-		std::map<std::string, std::string>& getParams();
-		std::map<int, std::string>& getErrorPages();
+
+		int getInt(const std::string& param, size_t token, const std::string& uri);
+		int getString(const std::string& param, size_t token, const std::string& uri);
+
+		const std::map<std::string, std::string>& getParams() const;
+		const std::map<int, std::string>& getErrorPages() const;
+		const std::list<std::string>& getNames() const;
+		const std::list<int>& getPorts() const;
 };
 
 #endif

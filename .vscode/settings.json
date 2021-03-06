@@ -57,7 +57,9 @@
 		"set": "cpp",
 		"cinttypes": "cpp",
 		"variant": "cpp",
-		"thread": "cpp"
+		"thread": "cpp",
+		"condition_variable": "cpp",
+		"mutex": "cpp"
 	},
 	"cmake.configureOnOpen": true
 }

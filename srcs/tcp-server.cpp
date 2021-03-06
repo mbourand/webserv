@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/04 16:37:52 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/06 02:29:19 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,24 @@
 #include "Logger.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
-#include "Config.hpp"
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <cassert>
+#include "VirtualHost.hpp"
+#include "Config.h"
 
 int	main(int argc, char **argv)
 {
-	std::string config_path = "config/default.conf";
-	if (argc >= 2)
-		config_path = argv[1];
-	std::ifstream config_file(config_path.c_str(), std::ifstream::in);
-	std::string config_content((std::istreambuf_iterator<char>(config_file)), (std::istreambuf_iterator<char>()));
-
-	Config config(config_content);
-
-	std::cout << config.getServers().size() << std::endl;
-	for (std::list<ServerConfig>::iterator it = config.getServers().begin(); it != config.getServers().end(); it++)
-		std::cout << it->getLocations().size() << " " << it->getParams().size() << std::endl;
+	std::list<VirtualHost> vhosts;
 
 	Logger::setMode(NORMAL);
+
 	Logger::print("Webserv is starting...", NULL, INFO, NORMAL);
 	try
 	{
+		init_config("config/default.conf", vhosts);
+
 		ServerSocket server(8080);
 		Logger::print("Webserv is ready, waiting for connection...", NULL, SUCCESS, NORMAL);
 		while (42)

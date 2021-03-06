@@ -22,10 +22,6 @@
 
 ServerConfig::ServerConfig()
 {
-	_params["server_name"] = DEF_SERVER_NAME;
-	_params["listen"] = DEF_SERVER_PORT;
-	_params["client_max_body"] = DEF_CLIENT_MAX_BODY;
-	_params["root"] = DEF_ROOT;
 }
 
 ServerConfig::~ServerConfig()
@@ -41,57 +37,103 @@ ServerConfig& ServerConfig::operator=(const ServerConfig& other)
 	_params = other._params;
 	_locations = other._locations;
 	_error_pages = other._error_pages;
+	_ports = other._ports;
+	_names = other._names;
 	return *this;
 }
 
 ServerConfig::ServerConfig(const std::string& raw)
 {
-	_params["server_name"] = DEF_SERVER_NAME;
-	_params["listen"] = DEF_SERVER_PORT;
-	_params["client_max_body"] = DEF_CLIENT_MAX_BODY;
-	_params["root"] = DEF_ROOT;
-
 	for (size_t i = 0; i < raw.size();)
 	{
-		while (raw[i] == ' ' || raw[i] == '\t')
-			i++;
-		if (raw[i] == '\n')
-		{
-			i++;
-			continue;
-		}
-		if (raw[i] == '#')
+		// On skip les whitepsaces en début de ligne
+		i = raw.find_first_not_of(" \t", i);
+
+		// Si la ligne est vide ou que c'est un commentaire, on skip la ligne
+		if (raw[i] == '\n' || raw[i] == '#')
 		{
 			i = raw.find('\n', i) + 1;
 			continue;
 		}
-		if (raw.find_first_of(" \t", i) > raw.find('\n', i))
-			throw std::invalid_argument("ServerConfig: Constructor: Invalid config file");
 
+		// On récupère le nom de la directive, par exemple : "server_name" ou "root", etc.
 		std::string directive_name = raw.substr(i, raw.find_first_of(" \t", i) - i);
 		i += directive_name.size();
-		while (raw[i] == ' ' || raw[i] == '\t')
-			i++;
+		i = raw.find_first_not_of(" \t", i);
 
 		if (directive_name == "location")
 		{
+			// On crée une LocationConfig
+			// On récupère le chemin de la location (juste après le nom de la directive)
 			std::string location_name = raw.substr(i, raw.find_first_of(" \t", i) - i);
 			i += location_name.size();
-			while (raw[i] == ' ' || raw[i] == '\t')
-				i++;
+			i = raw.find_first_not_of(" \t", i);
+
+			// Si il n'y a pas d'accolate ouvrante, la config est invalide
 			if (raw[i] != '{')
-				throw std::invalid_argument("ServerConfig: Constructor: Invalid config file");
-			i += 2;
+				throw std::invalid_argument("Invalid config file");
+			i = raw.find_first_not_of(" \t", i + 1);
+
+			// Si il n'y a pas de retour à la ligne après les espaces, la config est invalide
+			if (raw[i] != '\n')
+				throw std::invalid_argument("Invalid config file 2");
+
+			// On récupère le contenu du fichier qui concerne la location
 			std::string location_raw = raw.substr(i, raw.find("}", i) - i - 2);
 			_locations.push_back(LocationConfig(location_name, location_raw));
 			i += location_raw.size() + 2;
 			i = raw.find('\n', i) + 1;
 			continue;
 		}
+		else if (directive_name == "server_name")
+		{
+			// On récupère la valeur de la directive : exemple "localhost www.localhost.com pouetpouet.fr"
+			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
 
-		std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
-		_params.insert(std::make_pair(directive_name, directive_value));
-		i = raw.find('\n', i) + 1;
+			for (size_t j = 0; j < directive_value.size(); j++)
+			{
+				std::string name = directive_value.substr(j, directive_value.find_first_of(" \t\n") - j);
+				j = directive_value.find_first_of(" \t\n");
+				_names.push_back(name);
+
+				// Si on est arrivé au dernier mot de la directive, on arrête
+				if (j >= directive_value.size() || directive_value[j] == '\n')
+					break;
+				j = directive_value.find_first_not_of(" \t\n");
+				if (j >= directive_value.size())
+					break;
+			}
+		}
+		else if (directive_name == "listen")
+		{
+			// On récupère la valeur de la directive : exemple "8080 80 443 5056 21 22"
+			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+
+			for (size_t j = 0; j < directive_value.size(); j++)
+			{
+				// On récupère la chaîne du port qu'on convertit ensuite en int
+				std::string port_str = directive_value.substr(j, directive_value.find_first_of(" \t\n") - j);
+				std::istringstream iss(port_str);
+				int port;
+				iss >> port;
+
+				_ports.push_back(port);
+
+				// Si on est arrivé au dernier mot de la directive, on arrête
+				j = directive_value.find_first_of(" \t\n");
+				if (j >= directive_value.size() || directive_value[j] == '\n')
+					break;
+				j = directive_value.find_first_not_of(" \t\n");
+				if (j >= directive_value.size())
+					break;
+			}
+		}
+		else
+		{
+			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+			_params.insert(std::make_pair(directive_name, directive_value));
+			i = raw.find('\n', i) + 1;
+		}
 	}
 }
 
@@ -102,24 +144,50 @@ ServerConfig::ServerConfig(const std::string& raw)
 std::string ServerConfig::getToken(const std::string& val, size_t token)
 {
 	size_t actual_token = 0;
+	size_t start_i = 0;
 	size_t i = 0;
 	while (actual_token < token && i < val.size())
 	{
 		i = val.find_first_of(" \t", i);
 		i = val.find_first_not_of(" \t", i);
+		if (i == std::string::npos && actual_token == token - 1)
+			return val.substr(start_i);
+		else if (i == std::string::npos)
+			throw std::out_of_range("ServerConfig: GetToken: token out of range");
+		start_i = i;
 		actual_token++;
 	}
-	if (i == val.size())
-		throw std::out_of_range("ServerConfig: GetToken: token out of range");
-	return val.substr(i, val.find_first_not_of(" \t\n", i) - i);
+	return val.substr(start_i, val.find_first_not_of(" \t\n", start_i) - start_i);
 }
 
-int ServerConfig::getInt(const std::string& param, size_t token)
+int ServerConfig::getInt(const std::string& param, size_t token, const std::string& uri)
 {
+	std::string location = uri;
+	if (location.substr(0, 7) == "http://")
+		location = location.substr(7);
+
+	if (location[0] == '/')
+		throw std::invalid_argument("ServerConfig: GetInt: Bad URI");
+	location = location.substr(location.find('/') + 1, std::min(location.find('?'), location.find('#')));
+
+	for (std::list<LocationConfig>::iterator it = _locations.begin(); it != _locations.end(); it++)
+		if (it->getPath() == location)
+		{
+			try
+			{
+				return it->getInt(param, token);
+			}
+			catch (std::exception& e)
+			{
+				break;
+			}
+		}
+
 	std::string token_str = getToken(_params[param], token);
 	for (size_t i = 0; i < token_str.size() && token_str[i] != ' ' && token_str[i] != '\t'; i++)
 		if (!std::isdigit(token_str[i]))
 			throw std::invalid_argument("ServerConfig: GetInt: parameter is not an integer");
+
 	int ret;
 	std::istringstream(_params[param]) >> ret;
 
@@ -245,12 +313,22 @@ std::string ServerConfig::getErrorPage(int code)
 	return _error_pages[code];
 }
 
-std::map<std::string, std::string>& ServerConfig::getParams()
+const std::map<std::string, std::string>& ServerConfig::getParams() const
 {
 	return _params;
 }
 
-std::map<int, std::string>& ServerConfig::getErrorPages()
+const std::map<int, std::string>& ServerConfig::getErrorPages() const
 {
 	return _error_pages;
+}
+
+const std::list<std::string>& ServerConfig::getNames() const
+{
+	return _names;
+}
+
+const std::list<int>& ServerConfig::getPorts() const
+{
+	return _ports;
 }
