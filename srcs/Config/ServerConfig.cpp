@@ -90,16 +90,16 @@ ServerConfig::ServerConfig(const std::string& raw)
 			// On récupère la valeur de la directive : exemple "localhost www.localhost.com pouetpouet.fr"
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
 
-			for (size_t j = 0; j < directive_value.size(); j++)
+			for (size_t j = 0; j < directive_value.size();)
 			{
-				std::string name = directive_value.substr(j, directive_value.find_first_of(" \t\n") - j);
-				j = directive_value.find_first_of(" \t\n");
+				std::string name = directive_value.substr(j, directive_value.find_first_of(" \t\n", j) - j);
+				j = directive_value.find_first_of(" \t\n", j);
 				_names.push_back(name);
 
 				// Si on est arrivé au dernier mot de la directive, on arrête
 				if (j >= directive_value.size() || directive_value[j] == '\n')
 					break;
-				j = directive_value.find_first_not_of(" \t\n");
+				j = directive_value.find_first_not_of(" \t\n", j);
 				if (j >= directive_value.size())
 					break;
 			}
@@ -109,10 +109,11 @@ ServerConfig::ServerConfig(const std::string& raw)
 			// On récupère la valeur de la directive : exemple "8080 80 443 5056 21 22"
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
 
-			for (size_t j = 0; j < directive_value.size(); j++)
+
+			for (size_t j = 0; j < directive_value.size();)
 			{
 				// On récupère la chaîne du port qu'on convertit ensuite en int
-				std::string port_str = directive_value.substr(j, directive_value.find_first_of(" \t\n") - j);
+				std::string port_str = directive_value.substr(j, directive_value.find_first_of(" \t\n", j) - j);
 				std::istringstream iss(port_str);
 				int port;
 				iss >> port;
@@ -120,10 +121,10 @@ ServerConfig::ServerConfig(const std::string& raw)
 				_ports.push_back(port);
 
 				// Si on est arrivé au dernier mot de la directive, on arrête
-				j = directive_value.find_first_of(" \t\n");
+				j = directive_value.find_first_of(" \t\n", j);
 				if (j >= directive_value.size() || directive_value[j] == '\n')
 					break;
-				j = directive_value.find_first_not_of(" \t\n");
+				j = directive_value.find_first_not_of(" \t\n", j);
 				if (j >= directive_value.size())
 					break;
 			}
@@ -132,8 +133,8 @@ ServerConfig::ServerConfig(const std::string& raw)
 		{
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
 			_params.insert(std::make_pair(directive_name, directive_value));
-			i = raw.find('\n', i) + 1;
 		}
+		i = raw.find('\n', i) + 1;
 	}
 }
 

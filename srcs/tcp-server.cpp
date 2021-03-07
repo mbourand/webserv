@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/06 02:29:19 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/07 00:16:30 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,16 @@ int	main(int argc, char **argv)
 {
 	std::list<VirtualHost> vhosts;
 
-	Logger::setMode(NORMAL);
+	Logger::setMode(VERBOSE);
 
 	Logger::print("Webserv is starting...", NULL, INFO, NORMAL);
 	try
 	{
 		init_config("config/default.conf", vhosts);
+		for (std::list<VirtualHost>::iterator it = vhosts.begin(); it != vhosts.end(); it++)
+			std::cout << it->toString() << std::endl;
 
-		ServerSocket server(8080);
+		/*ServerSocket server(8080);
 		Logger::print("Webserv is ready, waiting for connection...", NULL, SUCCESS, NORMAL);
 		while (42)
 		{
@@ -60,7 +62,7 @@ int	main(int argc, char **argv)
 				new_connection << response.getResponseText();
 				Logger::print(e.what(), NULL, ERROR, NORMAL);
 			}
-		}
+		}*/
 	}
 	catch(ServerSocket::ServerSocketException& e)
 	{

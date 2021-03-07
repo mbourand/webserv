@@ -1,4 +1,9 @@
 #include "VirtualHost.hpp"
+#include <sstream>
+
+/*
+** ------------------------------- CONSTRUCTOR ------------------------------
+*/
 
 VirtualHost::VirtualHost() {}
 
@@ -17,12 +22,44 @@ VirtualHost::VirtualHost(const ServerConfig& config)
 VirtualHost::~VirtualHost()
 {}
 
+/*
+** ------------------------------- OPERATOR ------------------------------
+*/
+
 VirtualHost& VirtualHost::operator=(const VirtualHost& other)
 {
 	_config = other._config;
 	_sockets = other._sockets;
 	return *this;
 }
+
+/*
+** ------------------------------- METHODS ------------------------------
+*/
+
+std::string VirtualHost::toString() const
+{
+	std::string ret;
+
+	ret += "VirtualHost:\n  names:\n";
+	for (std::list<std::string>::const_iterator it = _config.getNames().begin(); it != _config.getNames().end(); it++)
+		ret += "    - " + *it + "\n";
+	ret += "  ports:\n";
+	std::stringstream ss;
+	for (std::list<int>::const_iterator it = _config.getPorts().begin(); it != _config.getPorts().end(); it++)
+	{
+		ss << *it;
+		ret += "    - " + ss.str() + "\n";
+		ss.str("");
+	}
+	ss << _sockets.size();
+	ret += "  sockets: " + ss.str();
+	return ret;
+}
+
+/*
+** ------------------------------- ACCESSORS ------------------------------
+*/
 
 const ServerConfig& VirtualHost::getConfig() const
 {
@@ -33,6 +70,10 @@ const std::list<ServerSocket>& VirtualHost::getSockets() const
 {
 	return _sockets;
 }
+
+/*
+** ------------------------------- STATIC ------------------------------
+*/
 
 VirtualHost& VirtualHost::getServerByName(const std::string& name, int port, std::list<VirtualHost>& vhosts)
 {
