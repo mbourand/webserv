@@ -53,7 +53,14 @@ std::string VirtualHost::toString() const
 		ss.str("");
 	}
 	ss << _sockets.size();
-	ret += "  sockets: " + ss.str();
+	ret += "  sockets: " + ss.str() + "\n  params:\n";
+	for (std::map<std::string, std::list<std::string> >::const_iterator it = _config.getParams().begin(); it != _config.getParams().end(); it++)
+	{
+		ret += "    - " + it->first + "\n";
+		for (std::list<std::string>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); it2++)
+			ret += "      - " + *it2 + "\n";
+	}
+
 	return ret;
 }
 

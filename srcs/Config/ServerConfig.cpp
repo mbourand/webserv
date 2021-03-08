@@ -15,6 +15,7 @@
 
 #include "ServerConfig.hpp"
 #include "Logger.hpp"
+#include "Utils.hpp"
 
 /*
 ** ---------------------------------- CONSTRUCTOR --------------------------------------
@@ -132,7 +133,7 @@ ServerConfig::ServerConfig(const std::string& raw)
 		else
 		{
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
-			_params.insert(std::make_pair(directive_name, directive_value));
+			_params.insert(std::make_pair(directive_name, ft::split(directive_value, " \t")));
 		}
 		i = raw.find('\n', i) + 1;
 	}
@@ -159,45 +160,6 @@ std::string ServerConfig::getToken(const std::string& val, size_t token)
 		actual_token++;
 	}
 	return val.substr(start_i, val.find_first_not_of(" \t\n", start_i) - start_i);
-}
-
-int ServerConfig::getInt(const std::string& param, size_t token, const std::string& uri)
-{
-	std::string location = uri;
-	if (location.substr(0, 7) == "http://")
-		location = location.substr(7);
-
-	if (location[0] == '/')
-		throw std::invalid_argument("ServerConfig: GetInt: Bad URI");
-	location = location.substr(location.find('/') + 1, std::min(location.find('?'), location.find('#')));
-
-	for (std::list<LocationConfig>::iterator it = _locations.begin(); it != _locations.end(); it++)
-		if (it->getPath() == location)
-		{
-			try
-			{
-				return it->getInt(param, token);
-			}
-			catch (std::exception& e)
-			{
-				break;
-			}
-		}
-
-	std::string token_str = getToken(_params[param], token);
-	for (size_t i = 0; i < token_str.size() && token_str[i] != ' ' && token_str[i] != '\t'; i++)
-		if (!std::isdigit(token_str[i]))
-			throw std::invalid_argument("ServerConfig: GetInt: parameter is not an integer");
-
-	int ret;
-	std::istringstream(_params[param]) >> ret;
-
-	return ret;
-}
-
-std::string ServerConfig::getString(const std::string& param, size_t token)
-{
-	return getToken(_params.at(param), token);
 }
 
 std::list<LocationConfig>& ServerConfig::getLocations()
@@ -314,7 +276,7 @@ std::string ServerConfig::getErrorPage(int code)
 	return _error_pages[code];
 }
 
-const std::map<std::string, std::string>& ServerConfig::getParams() const
+const std::map<std::string, std::list<std::string> >& ServerConfig::getParams() const
 {
 	return _params;
 }
