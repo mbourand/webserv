@@ -72,6 +72,7 @@ Response GetMethod::process(const Request& request)
 	strptime(std::string(convert.str()).c_str(), "%s", &time);
 	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);
 	response.addHeader("Date", buffer);
+	response.addHeader("Server", "Webserv");
 	response.setBody(content);
 	return response;
 }

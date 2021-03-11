@@ -1,6 +1,6 @@
 NAME	= webserv
 CC		= clang++
-CFLAGS	= -g3 -fsanitize=address -std=c++98
+CFLAGS	= -std=c++98# -Wall -Werror -Wextra
 SRC_PATH= srcs/
 OBJ_PATH= objs/
 INC_PATH= incs/
@@ -21,7 +21,11 @@ GRN= \033[32;1m
 YEL= \033[33;1m
 
 ifeq ($(DB),1)
-	CFLAGS	+= -g3
+	CFLAGS	+= -ggdb -D DEBUG=1
+else ifeq ($(DB),2)
+	CFLAGS	+= -g3 -fsanitize=address -D DEBUG=1
+else ifeq ($(DB),3)
+	CFLAGS	= -g3 -std=c++98
 endif
 
 .PHONY: all re clean fclean

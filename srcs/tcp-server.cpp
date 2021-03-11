@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/03 21:13:40 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/11 18:35:36 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@
 #include <list>
 #include <string.h>
 #include <errno.h>
+
+#ifndef DEBUG
+# define DEBUG 0
+#endif
 
 struct Client {
 	ServerSocket	*sckt;
@@ -62,22 +66,23 @@ int	main(void)
 	Logger::print("Webserv is starting...", NULL, INFO, NORMAL);
 	try
 	{
-		bool selecterror = true;
-		ServerSocket server(8080);
+		ServerSocket		server(8080);
+		fd_set				read_sockets, read_sockets_z, write_sockets, write_sockets_z, error_sockets, error_sockets_z;
+		std::list<Client>	clients;
+
 		Logger::print("Webserv is ready, waiting for connection...", NULL, SUCCESS, NORMAL);
-		fd_set	read_sockets, read_sockets_z, write_sockets, write_sockets_z, error_sockets, error_sockets_z;
 		FD_ZERO(&read_sockets_z);
 		FD_ZERO(&write_sockets_z);
 		FD_ZERO(&error_sockets_z);
 		FD_SET(server.GetSocket(), &read_sockets_z);
 		FD_SET(server.GetSocket(), &write_sockets_z);
 		FD_SET(server.GetSocket(), &error_sockets_z);
-		std::list<Client> clients;
 		while (42)
 		{
 			int highestFd = server.GetSocket();
 			std::list<Client>::iterator			it = clients.begin();
 			std::list<Client>::iterator			end = clients.end();
+			//FD_SET(server.GetSocket(), &read_sockets_z);
 			for (; it != end; ++it)
 			{
 				FD_SET((*it).sckt->GetSocket(), &read_sockets_z);
@@ -92,7 +97,7 @@ int	main(void)
 			if (select(highestFd + 1, &read_sockets, &write_sockets, &error_sockets, NULL) < 0)
 			{
 				Logger::print("select() returned -1 : "+std::string(strerror(errno)), NULL, ERROR, NORMAL);
-				continue; //? Subject: "Your server should never die."
+				continue;
 			}
 			else
 			{
@@ -124,7 +129,8 @@ int	main(void)
 							{
 								*(*it).sckt >> data;
 								(*it).req->append(data);
-								std::cout << "\e[35m" << std::setfill(' ') << std::setw(MAX_RECIEVE * 2 + MAX_RECIEVE) << string_to_hex(data) << "\e[33m\t" << string_strip_undisplayable(data) << "\e[39m" << std::endl;
+								if (DEBUG)
+									std::cout << "\e[35m" << std::setfill(' ') << std::setw(MAX_RECIEVE * 2 + MAX_RECIEVE) << string_to_hex(data) << "\e[33m\t" << string_strip_undisplayable(data) << "\e[39m" << std::endl;
 							}
 							catch(ServerSocket::ServerSocketException &e)
 							{
@@ -144,7 +150,8 @@ int	main(void)
 								{
 									Response response = (*it).req->_method->process(*(*it).req);
 									*(*it).sckt << response.getResponseText();
-									std::cout << *(*it).req << std::endl;
+									if (DEBUG)
+										std::cout << *(*it).req << std::endl;
 									if (response.getCode() != 200)
 										error = true;
 									Logger::print("Success", NULL, SUCCESS, NORMAL);
