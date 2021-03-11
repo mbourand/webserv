@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/11 19:59:54 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/11 21:07:53 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,62 @@ std::string string_strip_undisplayable(const std::string& input)
     return output;
 }
 
+void	handle_new_connection(ServerSocket &server, std::list<Client> &clients)
+{
+	Client	new_client;
+	new_client.sckt = new ServerSocket;
+	new_client.req = new Request;
+	server.Accept(*new_client.sckt);
+	clients.push_back(new_client);
+	Logger::print("New Client Connected", NULL, SUCCESS, NORMAL);
+}
+
+bool	handle_client_request(Client &client)
+{
+	std::string	data;
+	try
+	{
+		*client.sckt >> data;
+		client.req->append(data);
+		if (DEBUG)
+			std::cout << "\e[35m" << std::setfill(' ') << std::setw(MAX_RECIEVE * 2 + MAX_RECIEVE) << string_to_hex(data) << "\e[33m\t" << string_strip_undisplayable(data) << "\e[39m" << std::endl;
+	}
+	catch(ServerSocket::ServerSocketException &e)
+	{
+		Logger::print(e.what(), NULL, ERROR, NORMAL);
+		return true;
+	}
+	catch(std::invalid_argument &e)
+	{
+		Response response(400, "Bad Request");
+		*client.sckt << response.getResponseText();
+		return true;
+		Logger::print(e.what(), NULL, ERROR, NORMAL);
+	}
+	return false;
+}
+
+bool	handle_server_response(Client &client)
+{
+	try
+	{
+		Response response = client.req->_method->process(*client.req);
+		*client.sckt << response.getResponseText();
+		if (DEBUG)
+			std::cout << *client.req << std::endl;
+		if (response.getCode() != 200)
+			return true;
+		Logger::print("Success", NULL, SUCCESS, NORMAL);
+	}
+	catch(ServerSocket::ServerSocketException &e)
+	{
+		Logger::print(e.what(), NULL, ERROR, NORMAL);
+	}
+	delete client.req;
+	client.req = new Request;
+	return false;
+}
+
 int	main(void)
 {
 	Logger::setMode(NORMAL);
@@ -67,7 +123,7 @@ int	main(void)
 		fd_set							read_sockets, read_sockets_z, write_sockets, write_sockets_z, error_sockets, error_sockets_z;
 		std::list<Client>				clients;
 		std::list<Client>::iterator		it;
-		std::list<Client>::iterator		end;
+		int								highestFd = server.GetSocket();
 
 		Logger::print("Webserv is ready, waiting for connection...", NULL, SUCCESS, SILENT);
 		FD_ZERO(&read_sockets_z);
@@ -79,9 +135,8 @@ int	main(void)
 		while (g_run)
 		{
 			it = clients.begin();
-			end = clients.end();
-			int highestFd = server.GetSocket();
-			for (; it != end; ++it)
+			highestFd = server.GetSocket();
+			for (; it != clients.end(); ++it)
 			{
 				FD_SET((*it).sckt->GetSocket(), &read_sockets_z);
 				FD_SET((*it).sckt->GetSocket(), &write_sockets_z);
@@ -101,90 +156,42 @@ int	main(void)
 			else
 			{
 				if (FD_ISSET(server.GetSocket(), &read_sockets))
+					handle_new_connection(server, clients);
+				it = clients.begin();
+				while (it != clients.end())
 				{
-					Client	new_client;
-					new_client.sckt = new ServerSocket;
-					new_client.req = new Request;
-					server.Accept(*new_client.sckt);
-					clients.push_back(new_client);
-					Logger::print("New Client Connected", NULL, SUCCESS, NORMAL);
-				}
-				else
-				{
-					it = clients.begin();
-					end = clients.end();
-					while (!clients.empty() && it != end)
+					bool	error = false;
+					if (FD_ISSET((*it).sckt->GetSocket(), &error_sockets))
 					{
-						bool	error = false;
-						if (FD_ISSET((*it).sckt->GetSocket(), &error_sockets))
-						{
-							error = true;
-							Logger::print("FD Error flagged by Select", NULL, WARNING, NORMAL);
-						}
-						else if (!error && FD_ISSET((*it).sckt->GetSocket(), &read_sockets))
-						{
-							std::string	data;
-							try
-							{
-								*(*it).sckt >> data;
-								(*it).req->append(data);
-								if (DEBUG)
-									std::cout << "\e[35m" << std::setfill(' ') << std::setw(MAX_RECIEVE * 2 + MAX_RECIEVE) << string_to_hex(data) << "\e[33m\t" << string_strip_undisplayable(data) << "\e[39m" << std::endl;
-							}
-							catch(ServerSocket::ServerSocketException &e)
-							{
-								Logger::print(e.what(), NULL, ERROR, NORMAL);
-								error = true;
-							}
-							catch(std::invalid_argument &e)
-							{
-								Response response(400, "Bad Request");
-								*(*it).sckt << response.getResponseText();
-								error = true;
-								Logger::print(e.what(), NULL, ERROR, NORMAL);
-							}
-							if (!error && (*it).req->isfinished() && FD_ISSET((*it).sckt->GetSocket(), &write_sockets))
-							{
-								try
-								{
-									Response response = (*it).req->_method->process(*(*it).req);
-									*(*it).sckt << response.getResponseText();
-									if (DEBUG)
-										std::cout << *(*it).req << std::endl;
-									if (response.getCode() != 200)
-										error = true;
-									Logger::print("Success", NULL, SUCCESS, NORMAL);
-								}
-								catch(ServerSocket::ServerSocketException &e)
-								{
-									Logger::print(e.what(), NULL, ERROR, NORMAL);
-								}
-								delete (*it).req;
-								(*it).req = new Request;
-							}
-						}
-						if (error)
-						{
-							Logger::print("Client Disconnected", NULL, SUCCESS, VERBOSE);
-							FD_CLR((*it).sckt->GetSocket(), &read_sockets_z);
-							FD_CLR((*it).sckt->GetSocket(), &write_sockets_z);
-							FD_CLR((*it).sckt->GetSocket(), &error_sockets_z);
-							delete (*it).sckt;
-							delete (*it).req;
-							it = clients.erase(it);
-						}
-						else
-						{
-							++it;
-						}
+						error = true;
+						Logger::print("FD Error flagged by Select", NULL, WARNING, NORMAL);
+					}
+					else if (!error && FD_ISSET((*it).sckt->GetSocket(), &read_sockets))
+					{
+						error = handle_client_request((*it));
+						if (!error && (*it).req->isfinished() && FD_ISSET((*it).sckt->GetSocket(), &write_sockets))
+							error = handle_server_response((*it));
+					}
+					if (error)
+					{
+						Logger::print("Client Disconnected", NULL, SUCCESS, VERBOSE);
+						FD_CLR((*it).sckt->GetSocket(), &read_sockets_z);
+						FD_CLR((*it).sckt->GetSocket(), &write_sockets_z);
+						FD_CLR((*it).sckt->GetSocket(), &error_sockets_z);
+						delete (*it).sckt;
+						delete (*it).req;
+						it = clients.erase(it);
+					}
+					else
+					{
+						++it;
 					}
 				}
 			}
 		}
 		Logger::print("Webserv is shutting down...", NULL, INFO, SILENT);
 		it = clients.begin();
-		end = clients.end();
-		while (!clients.empty())
+		while (it != clients.end())
 		{
 			Logger::print("Socket closed", NULL, SUCCESS, VERBOSE);
 			delete (*it).sckt;
