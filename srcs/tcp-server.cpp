@@ -6,13 +6,11 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/11 18:35:36 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/11 19:59:54 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ServerSocket.hpp"
-#include "Logger.hpp"
-#include "Request.hpp"
+#include "Webserv.hpp"
 #include "Response.hpp"
 #include <string>
 #include <iostream>
@@ -21,15 +19,13 @@
 #include <list>
 #include <string.h>
 #include <errno.h>
+#include <signal.h>
 
 #ifndef DEBUG
 # define DEBUG 0
 #endif
 
-struct Client {
-	ServerSocket	*sckt;
-	Request			*req;
-};
+bool	g_run = true;
 
 std::string string_to_hex(const std::string& input)
 {
@@ -63,26 +59,28 @@ std::string string_strip_undisplayable(const std::string& input)
 int	main(void)
 {
 	Logger::setMode(NORMAL);
-	Logger::print("Webserv is starting...", NULL, INFO, NORMAL);
+	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
+	sighandler();
 	try
 	{
-		ServerSocket		server(8080);
-		fd_set				read_sockets, read_sockets_z, write_sockets, write_sockets_z, error_sockets, error_sockets_z;
-		std::list<Client>	clients;
+		ServerSocket					server(8080);
+		fd_set							read_sockets, read_sockets_z, write_sockets, write_sockets_z, error_sockets, error_sockets_z;
+		std::list<Client>				clients;
+		std::list<Client>::iterator		it;
+		std::list<Client>::iterator		end;
 
-		Logger::print("Webserv is ready, waiting for connection...", NULL, SUCCESS, NORMAL);
+		Logger::print("Webserv is ready, waiting for connection...", NULL, SUCCESS, SILENT);
 		FD_ZERO(&read_sockets_z);
 		FD_ZERO(&write_sockets_z);
 		FD_ZERO(&error_sockets_z);
 		FD_SET(server.GetSocket(), &read_sockets_z);
 		FD_SET(server.GetSocket(), &write_sockets_z);
 		FD_SET(server.GetSocket(), &error_sockets_z);
-		while (42)
+		while (g_run)
 		{
+			it = clients.begin();
+			end = clients.end();
 			int highestFd = server.GetSocket();
-			std::list<Client>::iterator			it = clients.begin();
-			std::list<Client>::iterator			end = clients.end();
-			//FD_SET(server.GetSocket(), &read_sockets_z);
 			for (; it != end; ++it)
 			{
 				FD_SET((*it).sckt->GetSocket(), &read_sockets_z);
@@ -96,7 +94,8 @@ int	main(void)
 			error_sockets = error_sockets_z;
 			if (select(highestFd + 1, &read_sockets, &write_sockets, &error_sockets, NULL) < 0)
 			{
-				Logger::print("select() returned -1 : "+std::string(strerror(errno)), NULL, ERROR, NORMAL);
+				if (g_run)
+					Logger::print("Error select(): "+std::string(strerror(errno)), NULL, ERROR, NORMAL);
 				continue;
 			}
 			else
@@ -108,7 +107,7 @@ int	main(void)
 					new_client.req = new Request;
 					server.Accept(*new_client.sckt);
 					clients.push_back(new_client);
-					Logger::print("Client Connected", NULL, SUCCESS, NORMAL);
+					Logger::print("New Client Connected", NULL, SUCCESS, NORMAL);
 				}
 				else
 				{
@@ -166,7 +165,7 @@ int	main(void)
 						}
 						if (error)
 						{
-							Logger::print("Client Disconnected", NULL, SUCCESS, NORMAL);
+							Logger::print("Client Disconnected", NULL, SUCCESS, VERBOSE);
 							FD_CLR((*it).sckt->GetSocket(), &read_sockets_z);
 							FD_CLR((*it).sckt->GetSocket(), &write_sockets_z);
 							FD_CLR((*it).sckt->GetSocket(), &error_sockets_z);
@@ -182,10 +181,22 @@ int	main(void)
 				}
 			}
 		}
+		Logger::print("Webserv is shutting down...", NULL, INFO, SILENT);
+		it = clients.begin();
+		end = clients.end();
+		while (!clients.empty())
+		{
+			Logger::print("Socket closed", NULL, SUCCESS, VERBOSE);
+			delete (*it).sckt;
+			delete (*it).req;
+			it = clients.erase(it);
+		}
 	}
 	catch(ServerSocket::ServerSocketException& e)
 	{
 		Logger::print(e.what(), NULL, ERROR, NORMAL);
 	}
+	Logger::print("Webserv Shutdown complete", NULL, SUCCESS, SILENT);
+	std::cout << std::flush;
 	return (0);
 }
