@@ -6,13 +6,11 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/05 19:50:29 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/11 19:44:18 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ServerSocket.hpp"
-#include "Logger.hpp"
-#include "Request.hpp"
+#include "Webserv.hpp"
 #include "Response.hpp"
 #include <string>
 #include <iostream>
@@ -23,12 +21,7 @@
 #include <errno.h>
 #include <signal.h>
 
-int	g_run = 42;
-
-struct Client {
-	ServerSocket	*sckt;
-	Request			*req;
-};
+bool	g_run = true;
 
 std::string string_to_hex(const std::string& input)
 {
@@ -59,21 +52,11 @@ std::string string_strip_undisplayable(const std::string& input)
     return output;
 }
 
-static void	sig_int(int sig)
-{
-	(void)sig;
-	signal(SIGINT, SIG_IGN);
-	std:: cout << "\b\b" << std::flush;
-	Logger::print("Interrupt signal was caught.", NULL, WARNING, SILENT);
-	g_run = 0;
-	signal(SIGINT, &sig_int);
-}
-
 int	main(void)
 {
 	Logger::setMode(NORMAL);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
-	signal(SIGINT, &sig_int);
+	sighandler();
 	try
 	{
 		bool selecterror = true;
