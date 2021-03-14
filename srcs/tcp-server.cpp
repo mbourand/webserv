@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/11 21:07:53 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/14 19:19:42 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,8 @@ bool	handle_client_request(Client &client)
 	{
 		Response response(400, "Bad Request");
 		*client.sckt << response.getResponseText();
-		return true;
 		Logger::print(e.what(), NULL, ERROR, NORMAL);
+		return true;
 	}
 	return false;
 }
@@ -114,7 +114,7 @@ bool	handle_server_response(Client &client)
 
 int	main(void)
 {
-	Logger::setMode(NORMAL);
+	Logger::setMode(SILENT);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	sighandler();
 	try
