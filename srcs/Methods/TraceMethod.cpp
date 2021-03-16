@@ -1,5 +1,10 @@
 #include "TraceMethod.hpp"
+#include "Request.hpp"
 #include "Logger.hpp"
+#include <sstream>
+#include <time.h>
+#include <sys/time.h>
+#include <ctime>
 
 TraceMethod::TraceMethod() {}
 TraceMethod::TraceMethod(const TraceMethod&) {}
@@ -22,7 +27,21 @@ bool TraceMethod::isIdempotent() const { return true; }
 bool TraceMethod::isCacheable() const { return false; }
 bool TraceMethod::isAllowedInHTMLForms() const { return false; }
 
-Response TraceMethod::process(const Request&)
+Response TraceMethod::process(const Request &request)
 {
-	return Response();
+	Response response(200, "OK");
+	char				buffer[1024];
+	struct timeval 		tv;
+	struct tm			time;
+	std::ostringstream	convert;
+	gettimeofday(&tv, NULL);
+	tv.tv_sec -= 3600;
+	convert << tv.tv_sec;
+	strptime(std::string(convert.str()).c_str(), "%s", &time);
+	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);
+	response.addHeader("Content-Type", "message/http");
+	response.addHeader("Server", "Webserv");
+	response.addHeader("Date", buffer);
+	response.setBody(request._raw);
+	return response;
 }
