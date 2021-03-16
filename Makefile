@@ -5,13 +5,13 @@ SRC_PATH= srcs/
 OBJ_PATH= objs/
 INC_PATH= incs/
 
-MODULES=	Headers Methods Socket Utils
+MODULES=	Headers Methods Socket Utils Config
 SRC_DIR=	$(addprefix $(SRC_PATH),$(MODULES))
 INC_DIR=	$(addprefix $(INC_PATH),$(MODULES))
 OBJ_DIRS=	$(addprefix $(OBJ_PATH),$(MODULES))
 
 SRC=	$(foreach sdir,$(SRC_DIR),$(wildcard $(sdir)/*.cpp))
-SRC+= $(SRC_PATH)tcp-server.cpp $(SRC_PATH)Request.cpp  $(SRC_PATH)Response.cpp
+SRC+= $(SRC_PATH)tcp-server.cpp $(SRC_PATH)Request.cpp  $(SRC_PATH)Response.cpp $(SRC_PATH)VirtualHost.cpp
 
 INC= -I incs/ $(foreach sdir,$(INC_DIR),-I $(wildcard $(sdir))/)
 OBJ= $(patsubst $(SRC_PATH)%.cpp,$(OBJ_PATH)%.o,$(SRC))

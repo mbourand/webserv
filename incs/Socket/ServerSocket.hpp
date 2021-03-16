@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerSocket.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/16 02:31:52 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/08 02:40:17 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class ServerSocket : public Socket
 				ServerSocketException(std::string str) : m_message(str) {}
 				virtual ~ServerSocketException() throw() {return ;}
 				virtual const char* what() const throw() {return m_message.c_str();}
-			
+
 			private:
 				std::string const	m_message;
 		};

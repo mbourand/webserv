@@ -1,9 +1,9 @@
 #include "AcceptLanguageHeader.hpp"
 
 AcceptLanguageHeader::AcceptLanguageHeader() {}
-AcceptLanguageHeader::AcceptLanguageHeader(const AcceptLanguageHeader& other) {}
+AcceptLanguageHeader::AcceptLanguageHeader(const AcceptLanguageHeader&) {}
 AcceptLanguageHeader::~AcceptLanguageHeader() {}
-AcceptLanguageHeader& AcceptLanguageHeader::operator=(const AcceptLanguageHeader& other) { return *this; }
+AcceptLanguageHeader& AcceptLanguageHeader::operator=(const AcceptLanguageHeader&) { return *this; }
 
 std::string AcceptLanguageHeader::getType() const { return "Accept-Language"; }
 
