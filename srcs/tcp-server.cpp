@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/14 19:19:42 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/16 16:27:17 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,13 @@
 #include <string.h>
 #include <errno.h>
 #include <signal.h>
+#include "Types_parser.hpp"
 
 #ifndef DEBUG
 # define DEBUG 0
 #endif
 
-bool	g_run = true;
+t_webserv	g_webserv;
 
 std::string string_to_hex(const std::string& input)
 {
@@ -116,6 +117,9 @@ int	main(void)
 {
 	Logger::setMode(SILENT);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
+	g_webserv.run = true;
+	g_webserv.file_formatname = new HashTable(256);
+	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
 	try
 	{
@@ -132,7 +136,7 @@ int	main(void)
 		FD_SET(server.GetSocket(), &read_sockets_z);
 		FD_SET(server.GetSocket(), &write_sockets_z);
 		FD_SET(server.GetSocket(), &error_sockets_z);
-		while (g_run)
+		while (g_webserv.run)
 		{
 			it = clients.begin();
 			highestFd = server.GetSocket();
@@ -149,7 +153,7 @@ int	main(void)
 			error_sockets = error_sockets_z;
 			if (select(highestFd + 1, &read_sockets, &write_sockets, &error_sockets, NULL) < 0)
 			{
-				if (g_run)
+				if (g_webserv.run)
 					Logger::print("Error select(): "+std::string(strerror(errno)), NULL, ERROR, NORMAL);
 				continue;
 			}
@@ -203,6 +207,7 @@ int	main(void)
 	{
 		Logger::print(e.what(), NULL, ERROR, NORMAL);
 	}
+	delete g_webserv.file_formatname;
 	Logger::print("Webserv Shutdown complete", NULL, SUCCESS, SILENT);
 	std::cout << std::flush;
 	return (0);
