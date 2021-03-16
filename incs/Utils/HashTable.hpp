@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/15 17:14:00 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/15 19:14:36 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/16 03:35:38 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,27 +15,30 @@
 
 # include <iostream>
 # include <string>
+# include <stdint.h>
 
-typedef struct	s_hnode
+typedef struct		s_hnode
 {
-	std::string	key;
-	std::string	value;
-	t_hnode		*next;
-}				t_hnode;
+	std::string		key;
+	std::string		value;
+	struct s_hnode	*next;
+}					t_hnode;
 
 class HashTable
 {
 
 	public:
 
-		HashTable(size_t size);
-		HashTable(size_t size, size_t hashdepth);
+		HashTable(unsigned int size);
+		HashTable(unsigned int size, unsigned int hashdepth);
 		~HashTable();
 
-		size_t				Hash(std::string const &str) const;
+		uint32_t			Hash(std::string const &str) const;
 		bool				Insert(std::string const &key, std::string const &value);
 		const std::string &	Lookup(std::string const &key) const;
+		t_hnode*			GetNode(std::string const &key) const;
 		bool				Delete(std::string const &key);
+		void				Print(void) const;
 
 		class HashTableException : public std::exception
 		{
@@ -50,9 +53,9 @@ class HashTable
 
 	private:
 
-		t_hnode	**m_table;
-		size_t	m_size;
-		size_t	m_hashdepth;
+		t_hnode			**m_table;
+		unsigned int	m_size;
+		unsigned int	m_hashdepth;
 };
 
 #endif /* ***************************************************** HASHTABLE_HPP */
