@@ -1,6 +1,7 @@
 #include "GetMethod.hpp"
 #include "Logger.hpp"
 #include "Request.hpp"
+#include "Webserv.hpp"
 #include <fstream>
 #include <sstream>
 #include <errno.h>
@@ -73,6 +74,12 @@ Response GetMethod::process(const Request& request)
 	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);
 	response.addHeader("Date", buffer);
 	response.addHeader("Server", "Webserv");
+	try
+	{
+		response.addHeader("Content-Type", g_webserv.file_formatname->Lookup(request._path.substr(request._path.find_last_of('.') + 1)));
+	}
+	catch(const std::exception &e)
+	{}
 	response.setBody(content);
 	return response;
 }
