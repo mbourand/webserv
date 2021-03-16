@@ -68,6 +68,8 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 	{
 		// On skip les whitepsaces en début de ligne
 		i = raw.find_first_not_of(" \t", i);
+		if (i == std::string::npos)
+			break;
 
 		// Si la ligne est vide ou que c'est un commentaire, on skip la ligne
 		if (raw[i] == '\n' || raw[i] == '#')

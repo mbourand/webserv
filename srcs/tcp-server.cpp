@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/08 15:03:55 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/16 14:11:35 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,14 @@ int	main()
 	Logger::print("Webserv is starting...", NULL, INFO, NORMAL);
 	try
 	{
-		init_config("config/default.conf", vhosts);
+		try
+		{
+			init_config("config/default.conf", vhosts);
+		}
+		catch (const std::exception& e)
+		{
+			return Logger::print(std::string("Config parsing failed with error : ") + e.what(), 1, ERROR, NORMAL);
+		}
 		for (std::list<VirtualHost>::iterator it = vhosts.begin(); it != vhosts.end(); it++)
 			std::cout << it->toString() << std::endl;
 
