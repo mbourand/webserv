@@ -12,7 +12,7 @@ VirtualHost::VirtualHost(const VirtualHost& other)
 	*this = other;
 }
 
-VirtualHost::VirtualHost(const ServerConfig& config)
+VirtualHost::VirtualHost(const ConfigContext& config)
 	: _config(config)
 {
 	for (std::list<int>::const_iterator it = _config.getPorts().begin(); it != _config.getPorts().end(); it++)
@@ -39,36 +39,14 @@ VirtualHost& VirtualHost::operator=(const VirtualHost& other)
 
 std::string VirtualHost::toString() const
 {
-	std::string ret;
-
-	ret += "VirtualHost:\n  names:\n";
-	for (std::list<std::string>::const_iterator it = _config.getNames().begin(); it != _config.getNames().end(); it++)
-		ret += "    - " + *it + "\n";
-	ret += "  ports:\n";
-	std::stringstream ss;
-	for (std::list<int>::const_iterator it = _config.getPorts().begin(); it != _config.getPorts().end(); it++)
-	{
-		ss << *it;
-		ret += "    - " + ss.str() + "\n";
-		ss.str("");
-	}
-	ss << _sockets.size();
-	ret += "  sockets: " + ss.str() + "\n  params:\n";
-	for (std::map<std::string, std::list<std::string> >::const_iterator it = _config.getParams().begin(); it != _config.getParams().end(); it++)
-	{
-		ret += "    - " + it->first + "\n";
-		for (std::list<std::string>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); it2++)
-			ret += "      - " + *it2 + "\n";
-	}
-
-	return ret;
+	return _config.toString();
 }
 
 /*
 ** ------------------------------- ACCESSORS ------------------------------
 */
 
-const ServerConfig& VirtualHost::getConfig() const
+const ConfigContext& VirtualHost::getConfig() const
 {
 	return _config;
 }

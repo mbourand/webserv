@@ -2,22 +2,22 @@
 #define SERVER_HPP
 
 #include "ServerSocket.hpp"
-#include "ServerConfig.hpp"
+#include "ConfigContext.hpp"
 
 class VirtualHost
 {
 	private:
-		ServerConfig _config;
+		ConfigContext _config;
 		std::list<ServerSocket> _sockets;
 
 	public:
 		VirtualHost();
 		VirtualHost(const VirtualHost& other);
-		VirtualHost(const ServerConfig& config);
+		VirtualHost(const ConfigContext& config);
 		virtual ~VirtualHost();
 		VirtualHost& operator=(const VirtualHost& other);
 
-		const ServerConfig& getConfig() const;
+		const ConfigContext& getConfig() const;
 		const std::list<ServerSocket>& getSockets() const;
 
 		std::string toString() const;

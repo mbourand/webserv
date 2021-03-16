@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/07 00:16:30 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/08 15:03:55 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include "VirtualHost.hpp"
 #include "Config.h"
 
-int	main(int argc, char **argv)
+int	main()
 {
 	std::list<VirtualHost> vhosts;
 

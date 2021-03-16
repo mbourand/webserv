@@ -13,38 +13,57 @@
 **    choisir le dossier où mettre les fichiers uploadés
 */
 
-#include "ServerConfig.hpp"
+#include "ConfigContext.hpp"
 #include "Logger.hpp"
 #include "Utils.hpp"
+#include <algorithm>
 
 /*
 ** ---------------------------------- CONSTRUCTOR --------------------------------------
 */
 
-ServerConfig::ServerConfig()
+ConfigContext::ConfigContext()
 {
+	_directive_names.push_back("server_name");
+	_directive_names.push_back("listen");
+	_directive_names.push_back("root");
+	_directive_names.push_back("location");
 }
 
-ServerConfig::~ServerConfig()
+ConfigContext::~ConfigContext()
 {}
 
-ServerConfig::ServerConfig(const ServerConfig& other)
+ConfigContext::ConfigContext(const ConfigContext& other)
 {
 	*this = other;
 }
 
-ServerConfig& ServerConfig::operator=(const ServerConfig& other)
+ConfigContext& ConfigContext::operator=(const ConfigContext& other)
 {
 	_params = other._params;
-	_locations = other._locations;
+	_childs = other._childs;
 	_error_pages = other._error_pages;
 	_ports = other._ports;
 	_names = other._names;
+	_directive_names = other._directive_names;
 	return *this;
 }
 
-ServerConfig::ServerConfig(const std::string& raw)
+ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 {
+	// si name a une valeur, c'est un context de location, on interdit donc certaines directives
+	if (name != "")
+		_names.push_back(name);
+	else
+	{
+		_directive_names.push_back("server_name");
+		_directive_names.push_back("listen");
+	}
+	_directive_names.push_back("root");
+	_directive_names.push_back("location");
+	_directive_names.push_back("index");
+
+
 	for (size_t i = 0; i < raw.size();)
 	{
 		// On skip les whitepsaces en début de ligne
@@ -59,12 +78,15 @@ ServerConfig::ServerConfig(const std::string& raw)
 
 		// On récupère le nom de la directive, par exemple : "server_name" ou "root", etc.
 		std::string directive_name = raw.substr(i, raw.find_first_of(" \t", i) - i);
+		if (std::find(_directive_names.begin(), _directive_names.end(), directive_name) == _directive_names.end())
+			throw std::invalid_argument("Unknown directive name in config");
+		if (_params.find(directive_name) != _params.end())
+			throw std::invalid_argument("Multiple declaration of the same directive in config");
 		i += directive_name.size();
 		i = raw.find_first_not_of(" \t", i);
 
 		if (directive_name == "location")
 		{
-			// On crée une LocationConfig
 			// On récupère le chemin de la location (juste après le nom de la directive)
 			std::string location_name = raw.substr(i, raw.find_first_of(" \t", i) - i);
 			i += location_name.size();
@@ -72,17 +94,19 @@ ServerConfig::ServerConfig(const std::string& raw)
 
 			// Si il n'y a pas d'accolate ouvrante, la config est invalide
 			if (raw[i] != '{')
-				throw std::invalid_argument("Invalid config file");
+				throw std::invalid_argument("Bad curly braces in config");
 			i = raw.find_first_not_of(" \t", i + 1);
 
 			// Si il n'y a pas de retour à la ligne après les espaces, la config est invalide
 			if (raw[i] != '\n')
-				throw std::invalid_argument("Invalid config file 2");
+				throw std::invalid_argument("Bad new line in config");
 
 			// On récupère le contenu du fichier qui concerne la location
-			std::string location_raw = raw.substr(i, raw.find("}", i) - i - 2);
-			_locations.push_back(LocationConfig(location_name, location_raw));
+			std::string location_raw = raw.substr(i, find_closing_bracket(raw, i) - i - 2);
+			_childs.push_back(ConfigContext(location_raw, location_name));
 			i += location_raw.size() + 2;
+			if (raw.find('\n', i) == std::string::npos)
+				break;
 			i = raw.find('\n', i) + 1;
 			continue;
 		}
@@ -135,6 +159,8 @@ ServerConfig::ServerConfig(const std::string& raw)
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
 			_params.insert(std::make_pair(directive_name, ft::split(directive_value, " \t")));
 		}
+		if (raw.find('\n', i) == std::string::npos)
+			break;
 		i = raw.find('\n', i) + 1;
 	}
 }
@@ -143,7 +169,7 @@ ServerConfig::ServerConfig(const std::string& raw)
 ** ---------------------------------- ACCESSOR --------------------------------------
 */
 
-std::string ServerConfig::getToken(const std::string& val, size_t token)
+std::string ConfigContext::getToken(const std::string& val, size_t token)
 {
 	size_t actual_token = 0;
 	size_t start_i = 0;
@@ -155,19 +181,34 @@ std::string ServerConfig::getToken(const std::string& val, size_t token)
 		if (i == std::string::npos && actual_token == token - 1)
 			return val.substr(start_i);
 		else if (i == std::string::npos)
-			throw std::out_of_range("ServerConfig: GetToken: token out of range");
+			throw std::out_of_range("ConfigContext: GetToken: token out of range");
 		start_i = i;
 		actual_token++;
 	}
 	return val.substr(start_i, val.find_first_not_of(" \t\n", start_i) - start_i);
 }
 
-std::list<LocationConfig>& ServerConfig::getLocations()
+const std::list<std::string>& ConfigContext::getParam(const std::string& name)
 {
-	return _locations;
+	for (std::list<ConfigContext>::iterator it = _childs.begin(); it != _childs.end(); it++)
+	{
+		// .front() car si il y a des enfants, ce sont forcément des locations qui ne portent qu'un seul nom
+		if (it->getNames().front() == name)
+		{
+			const std::list<std::string>& ret = it->getParam(name);
+			if (!ret.empty())
+				return ret;
+		}
+	}
+	return _params[name];
 }
 
-std::string ServerConfig::getErrorMessage(int code)
+std::list<ConfigContext>& ConfigContext::getChilds()
+{
+	return _childs;
+}
+
+std::string ConfigContext::getErrorMessage(int code)
 {
 	switch (code)
 	{
@@ -257,7 +298,7 @@ std::string ServerConfig::getErrorMessage(int code)
 	}
 }
 
-std::string ServerConfig::getErrorPage(int code)
+std::string ConfigContext::getErrorPage(int code)
 {
 	if (_error_pages.find(code) == _error_pages.end())
 	{
@@ -276,22 +317,82 @@ std::string ServerConfig::getErrorPage(int code)
 	return _error_pages[code];
 }
 
-const std::map<std::string, std::list<std::string> >& ServerConfig::getParams() const
+const std::map<std::string, std::list<std::string> >& ConfigContext::getParams() const
 {
 	return _params;
 }
 
-const std::map<int, std::string>& ServerConfig::getErrorPages() const
+const std::map<int, std::string>& ConfigContext::getErrorPages() const
 {
 	return _error_pages;
 }
 
-const std::list<std::string>& ServerConfig::getNames() const
+const std::list<std::string>& ConfigContext::getNames() const
 {
 	return _names;
 }
 
-const std::list<int>& ServerConfig::getPorts() const
+const std::list<int>& ConfigContext::getPorts() const
 {
 	return _ports;
+}
+
+/*
+** --------------------------------------- METHODS ---------------------------------------
+*/
+
+size_t ConfigContext::find_closing_bracket(const std::string& str, size_t start) const
+{
+	size_t nesting = 1;
+
+	for (size_t i = start; i < str.size(); i++)
+	{
+		if (str[i] == '{')
+			nesting++;
+		if (str[i] == '}')
+			nesting--;
+		if (nesting == 0)
+			return i;
+	}
+	return size_t(-1);
+}
+
+std::string ConfigContext::toString() const
+{
+	std::string str;
+
+	str += "Names:\n";
+	for (std::list<std::string>::const_iterator it = _names.begin(); it != _names.end(); it++)
+		str += "  " + *it + "\n";
+
+	if (!_ports.empty())
+	{
+		str += "Ports:\n";
+		std::stringstream ss;
+		for (std::list<int>::const_iterator it = _ports.begin(); it != _ports.end(); it++)
+		{
+			ss << *it;
+			str += "  " + ss.str() + "\n";
+			ss.str("");
+		}
+	}
+
+	if (!_params.empty())
+	{
+		str += "Params:\n";
+		for (std::map<std::string, std::list<std::string> >::const_iterator it = _params.begin(); it != _params.end(); it++)
+		{
+			str += "  " + it->first + "\n";
+			for (std::list<std::string>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); it2++)
+				str += "    " + *it2 + "\n";
+		}
+	}
+
+	if (!_childs.empty())
+	{
+		str += "Childs:\n";
+		for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
+			str += it->toString();
+	}
+	return str;
 }

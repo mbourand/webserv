@@ -2,7 +2,7 @@
 
 Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path),
 	_protocolVersion(other._protocolVersion), _body(other._body), _header_section_finished(other._header_section_finished),
-	_parse_start(other._parse_start), _finished_parsing(other._finished_parsing)
+	_finished_parsing(other._finished_parsing), _parse_start(other._parse_start)
 {
 	init_factories();
 }
@@ -16,7 +16,7 @@ Request::~Request()
 			delete *it;
 }
 
-Request::Request() : _method(NULL), _header_section_finished(false), _parse_start(0), _finished_parsing(false)
+Request::Request() : _method(NULL), _header_section_finished(false), _finished_parsing(false), _parse_start(0)
 {
 	init_factories();
 }

@@ -2,9 +2,9 @@
 #include <iostream>
 
 HostHeader::HostHeader() {}
-HostHeader::HostHeader(const HostHeader& other) {}
+HostHeader::HostHeader(const HostHeader&) {}
 HostHeader::~HostHeader() {}
-HostHeader& HostHeader::operator=(const HostHeader& other) { return *this; }
+HostHeader& HostHeader::operator=(const HostHeader&) { return *this; }
 
 std::string HostHeader::getType() const { return "Host"; }
 Header* HostHeader::clone() const { return new HostHeader(); }

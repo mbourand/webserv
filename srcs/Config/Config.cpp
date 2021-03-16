@@ -43,7 +43,7 @@ void init_config(const std::string& filename, std::list<VirtualHost>& vhosts)
 					break;
 				i++;
 			}
-			vhosts.push_back(VirtualHost(ServerConfig(raw.substr(start_i, i - start_i))));
+			vhosts.push_back(VirtualHost(ConfigContext(raw.substr(start_i, i - start_i))));
 			i = raw.find('\n', i) + 1;
 		}
 	}
