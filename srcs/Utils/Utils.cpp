@@ -1,6 +1,8 @@
 #include "Utils.hpp"
 #include <stdexcept>
 #include <sstream>
+#include <algorithm>
+#include <iostream>
 
 int ft::toInt(const std::string& str)
 {
@@ -35,4 +37,137 @@ std::list<std::string> ft::split(const std::string& str, const std::string& char
 		ret.push_back(str.substr(word_start, word_end - word_start));
 	}
 	return ret;
+}
+
+std::pair<std::string, int> ft::complete_ip(const std::string& incomplete_ip)
+{
+	std::pair<std::string, int> ret;
+
+	std::string ip = "0.0.0.0";
+	int port = 80;
+
+	if (incomplete_ip.size() == 0 || incomplete_ip == ":")
+		return std::make_pair(ip, port);
+	if (incomplete_ip.find_first_not_of("0123456789:") != std::string::npos || std::count(incomplete_ip.begin(), incomplete_ip.end(), ':') > 1)
+		throw std::invalid_argument("Bad ip");
+
+	if (incomplete_ip.find(':') != std::string::npos)
+	{
+		std::string part1 = incomplete_ip.substr(0, incomplete_ip.find(':'));
+		std::string part2 = incomplete_ip.substr(incomplete_ip.find(':') + 1);
+		if (part1.size() != 0)
+		{
+			if (std::count(part1.begin(), part1.end(), '.') != 3)
+				throw std::invalid_argument("Bad ip");
+			ip = part1;
+		}
+		if (part2.size() != 0)
+		{
+			if (part2.size() > 5)
+				throw std::invalid_argument("Bad port");
+			port = ft::toInt(part2);
+		}
+		return std::make_pair(ip, port);
+	}
+	if (std::count(incomplete_ip.begin(), incomplete_ip.end(), '.') == 3)
+		ip = incomplete_ip;
+	else if (std::count(incomplete_ip.begin(), incomplete_ip.end(), '.') == 0)
+	{
+		if (incomplete_ip.size() > 5)
+			throw std::invalid_argument("Bad port");
+		port = ft::toInt(incomplete_ip);
+	}
+	else
+		throw std::invalid_argument("Bad ip");
+	return std::make_pair(ip, port);
+}
+
+std::string ft::getErrorMessage(int code)
+{
+	switch (code)
+	{
+		case 100: return "Continue";
+		case 101: return "Switching Protocols";
+		case 102: return "Processing";
+		case 103: return "Early Hints";
+		case 200: return "OK";
+		case 201: return "Created";
+		case 202: return "Accepted";
+		case 203: return "Non-Authoritative Information";
+		case 204: return "No Content";
+		case 205: return "Reset Content";
+		case 206: return "Partial Content";
+		case 207: return "Multi-Status";
+		case 208: return "Already Reported";
+		case 210: return "Content Different";
+		case 226: return "IM Used";
+		case 300: return "Multiple choices";
+		case 301: return "Moved Permanently";
+		case 302: return "Found";
+		case 303: return "See Other";
+		case 304: return "Not Modified";
+		case 305: return "Use Proxy";
+		case 306: return "Switch Proxy";
+		case 307: return "Temporary Redirect";
+		case 308: return "Permanent Redirect";
+		case 310: return "Too Many Redirects";
+		case 400: return "Bad Request";
+		case 401: return "Unauthorized";
+		case 402: return "Payment Required";
+		case 403: return "Forbidden";
+		case 404: return "Not Found";
+		case 405: return "Method Not Allowed";
+		case 406: return "Not Acceptable";
+		case 407: return "Proxy Authentication Required";
+		case 408: return "Request Time-out";
+		case 409: return "Conflict";
+		case 410: return "Gone";
+		case 411: return "Length Required";
+		case 412: return "Precondition Failed";
+		case 413: return "Request Entity Too Large";
+		case 414: return "Request-URI Too Long";
+		case 415: return "Unsupported Media Type";
+		case 416: return "Requested range unsatisfiable";
+		case 417: return "Expectation failed";
+		case 418: return "I'm a teapot";
+		case 421: return "Bad mapping / Misdirected Request";
+		case 422: return "Unprocessable entity";
+		case 423: return "Locked";
+		case 424: return "Method failure";
+		case 425: return "Too Early";
+		case 426: return "Upgrade Required";
+		case 428: return "Precondition Required";
+		case 429: return "Too Many Requests";
+		case 431: return "Request Header Fields Too Large";
+		case 449: return "Retry With";
+		case 450: return "Blocked by Windows Parental Controls";
+		case 451: return "Unavailable For Legal Reasons";
+		case 456: return "Unrecoverable Error";
+		case 444: return "No Response";
+		case 495: return "SSL Certificate Error";
+		case 496: return "SSL Certificate Required";
+		case 497: return "HTTP Request Sent to HTTPS Port";
+		case 498: return "Token expired/invalid";
+		case 499: return "Client Closed Request";
+		case 500: return "Internal Server Error";
+		case 501: return "Not Implemented";
+		case 502: return "Bad Gateway";
+		case 503: return "Service Unavailable";
+		case 505: return "HTTP Version not supported";
+		case 506: return "Variant Also Negociates";
+		case 507: return "Insufficient Storage";
+		case 508: return "Loop Detected";
+		case 509: return "Bandwidth Limit Exceeded";
+		case 510: return "Not extended";
+		case 511: return "Network Authentication Required";
+		case 520: return "Unknown Error";
+		case 521: return "Web server is down";
+		case 522: return "Connection Timed Out";
+		case 523: return "Origin Is Unreachable";
+		case 524: return "A Timeout Occured";
+		case 525: return "SSL Handshake Failed";
+		case 526: return "Invalid SSL Certificate";
+		case 527: return "Railgun Error";
+		default: return "Unknown Error";
+	}
 }

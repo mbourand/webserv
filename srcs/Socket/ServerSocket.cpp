@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/02 15:46:45 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/18 14:53:16 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 ServerSocket::ServerSocket(int port) : m_port(port)
 {
+	std::cout << "Contructeur " << port << std::endl;
 	if (!Socket::Create())
 		throw ServerSocketException("Counldn't create socket.");
 	if (!Socket::Bind(this->m_port))
@@ -45,6 +46,7 @@ ServerSocket::ServerSocket(const ServerSocket &src) : m_port(src.m_port)
 
 ServerSocket::~ServerSocket()
 {
+	std::cout << "Destructeur " << m_port << std::endl;
 }
 
 
@@ -96,6 +98,11 @@ void					ServerSocket::Accept(ServerSocket &connection)
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+int ServerSocket::getPort() const
+{
+	return m_port;
+}
 
 
 /* ************************************************************************** */

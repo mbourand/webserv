@@ -28,7 +28,7 @@ class DeleteMethod : public IMethod
 		bool isCacheable() const;
 		bool isAllowedInHTMLForms() const;
 
-		Response process(const Request& request);
+		Response process(const Request& request, const ConfigContext& config);
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/16 18:44:21 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/18 14:55:46 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <errno.h>
 #include <signal.h>
 #include "Types_parser.hpp"
+#include "VirtualHost.hpp"
+#include "Config.h"
 
 #ifndef DEBUG
 # define DEBUG 0
@@ -84,20 +86,37 @@ bool	handle_client_request(Client &client)
 	}
 	catch(std::invalid_argument &e)
 	{
-		Response response(400, "Bad Request");
-		*client.sckt << response.getResponseText();
-		Logger::print(e.what(), NULL, ERROR, NORMAL);
+		try
+		{
+			Response response(400);
+			ConfigContext bad_request_context;
+			*client.sckt << response.getResponseText(bad_request_context);
+		}
+		catch (std::exception& e)
+		{
+			Logger::print(e.what(), NULL, ERROR, NORMAL);
+		}
 		return true;
 	}
 	return false;
 }
 
-bool	handle_server_response(Client &client)
+bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
 {
 	try
 	{
-		Response response = client.req->_method->process(*client.req);
-		*client.sckt << response.getResponseText();
+		std::string host;
+		for (Request::HeadersVector::iterator header_it = client.req->_headers.begin(); header_it != client.req->_headers.end(); header_it++)
+		{
+			if ((*header_it)->getType() == "Host")
+			{
+				host = (*header_it)->getValue();
+				break;
+			}
+		}
+		VirtualHost vhost = VirtualHost::getServerByName(host, client.sckt->getPort(), vhosts);
+		Response response = client.req->_method->process(*client.req, vhost.getConfig());
+		*client.sckt << response.getResponseText(vhost.getConfig());
 		if (DEBUG)
 			std::cout << *client.req << std::endl;
 		if (response.getCode() != 200)
@@ -113,16 +132,26 @@ bool	handle_server_response(Client &client)
 	return false;
 }
 
-int	main(void)
+int	main(int argc, char **argv)
 {
-	Logger::setMode(SILENT);
+	Logger::setMode(VERBOSE);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
+	if (argc > 2)
+	{
+		std::cerr << "Format: ./webserv <path_to_config_file>" << std::endl;
+		return 1;
+	}
+
+	std::list<VirtualHost> vhosts;
+	std::string config_path = (argc == 1 ? "./config/default.conf" : argv[1]);
+
 	g_webserv.run = true;
 	g_webserv.file_formatname = new HashTable(256);
 	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
 	try
 	{
+		init_config(config_path, vhosts);
 		ServerSocket					server(8080);
 		fd_set							read_sockets, read_sockets_z, write_sockets, write_sockets_z, error_sockets, error_sockets_z;
 		std::list<Client>				clients;
@@ -174,7 +203,7 @@ int	main(void)
 					{
 						error = handle_client_request((*it));
 						if (!error && (*it).req->isfinished() && FD_ISSET((*it).sckt->GetSocket(), &write_sockets))
-							error = handle_server_response((*it));
+							error = handle_server_response((*it), vhosts);
 					}
 					if (error)
 					{

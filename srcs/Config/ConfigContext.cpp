@@ -43,7 +43,6 @@ ConfigContext& ConfigContext::operator=(const ConfigContext& other)
 	_params = other._params;
 	_childs = other._childs;
 	_error_pages = other._error_pages;
-	_ports = other._ports;
 	_names = other._names;
 	_directive_names = other._directive_names;
 	return *this;
@@ -131,30 +130,15 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 					break;
 			}
 		}
-		else if (directive_name == "listen")
+		else if (directive_name == "error_page")
 		{
-			// On récupère la valeur de la directive : exemple "8080 80 443 5056 21 22"
+			// On récupère la valeur de la directive : exemple "400 404 405 error.html"
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+			std::list<std::string> words = ft::split(directive_value, " \t\n");
+			std::string page = words.back();
 
-
-			for (size_t j = 0; j < directive_value.size();)
-			{
-				// On récupère la chaîne du port qu'on convertit ensuite en int
-				std::string port_str = directive_value.substr(j, directive_value.find_first_of(" \t\n", j) - j);
-				std::istringstream iss(port_str);
-				int port;
-				iss >> port;
-
-				_ports.push_back(port);
-
-				// Si on est arrivé au dernier mot de la directive, on arrête
-				j = directive_value.find_first_of(" \t\n", j);
-				if (j >= directive_value.size() || directive_value[j] == '\n')
-					break;
-				j = directive_value.find_first_not_of(" \t\n", j);
-				if (j >= directive_value.size())
-					break;
-			}
+			for (std::list<std::string>::const_iterator it = words.begin(); it != words.end(); it++)
+				_error_pages.insert(std::make_pair(ft::toInt(*it), page));
 		}
 		else
 		{
@@ -165,34 +149,18 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 			break;
 		i = raw.find('\n', i) + 1;
 	}
+	if ((std::find(_directive_names.begin(), _directive_names.end(), "server_name") != _directive_names.end() && _names.empty()) ||
+		(std::find(_directive_names.begin(), _directive_names.end(), "listen") != _directive_names.end() && _params.find("listen") == _params.end()))
+			throw std::invalid_argument("No server_name or listen in config");
 }
 
 /*
 ** ---------------------------------- ACCESSOR --------------------------------------
 */
 
-std::string ConfigContext::getToken(const std::string& val, size_t token)
+const std::list<std::string>& ConfigContext::getParam(const std::string& name) const
 {
-	size_t actual_token = 0;
-	size_t start_i = 0;
-	size_t i = 0;
-	while (actual_token < token && i < val.size())
-	{
-		i = val.find_first_of(" \t", i);
-		i = val.find_first_not_of(" \t", i);
-		if (i == std::string::npos && actual_token == token - 1)
-			return val.substr(start_i);
-		else if (i == std::string::npos)
-			throw std::out_of_range("ConfigContext: GetToken: token out of range");
-		start_i = i;
-		actual_token++;
-	}
-	return val.substr(start_i, val.find_first_not_of(" \t\n", start_i) - start_i);
-}
-
-const std::list<std::string>& ConfigContext::getParam(const std::string& name)
-{
-	for (std::list<ConfigContext>::iterator it = _childs.begin(); it != _childs.end(); it++)
+	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
 	{
 		// .front() car si il y a des enfants, ce sont forcément des locations qui ne portent qu'un seul nom
 		if (it->getNames().front() == name)
@@ -202,7 +170,7 @@ const std::list<std::string>& ConfigContext::getParam(const std::string& name)
 				return ret;
 		}
 	}
-	return _params[name];
+	return _params.find(name)->second;
 }
 
 std::list<ConfigContext>& ConfigContext::getChilds()
@@ -210,97 +178,7 @@ std::list<ConfigContext>& ConfigContext::getChilds()
 	return _childs;
 }
 
-std::string ConfigContext::getErrorMessage(int code)
-{
-	switch (code)
-	{
-		case 100: return "Continue";
-		case 101: return "Switching Protocols";
-		case 102: return "Processing";
-		case 103: return "Early Hints";
-		case 200: return "OK";
-		case 201: return "Created";
-		case 202: return "Accepted";
-		case 203: return "Non-Authoritative Information";
-		case 204: return "No Content";
-		case 205: return "Reset Content";
-		case 206: return "Partial Content";
-		case 207: return "Multi-Status";
-		case 208: return "Already Reported";
-		case 210: return "Content Different";
-		case 226: return "IM Used";
-		case 300: return "Multiple choices";
-		case 301: return "Moved Permanently";
-		case 302: return "Found";
-		case 303: return "See Other";
-		case 304: return "Not Modified";
-		case 305: return "Use Proxy";
-		case 306: return "Switch Proxy";
-		case 307: return "Temporary Redirect";
-		case 308: return "Permanent Redirect";
-		case 310: return "Too Many Redirects";
-		case 400: return "Bad Request";
-		case 401: return "Unauthorized";
-		case 402: return "Payment Required";
-		case 403: return "Forbidden";
-		case 404: return "Not Found";
-		case 405: return "Method Not Allowed";
-		case 406: return "Not Acceptable";
-		case 407: return "Proxy Authentication Required";
-		case 408: return "Request Time-out";
-		case 409: return "Conflict";
-		case 410: return "Gone";
-		case 411: return "Length Required";
-		case 412: return "Precondition Failed";
-		case 413: return "Request Entity Too Large";
-		case 414: return "Request-URI Too Long";
-		case 415: return "Unsupported Media Type";
-		case 416: return "Requested range unsatisfiable";
-		case 417: return "Expectation failed";
-		case 418: return "I'm a teapot";
-		case 421: return "Bad mapping / Misdirected Request";
-		case 422: return "Unprocessable entity";
-		case 423: return "Locked";
-		case 424: return "Method failure";
-		case 425: return "Too Early";
-		case 426: return "Upgrade Required";
-		case 428: return "Precondition Required";
-		case 429: return "Too Many Requests";
-		case 431: return "Request Header Fields Too Large";
-		case 449: return "Retry With";
-		case 450: return "Blocked by Windows Parental Controls";
-		case 451: return "Unavailable For Legal Reasons";
-		case 456: return "Unrecoverable Error";
-		case 444: return "No Response";
-		case 495: return "SSL Certificate Error";
-		case 496: return "SSL Certificate Required";
-		case 497: return "HTTP Request Sent to HTTPS Port";
-		case 498: return "Token expired/invalid";
-		case 499: return "Client Closed Request";
-		case 500: return "Internal Server Error";
-		case 501: return "Not Implemented";
-		case 502: return "Bad Gateway";
-		case 503: return "Service Unavailable";
-		case 505: return "HTTP Version not supported";
-		case 506: return "Variant Also Negociates";
-		case 507: return "Insufficient Storage";
-		case 508: return "Loop Detected";
-		case 509: return "Bandwidth Limit Exceeded";
-		case 510: return "Not extended";
-		case 511: return "Network Authentication Required";
-		case 520: return "Unknown Error";
-		case 521: return "Web server is down";
-		case 522: return "Connection Timed Out";
-		case 523: return "Origin Is Unreachable";
-		case 524: return "A Timeout Occured";
-		case 525: return "SSL Handshake Failed";
-		case 526: return "Invalid SSL Certificate";
-		case 527: return "Railgun Error";
-		default: return "Unknown Error";
-	}
-}
-
-std::string ConfigContext::getErrorPage(int code)
+std::string ConfigContext::getErrorPage(int code) const
 {
 	if (_error_pages.find(code) == _error_pages.end())
 	{
@@ -309,14 +187,14 @@ std::string ConfigContext::getErrorPage(int code)
 		std::string code_str = ss.str();
 		return
 			"<html>\r \
-			<head><title>" + code_str + " " + getErrorMessage(code) + "</title></head>\r \
+			<head><title>" + code_str + " " + ft::getErrorMessage(code) + "</title></head>\r \
 			<body>\r \
-			<center><h1>" + code_str + " " + getErrorMessage(code) + "</h1></center>\r \
+			<center><h1>" + code_str + " " + ft::getErrorMessage(code) + "</h1></center>\r \
 			<hr><center>Webserv 1.0.0</center>\r \
 			</body>\r \
 			</html>\r";
 	}
-	return _error_pages[code];
+	return _error_pages.find(code)->second;
 }
 
 const std::map<std::string, std::list<std::string> >& ConfigContext::getParams() const
@@ -332,11 +210,6 @@ const std::map<int, std::string>& ConfigContext::getErrorPages() const
 const std::list<std::string>& ConfigContext::getNames() const
 {
 	return _names;
-}
-
-const std::list<int>& ConfigContext::getPorts() const
-{
-	return _ports;
 }
 
 /*
@@ -366,18 +239,6 @@ std::string ConfigContext::toString() const
 	str += "Names:\n";
 	for (std::list<std::string>::const_iterator it = _names.begin(); it != _names.end(); it++)
 		str += "  " + *it + "\n";
-
-	if (!_ports.empty())
-	{
-		str += "Ports:\n";
-		std::stringstream ss;
-		for (std::list<int>::const_iterator it = _ports.begin(); it != _ports.end(); it++)
-		{
-			ss << *it;
-			str += "  " + ss.str() + "\n";
-			ss.str("");
-		}
-	}
 
 	if (!_params.empty())
 	{

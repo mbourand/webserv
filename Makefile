@@ -28,7 +28,7 @@ else ifeq ($(DB),3)
 	CFLAGS	= -g3 -std=c++98
 endif
 
-.PHONY: all re clean fclean
+.PHONY: all re clean fclean multi re_multi
 
 all: $(NAME)
 
@@ -58,3 +58,10 @@ fclean: clean
 	@echo "$(RED)[$(NAME)] : $(DEF)Full Cleaning $(GRN)[OK]$(DEF)"
 
 re: fclean all
+
+multi:
+	make all -j
+
+re_multi:
+	make fclean -j
+	make all -j

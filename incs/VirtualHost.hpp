@@ -8,7 +8,7 @@ class VirtualHost
 {
 	private:
 		ConfigContext _config;
-		std::list<ServerSocket> _sockets;
+		std::list<int> _ports;
 
 	public:
 		VirtualHost();
@@ -18,7 +18,7 @@ class VirtualHost
 		VirtualHost& operator=(const VirtualHost& other);
 
 		const ConfigContext& getConfig() const;
-		const std::list<ServerSocket>& getSockets() const;
+		const std::list<int>& getPorts() const;
 
 		std::string toString() const;
 

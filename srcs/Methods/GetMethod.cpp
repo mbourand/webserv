@@ -33,19 +33,19 @@ bool GetMethod::isIdempotent() const { return true; }
 bool GetMethod::isCacheable() const { return true; }
 bool GetMethod::isAllowedInHTMLForms() const { return true; }
 
-Response GetMethod::process(const Request& request)
+Response GetMethod::process(const Request& request, const ConfigContext& config)
 {
 	std::fstream file((std::string("www/") + request._path).c_str());
 	if (!file.good() || !file.is_open())
 	{
 		if (errno == ENOENT)
-			return Logger::print("File not found", Response(404, "Not found"), ERROR, VERBOSE);
+			return Logger::print("File not found", Response(404), ERROR, VERBOSE);
 		if (errno == EACCES)
-			return Logger::print("Premission denied", Response(403, "Forbidden"), ERROR, VERBOSE);
-		return Logger::print("Unexpected error while trying to open file", Response(500, "Internal Server Error"));
+			return Logger::print("Premission denied", Response(403), ERROR, VERBOSE);
+		return Logger::print("Unexpected error while trying to open file", Response(500));
 	}
 	std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
-	Response response(200, "OK");
+	Response response(200);
 	std::ostringstream convert;
 	struct stat file_stats;
 	lstat((std::string("www/") + request._path).c_str(), &file_stats);

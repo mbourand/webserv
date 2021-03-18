@@ -22,7 +22,7 @@ bool PutMethod::isIdempotent() const { return true; }
 bool PutMethod::isCacheable() const { return false; }
 bool PutMethod::isAllowedInHTMLForms() const { return false; }
 
-Response PutMethod::process(const Request&)
+Response PutMethod::process(const Request&, const ConfigContext&)
 {
 	return Response();
 }

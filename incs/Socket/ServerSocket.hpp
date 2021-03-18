@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/08 02:40:17 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/17 14:07:12 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ class ServerSocket : public Socket
 {
 
 	public:
-
 		ServerSocket(void) {};
 		ServerSocket(int port);
 		ServerSocket(ServerSocket const &src);
@@ -32,6 +31,8 @@ class ServerSocket : public Socket
 		ServerSocket &			operator=( ServerSocket const & rhs );
 		const ServerSocket &	operator<<(const std::string &str) const;
 		const ServerSocket &	operator>>(std::string &str) const;
+
+		int getPort() const;
 
 		class ServerSocketException : public std::exception
 		{
