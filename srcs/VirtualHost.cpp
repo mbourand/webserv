@@ -74,6 +74,7 @@ VirtualHost& VirtualHost::getServerByName(const std::string& name, int port, std
 {
 	std::list<VirtualHost*> matches;
 
+	std::cout << "VHost port: " << port << std::endl;
 	// Cherche le premier serveur avec un port correspondant
 	for (std::list<VirtualHost>::iterator vhost_it = vhosts.begin(); vhost_it != vhosts.end(); vhost_it++)
 	{

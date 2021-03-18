@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 19:37:11 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/18 14:47:41 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/18 16:09:28 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 struct Client {
 	ServerSocket	*sckt;
+	int				port;
 	Request			*req;
 };
 
