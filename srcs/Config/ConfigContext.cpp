@@ -60,6 +60,7 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 	}
 	_directive_names.push_back("root");
 	_directive_names.push_back("location");
+	_directive_names.push_back("error_page");
 	_directive_names.push_back("index");
 
 
