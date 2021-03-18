@@ -74,12 +74,9 @@ Response GetMethod::process(const Request& request)
 	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);
 	response.addHeader("Date", buffer);
 	response.addHeader("Server", "Webserv");
-	try
-	{
-		response.addHeader("Content-Type", g_webserv.file_formatname->Lookup(request._path.substr(request._path.find_last_of('.') + 1)));
-	}
-	catch(const std::exception &e)
-	{}
+	t_hnode	*hnode = g_webserv.file_formatname->GetNode(request._path.substr(request._path.find_last_of('.') + 1));
+	if (hnode != NULL)
+		response.addHeader("Content-Type", hnode->value);
 	response.setBody(content);
 	return response;
 }
