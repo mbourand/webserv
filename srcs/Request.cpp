@@ -235,8 +235,9 @@ bool Request::parse_headers()
 		_parse_start += header_len;
 	if (_raw[_parse_start] == '\r' && _raw[_parse_start + 1] == '\n')
 	{
+		_parse_start -= 2;
 		if (_method->requestHasBody())
-			_parse_start += 2;
+			_parse_start += 4;
 		Logger::print("Header section is finished", false, INFO, VERBOSE);
 		return (_header_section_finished = true);
 	}
