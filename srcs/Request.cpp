@@ -2,7 +2,8 @@
 
 Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path),
 	_protocolVersion(other._protocolVersion), _body(other._body), _header_section_finished(other._header_section_finished),
-	_finished_parsing(other._finished_parsing), _parse_start(other._parse_start)
+	_finished_parsing(other._finished_parsing), _parse_start(other._parse_start), _max_body_size(other._max_body_size),
+	_error_code(other._error_code), _error_text(other._error_text)
 {
 	init_factories();
 }
@@ -16,7 +17,7 @@ Request::~Request()
 			delete *it;
 }
 
-Request::Request() : _method(NULL), _header_section_finished(false), _finished_parsing(false), _parse_start(0)
+Request::Request() : _method(NULL), _header_section_finished(false), _finished_parsing(false), _parse_start(0), _max_body_size(1000000), _error_code(0)
 {
 	init_factories();
 }
@@ -112,14 +113,26 @@ void Request::parse()
 
 	}
 
-	if (_header_section_finished && _raw.find("\r\n", _parse_start) != std::string::npos)
+	if (_header_section_finished && _raw.find("\r\n\r\n", _parse_start) != std::string::npos)
 	{
 		if (_method->requestHasBody())
 		{
-			_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size() - 2);
+			if ((_raw.size() - _parse_start) > _max_body_size)
+			{
+				_error_code = 413;
+				_error_text = "Request Entity Too Large.";
+				throw std::invalid_argument("Request Entity too large.");
+			}
+			_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size() - 4);
 			Logger::print("Request body is " + _body, NULL, INFO, VERBOSE);
 		}
 		_finished_parsing = true;
+	}
+	else if (_header_section_finished && _method->requestHasBody() && (_raw.size() - _parse_start) > _max_body_size)
+	{
+		_error_code = 413;
+		_error_text = "Request Entity Too Large.";
+		throw std::invalid_argument("Request Entity too large.");
 	}
 }
 
@@ -222,6 +235,8 @@ bool Request::parse_headers()
 		_parse_start += header_len;
 	if (_raw[_parse_start] == '\r' && _raw[_parse_start + 1] == '\n')
 	{
+		if (_method->requestHasBody())
+			_parse_start += 2;
 		Logger::print("Header section is finished", false, INFO, VERBOSE);
 		return (_header_section_finished = true);
 	}
@@ -296,6 +311,6 @@ std::ostream& operator<<(std::ostream& out, const Request& request)
 			"Headers: " << std::endl;
 	for (Request::HeadersVector::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
 		out << "  \"" << (*it)->getType() << "\" -> \"" << (*it)->getValue() << '"' << std::endl;
-	out << "Body:\n" << request._body << std::endl;
+	out << "Body:\n\"" << request._body << "\"" << std::endl;
 	return out;
 }

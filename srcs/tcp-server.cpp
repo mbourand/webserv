@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/16 18:44:21 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/18 01:30:01 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,11 @@ bool	handle_client_request(Client &client)
 	catch(std::invalid_argument &e)
 	{
 		Response response(400, "Bad Request");
+		if (client.req->_error_code)
+		{
+			response.setCode(client.req->_error_code);
+			response.setMessage(client.req->_error_text);
+		}
 		*client.sckt << response.getResponseText();
 		Logger::print(e.what(), NULL, ERROR, NORMAL);
 		return true;
