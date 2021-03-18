@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/02 15:46:45 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/18 17:00:25 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,22 +52,6 @@ ServerSocket::~ServerSocket()
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-ServerSocket &				ServerSocket::operator=( ServerSocket const & rhs )
-{
-	(void)rhs;
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
-	return *this;
-}
-
-/*std::ostream &			operator<<( std::ostream & o, ServerSocket const & i )
-{
-	//o << "Value = " << i.getValue();
-	return o;
-}*/
-
 const ServerSocket &	ServerSocket::operator<<(const std::string& s) const
 {
 	if (!Socket::Send(s))
@@ -93,9 +77,19 @@ void					ServerSocket::Accept(ServerSocket &connection)
 		throw ServerSocketException("Couldn't accept socket: "+std::string(strerror(errno)));
 }
 
+void					ServerSocket::setServerPort(int port)
+{
+	m_port = port;
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+int 					ServerSocket::getServerPort() const
+{
+	return m_port;
+}
 
 
 /* ************************************************************************** */

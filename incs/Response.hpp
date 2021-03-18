@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include "ConfigContext.hpp"
 
 class Response
 {
@@ -15,7 +16,7 @@ class Response
 	public:
 		Response();
 		Response(const Response& other);
-		Response(int code, const std::string& message);
+		Response(int code);
 		virtual ~Response();
 		Response& operator=(const Response& other);
 
@@ -27,7 +28,7 @@ class Response
 
 		void setBody(const std::string& body);
 
-		std::string getResponseText();
+		std::string getResponseText(const ConfigContext& config);
 		int			getCode(void) const;
 };
 

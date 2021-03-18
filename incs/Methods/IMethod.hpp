@@ -25,7 +25,7 @@ class IMethod
 		virtual bool isCacheable() const = 0;
 		virtual bool isAllowedInHTMLForms() const = 0;
 
-		virtual Response process(const Request& request) = 0;
+		virtual Response process(const Request& request, const ConfigContext& config) = 0;
 };
 
 #endif

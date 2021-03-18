@@ -22,7 +22,7 @@ bool TraceMethod::isIdempotent() const { return true; }
 bool TraceMethod::isCacheable() const { return false; }
 bool TraceMethod::isAllowedInHTMLForms() const { return false; }
 
-Response TraceMethod::process(const Request&)
+Response TraceMethod::process(const Request&, const ConfigContext&)
 {
 	return Response();
 }

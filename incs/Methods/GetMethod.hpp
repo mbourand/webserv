@@ -2,6 +2,7 @@
 #define GET_METHOD_HPP
 
 #include "IMethod.hpp"
+#include "ConfigContext.hpp"
 
 class Request;
 
@@ -28,7 +29,7 @@ class GetMethod : public IMethod
 		bool isCacheable() const;
 		bool isAllowedInHTMLForms() const;
 
-		Response process(const Request& request);
+		Response process(const Request& request, const ConfigContext& config);
 };
 
 #endif

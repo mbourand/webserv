@@ -1,5 +1,6 @@
 #include "Response.hpp"
 #include <sstream>
+#include "Utils.hpp"
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -17,8 +18,8 @@ Response::Response(const Response& other)
 	*this = other;
 }
 
-Response::Response(int code, const std::string& message)
-	: _code(code), _message(message)
+Response::Response(int code)
+	: _code(code)
 {}
 
 Response& Response::operator=(const Response& other)
@@ -44,7 +45,7 @@ void Response::removeHeader(const std::string& header_name)
 	_headers.erase(header_name);
 }
 
-std::string Response::getResponseText()
+std::string Response::getResponseText(const ConfigContext& config)
 {
 	std::stringstream ss;
 	ss << _code;
@@ -58,19 +59,11 @@ std::string Response::getResponseText()
 		str += it->first + ": " + it->second + "\r\n";
 	}
 	str += "\r\n";
-
 	if (_body != "")
 		str += _body;
 	if (_body == "" && _code >= 300)
 	{
-		str = str +
-				"<html>\r\n" +
-				"<head><title>" + code_str + " " + _message + "</title></head>\r\n" +
-				"<body>\r\n" +
-				"<center><h1>" + code_str + " " + _message + "</h1></center>\r\n" +
-				"<hr><center>Webserv 1.0.0</center>\r\n" +
-				"</body>\r\n" +
-				"</html>\r\n";
+		str += config.getErrorPage(_code);
 	}
 	return str;
 }
