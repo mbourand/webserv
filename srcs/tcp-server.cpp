@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/18 16:12:37 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/18 17:01:46 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	handle_new_connection(ServerSocket &server, std::list<Client> &clients)
 	Client	new_client;
 	new_client.sckt = new ServerSocket;
 	new_client.req = new Request;
-	new_client.port = server.getPort();
+	new_client.sckt->setServerPort(server.getServerPort());
 	server.Accept(*new_client.sckt);
 	clients.push_back(new_client);
 	Logger::print("New Client Connected", NULL, SUCCESS, NORMAL);
@@ -115,7 +115,7 @@ bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
 				break;
 			}
 		}
-		VirtualHost vhost = VirtualHost::getServerByName(host, client.port, vhosts);
+		VirtualHost vhost = VirtualHost::getServerByName(host, client.sckt->getServerPort(), vhosts);
 		Response response = client.req->_method->process(*client.req, vhost.getConfig());
 		*client.sckt << response.getResponseText(vhost.getConfig());
 		if (DEBUG)
@@ -135,7 +135,7 @@ bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
 
 int	main(int argc, char **argv)
 {
-	Logger::setMode(VERBOSE);
+	Logger::setMode(SILENT);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	if (argc > 2)
 	{
@@ -233,7 +233,7 @@ int	main(int argc, char **argv)
 		it = clients.begin();
 		while (it != clients.end())
 		{
-			Logger::print("Socket closed", NULL, SUCCESS, VERBOSE);
+			Logger::print("Socket closed", NULL, SUCCESS, SILENT);
 			delete (*it).sckt;
 			delete (*it).req;
 			it = clients.erase(it);
@@ -245,6 +245,7 @@ int	main(int argc, char **argv)
 	}
 	for (std::map<int, ServerSocket*>::iterator its = g_webserv.sockets.begin(); its != g_webserv.sockets.end(); its++)
 	{
+		std::cout << "DELETEING....." << std::endl;
 		delete its->second;
 	}
 	delete g_webserv.file_formatname;

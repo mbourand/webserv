@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerSocket.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/17 14:07:12 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/18 17:00:43 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ class ServerSocket : public Socket
 
 		void					Accept(ServerSocket &connection);
 
-		ServerSocket &			operator=( ServerSocket const & rhs );
 		const ServerSocket &	operator<<(const std::string &str) const;
 		const ServerSocket &	operator>>(std::string &str) const;
+		void					setServerPort(int port);
 
-		int getPort() const;
+		int						getServerPort() const;
 
 		class ServerSocketException : public std::exception
 		{
@@ -50,7 +50,5 @@ class ServerSocket : public Socket
 		int	m_port;
 
 };
-
-/*std::ostream &			operator<<( std::ostream & o, ServerSocket const & i );*/
 
 #endif /* **************************************************** SERVERSOCKET_H */

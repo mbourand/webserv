@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/18 14:53:16 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/18 17:00:25 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 
 ServerSocket::ServerSocket(int port) : m_port(port)
 {
-	std::cout << "Contructeur " << port << std::endl;
 	if (!Socket::Create())
 		throw ServerSocketException("Counldn't create socket.");
 	if (!Socket::Bind(this->m_port))
@@ -46,29 +45,12 @@ ServerSocket::ServerSocket(const ServerSocket &src) : m_port(src.m_port)
 
 ServerSocket::~ServerSocket()
 {
-	std::cout << "Destructeur " << m_port << std::endl;
 }
 
 
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
 */
-
-ServerSocket &				ServerSocket::operator=( ServerSocket const & rhs )
-{
-	(void)rhs;
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
-	return *this;
-}
-
-/*std::ostream &			operator<<( std::ostream & o, ServerSocket const & i )
-{
-	//o << "Value = " << i.getValue();
-	return o;
-}*/
 
 const ServerSocket &	ServerSocket::operator<<(const std::string& s) const
 {
@@ -95,11 +77,16 @@ void					ServerSocket::Accept(ServerSocket &connection)
 		throw ServerSocketException("Couldn't accept socket: "+std::string(strerror(errno)));
 }
 
+void					ServerSocket::setServerPort(int port)
+{
+	m_port = port;
+}
+
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
 
-int ServerSocket::getPort() const
+int 					ServerSocket::getServerPort() const
 {
 	return m_port;
 }
