@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/18 18:03:01 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/22 15:28:19 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
 		{
 			if ((*header_it)->getType() == "Host")
 			{
-				host = (*header_it)->getValue();
+				host = (*header_it)->getValue().substr(0, std::min((*header_it)->getValue().find(':'), (*header_it)->getValue().size()));
 				break;
 			}
 		}
@@ -154,7 +154,14 @@ int	main(int argc, char **argv)
 	sighandler();
 	try
 	{
-		init_config(config_path, vhosts);
+		try
+		{
+			init_config(config_path, vhosts);
+		}
+		catch(const std::exception& e)
+		{
+			return Logger::print(std::string("Invalid config file: ") + e.what(), 1, ERROR, SILENT);
+		}
 		fd_set							read_sockets, read_sockets_z, write_sockets, write_sockets_z, error_sockets, error_sockets_z;
 		std::list<Client>				clients;
 		std::list<Client>::iterator		it;
@@ -245,11 +252,9 @@ int	main(int argc, char **argv)
 	{
 		Logger::print(e.what(), NULL, ERROR, NORMAL);
 	}
+
 	for (std::map<int, ServerSocket*>::iterator its = g_webserv.sockets.begin(); its != g_webserv.sockets.end(); its++)
-	{
-		std::cout << "DELETEING....." << std::endl;
 		delete its->second;
-	}
 	delete g_webserv.file_formatname;
 	Logger::print("Webserv Shutdown complete", NULL, SUCCESS, SILENT);
 	std::cout << std::flush;

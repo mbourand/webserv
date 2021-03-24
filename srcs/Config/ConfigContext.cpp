@@ -116,6 +116,8 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 		{
 			// On récupère la valeur de la directive : exemple "localhost www.localhost.com pouetpouet.fr"
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+			if (directive_value.size() == 0)
+				throw std::invalid_argument("Empty directive value in config");
 
 			for (size_t j = 0; j < directive_value.size();)
 			{
@@ -135,6 +137,9 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 		{
 			// On récupère la valeur de la directive : exemple "400 404 405 error.html"
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+			if (directive_value.size() == 0)
+				throw std::invalid_argument("Empty directive value in config");
+
 			std::list<std::string> words = ft::split(directive_value, " \t\n");
 			std::string page = words.back();
 
@@ -144,15 +149,16 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 		else
 		{
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+			if (directive_value.size() == 0)
+				throw std::invalid_argument("Empty directive value in config");
 			_params.insert(std::make_pair(directive_name, ft::split(directive_value, " \t")));
 		}
 		if (raw.find('\n', i) == std::string::npos)
 			break;
 		i = raw.find('\n', i) + 1;
 	}
-	if ((std::find(_directive_names.begin(), _directive_names.end(), "server_name") != _directive_names.end() && _names.empty()) ||
-		(std::find(_directive_names.begin(), _directive_names.end(), "listen") != _directive_names.end() && _params.find("listen") == _params.end()))
-			throw std::invalid_argument("No server_name or listen in config");
+	if ((std::find(_directive_names.begin(), _directive_names.end(), "listen") != _directive_names.end() && _params.find("listen") == _params.end()))
+			throw std::invalid_argument("No listen in config");
 }
 
 /*
