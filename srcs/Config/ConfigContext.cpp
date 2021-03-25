@@ -17,6 +17,8 @@
 #include "Logger.hpp"
 #include "Utils.hpp"
 #include <algorithm>
+#include <sstream>
+#include <fstream>
 
 /*
 ** ---------------------------------- CONSTRUCTOR --------------------------------------
@@ -90,7 +92,7 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 		if (directive_name == "location")
 		{
 			// On récupère le chemin de la location (juste après le nom de la directive)
-			std::string location_name = raw.substr(i, raw.find_first_of(" \t", i) - i);
+			std::string location_name = raw.substr(i, raw.find_first_of(" \t\n", i) - i);
 			i += location_name.size();
 			i = raw.find_first_not_of(" \t", i);
 
@@ -143,7 +145,7 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 			std::list<std::string> words = ft::split(directive_value, " \t\n");
 			std::string page = words.back();
 
-			for (std::list<std::string>::const_iterator it = words.begin(); it != words.end(); it++)
+			for (std::list<std::string>::const_iterator it = words.begin(); it != --words.end(); it++)
 				_error_pages.insert(std::make_pair(ft::toInt(*it), page));
 		}
 		else
@@ -159,6 +161,8 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 	}
 	if ((std::find(_directive_names.begin(), _directive_names.end(), "listen") != _directive_names.end() && _params.find("listen") == _params.end()))
 			throw std::invalid_argument("No listen in config");
+	if (_params.find("root") == _params.end())
+		_params["root"].push_back("./");
 }
 
 /*
@@ -167,17 +171,45 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 
 const std::list<std::string>& ConfigContext::getParam(const std::string& name) const
 {
+	return _params.find(name)->second;
+}
+
+const std::list<std::string>& ConfigContext::getParamPath(const std::string& name, const std::string& path) const
+{
+	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
+		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
+			return it->getParam(name);
+	return getParam(name);
+}
+
+std::string ConfigContext::rootPath(const std::string& path) const
+{
+	std::string res = "./";
+
 	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
 	{
-		// .front() car si il y a des enfants, ce sont forcément des locations qui ne portent qu'un seul nom
-		if (it->getNames().front() == name)
+		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
 		{
-			const std::list<std::string>& ret = it->getParam(name);
-			if (!ret.empty())
-				return ret;
+			std::list<std::string> splitted = ft::split(it->getParam("root").front(), "/");
+			std::list<std::string> splitted_path = ft::split(path.substr(it->getNames().front().size()), "/");
+
+			for (std::list<std::string>::iterator it = splitted.begin(); it != splitted.end(); it++)
+				res += *it + "/";
+			for (std::list<std::string>::iterator it2 = splitted_path.begin(); it2 != splitted_path.end(); it2++)
+				res += *it2 + "/";
+			res.erase(--res.end()); // Enlève le / à la fin
+			return res;
 		}
 	}
-	return _params.find(name)->second;
+	std::list<std::string> splitted = ft::split(getParam("root").front(), "/");
+	std::list<std::string> splitted_path = ft::split(path, "/");
+
+	for (std::list<std::string>::iterator it = splitted.begin(); it != splitted.end(); it++)
+		res += *it + "/";
+	for (std::list<std::string>::iterator it2 = splitted_path.begin(); it2 != splitted_path.end(); it2++)
+		res += *it2 + "/";
+	res.erase(--res.end()); // Enlève le / à la fin
+	return res;
 }
 
 std::list<ConfigContext>& ConfigContext::getChilds()
@@ -187,12 +219,21 @@ std::list<ConfigContext>& ConfigContext::getChilds()
 
 std::string ConfigContext::getErrorPage(int code) const
 {
-	if (_error_pages.find(code) == _error_pages.end())
+	if (_error_pages.find(code) != _error_pages.end())
 	{
-		std::stringstream ss;
-		ss << code;
-		std::string code_str = ss.str();
-		return
+		try
+		{
+			std::ifstream file(_error_pages.find(code)->second.c_str(), std::ifstream::in);
+			std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+			return content;
+		}
+		catch (std::exception& e)
+		{}
+	}
+	std::stringstream ss;
+	ss << code;
+	std::string code_str = ss.str();
+	return
 "<html>\r\n\
 	<head><title>" + code_str + " " + ft::getErrorMessage(code) + "</title></head>\r\n\
 	<body>\r\n\
@@ -200,8 +241,31 @@ std::string ConfigContext::getErrorPage(int code) const
 		<hr><center>Webserv 1.0.0</center>\r\n\
 	</body>\r\n\
 </html>";
+}
+
+std::string ConfigContext::getErrorPagePath(int code, const std::string& path) const
+{
+	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
+	{
+		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
+		{
+			if (it->getErrorPages().find(code) != it->getErrorPages().end())
+				return it->getErrorPage(code);
+		}
 	}
-	return _error_pages.find(code)->second;
+	return getErrorPage(code);
+}
+
+std::string ConfigContext::findFileWithRoot(const std::string& name) const
+{
+	const std::list<std::string>& roots = getParam("root");
+	for (std::list<std::string>::const_iterator it = roots.begin(); it != roots.end(); it++)
+	{
+		std::ifstream file((*it + "/" + name).c_str());
+		if (file.good())
+			return *it + "/" + name.c_str();
+	}
+	throw std::invalid_argument("File doesn't exist.");
 }
 
 const std::map<std::string, std::list<std::string> >& ConfigContext::getParams() const

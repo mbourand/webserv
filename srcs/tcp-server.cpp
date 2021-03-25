@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/22 15:28:19 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/25 16:17:08 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ bool	handle_client_request(Client &client)
 	{
 		try
 		{
-			Response response(400);
+			Response response(400, "");
 			if (client.req->_error_code)
 				response.setCode(client.req->_error_code);
 			ConfigContext bad_request_context;

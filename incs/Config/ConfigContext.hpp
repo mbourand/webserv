@@ -29,12 +29,16 @@ class ConfigContext
 		std::string getString(const std::string& param, size_t token) const;
 		std::list<ConfigContext>& getChilds();
 		std::string getErrorPage(int code) const;
+		std::string getErrorPagePath(int code, const std::string& path) const;
 		const std::list<std::string>& getParam(const std::string& name) const;
+		const std::list<std::string>& getParamPath(const std::string& name, const std::string& path) const;
+		std::string rootPath(const std::string& path) const;
 
 		const std::map<std::string, std::list<std::string> >& getParams() const;
 		const std::map<int, std::string>& getErrorPages() const;
 		const std::list<std::string>& getNames() const;
 		std::string toString() const;
+		std::string findFileWithRoot(const std::string& name) const;
 };
 
 #endif
