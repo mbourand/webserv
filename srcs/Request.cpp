@@ -3,7 +3,7 @@
 Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path),
 	_protocolVersion(other._protocolVersion), _body(other._body), _header_section_finished(other._header_section_finished),
 	_finished_parsing(other._finished_parsing), _parse_start(other._parse_start), _max_body_size(other._max_body_size),
-	_error_code(other._error_code), _error_text(other._error_text)
+	_error_code(other._error_code), _error_text(other._error_text), _query_string(other._query_string)
 {
 	init_factories();
 }
@@ -158,6 +158,12 @@ void Request::parse_uri()
 		else
 		{
 			_path = _raw.substr(_parse_start + 1, _raw.find(' ', _parse_start + 1) - (_parse_start + 1));
+			if (_path.find('?') != std::string::npos)
+			{
+				_query_string = _path.substr(_path.find('?') + 1);
+				_path.resize(_path.find('?'));
+				Logger::print("Query is " + _query_string + ".", true, INFO, VERBOSE);
+			}
 			_parse_start = _raw.find(' ', _parse_start + 1);
 			Logger::print("URI is " + _path + ".", true, INFO, VERBOSE);
 		}
@@ -214,9 +220,9 @@ bool Request::parse_headers()
 	if (_raw.find(':', _parse_start) == std::string::npos)
 		throw std::invalid_argument("Invalid header field in request");
 	std::string header_name = _raw.substr(_parse_start, _raw.find(':', _parse_start) - _parse_start);
-	if (_headerFactory.contains(header_name))
+	if (_headerFactory.contains_ignore_case(header_name))
 	{
-		Header* header = _headerFactory.createByType(header_name);
+		Header* header = _headerFactory.createByType_ignore_case(header_name);
 		if (header == NULL)
 			throw std::invalid_argument("Out of memory");
 		try

@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/18 18:03:01 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/25 23:24:25 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include "Response.hpp"
 #include <string>
 #include <iostream>
-#include <fstream>
 #include <iomanip>
 #include <list>
 #include <string.h>
@@ -117,11 +116,11 @@ bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
 				break;
 			}
 		}
-		VirtualHost vhost = VirtualHost::getServerByName(host, client.sckt->getServerPort(), vhosts);
-		Response response = client.req->_method->process(*client.req, vhost.getConfig());
-		*client.sckt << response.getResponseText(vhost.getConfig());
 		if (DEBUG)
 			std::cout << *client.req << std::endl;
+		VirtualHost vhost = VirtualHost::getServerByName(host, client.sckt->getServerPort(), vhosts);
+		Response response = client.req->_method->process(*client.req, vhost.getConfig(), *client.sckt);
+		*client.sckt << response.getResponseText(vhost.getConfig());
 		if (response.getCode() != 200)
 			return true;
 		Logger::print("Success", NULL, SUCCESS, NORMAL);
@@ -137,7 +136,7 @@ bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
 
 int	main(int argc, char **argv)
 {
-	Logger::setMode(SILENT);
+	Logger::setMode(NORMAL);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	if (argc > 2)
 	{
@@ -208,12 +207,10 @@ int	main(int argc, char **argv)
 						error = true;
 						Logger::print("FD Error flagged by Select", NULL, WARNING, NORMAL);
 					}
-					else if (!error && FD_ISSET((*it).sckt->GetSocket(), &read_sockets))
-					{
+					if (!error && FD_ISSET((*it).sckt->GetSocket(), &read_sockets))
 						error = handle_client_request((*it));
-						if (!error && (*it).req->isfinished() && FD_ISSET((*it).sckt->GetSocket(), &write_sockets))
-							error = handle_server_response((*it), vhosts);
-					}
+					if (!error && (*it).req->isfinished() && FD_ISSET((*it).sckt->GetSocket(), &write_sockets))
+						error = handle_server_response((*it), vhosts);
 					if (error)
 					{
 						Logger::print("Client Disconnected", NULL, SUCCESS, VERBOSE);
@@ -246,10 +243,7 @@ int	main(int argc, char **argv)
 		Logger::print(e.what(), NULL, ERROR, NORMAL);
 	}
 	for (std::map<int, ServerSocket*>::iterator its = g_webserv.sockets.begin(); its != g_webserv.sockets.end(); its++)
-	{
-		std::cout << "DELETEING....." << std::endl;
 		delete its->second;
-	}
 	delete g_webserv.file_formatname;
 	Logger::print("Webserv Shutdown complete", NULL, SUCCESS, SILENT);
 	std::cout << std::flush;

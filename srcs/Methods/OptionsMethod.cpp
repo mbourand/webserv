@@ -22,7 +22,7 @@ bool OptionsMethod::isIdempotent() const { return true; }
 bool OptionsMethod::isCacheable() const { return false; }
 bool OptionsMethod::isAllowedInHTMLForms() const { return false; }
 
-Response OptionsMethod::process(const Request&, const ConfigContext&)
+Response OptionsMethod::process(const Request&, const ConfigContext&, const ServerSocket&)
 {
 	return Response();
 }

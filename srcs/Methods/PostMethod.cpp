@@ -22,7 +22,7 @@ bool PostMethod::isIdempotent() const { return false; }
 bool PostMethod::isCacheable() const { return true; }
 bool PostMethod::isAllowedInHTMLForms() const { return true; }
 
-Response PostMethod::process(const Request&, const ConfigContext&)
+Response PostMethod::process(const Request&, const ConfigContext&, const ServerSocket&)
 {
 	return Response();
 }
