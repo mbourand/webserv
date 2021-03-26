@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/25 23:24:25 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/27 00:26:29 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,7 @@ bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
 			std::cout << *client.req << std::endl;
 		VirtualHost vhost = VirtualHost::getServerByName(host, client.sckt->getServerPort(), vhosts);
 		Response response = client.req->_method->process(*client.req, vhost.getConfig(), *client.sckt);
+		std::string data = response.getResponseText(vhost.getConfig()).substr(0, 160);
 		*client.sckt << response.getResponseText(vhost.getConfig());
 		if (response.getCode() != 200)
 			return true;

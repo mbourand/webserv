@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/26 01:48:06 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/27 00:37:35 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,7 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	}
 	m_c_args[m_args.size()] = NULL;
 	if ((header_found = request._headerFactory.getByType(WWWAuthenticateHeader().getType())) != NULL)
-			m_env.push_back("AUTH_TYPE="+header_found->getValue());
-
+		m_env.push_back("AUTH_TYPE="+header_found->getValue());
 	if (request._method->requestHasBody() && !request._body.empty())
 	{
 		convert << request._body.size();
@@ -55,26 +54,22 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 			m_env.push_back("CONTENT_TYPE=US-ASCII");
 	}
 	m_env.push_back("GATEWAY_INTERFACE=CGI/1.1");
-	//m_env.push_back("PATH_INFO=www/"); //PATH_INFO
-	//m_env.push_back("PATH_TRANSLATED="); //PATH_TRANSLATED
+	m_env.push_back("PATH_INFO=/"); //PATH_INFO //For example, if you execute www.placeholder.com/cgi-bin/hello.pl/index.html, then the PATH_INFO for this would be the characters that come after the CGI script name or /index.html in this example.
+	m_env.push_back("PATH_TRANSLATED=www/index.php"); //PATH_TRANSLATED (use getcwd() + config root + path)
 	if (!request._query_string.empty())
 		m_env.push_back("QUERY_STRING="+request._query_string);
-	//REMOTE_ADDR
-	m_env.push_back("REMOTE_ADDR=172.20.128.1");
-	//REMOTE_IDENT
-	//REMOTE_USER
+	//m_env.push_back("REMOTE_ADDR=xxx.xxx.xxx.xxx"); //REMOTE_ADDR TODO get client IP from socket
+	//m_env.push_back("REMOTE_IDENT=something"); //REMOTE_IDENT This variable stores the user ID running the CGI script. The user ID is stored only if the ident process is running since ident returns a response containing not only user ID information, but also the name of the OS running the script.
+	//if ((header_found = request._headerFactory.getByType(WWWAuthenticateHeader().getType())) != NULL)
+	//	m_env.push_back("REMOTE_USER=something"); //REMOTE_USER Querying the REMOTE_USER variable will give the user name information of the entity making the request. This is only valid if authentication is enabled.
 	m_env.push_back("REQUEST_METHOD="+request._method->getType()); //REQUEST_METHOD
-	//m_env.push_back("REQUEST_URI=/index.php"); //REQUEST_URI
-	//m_env.push_back("SCRIPT_NAME=./www/index.php"); //SCRIPT_NAME
-
-	m_env.push_back("SCRIPT_FILENAME=./www/index.php"); //DELETE
-
+	m_env.push_back("REQUEST_URI=/index.php"); //REQUEST_URI
+	m_env.push_back("SCRIPT_NAME=/index.php"); //SCRIPT_NAME (virtual path to the file): For example, if you run the script http://www.placeholder.com/cgi-bin/ping.sh and retrieve SCRIPT_NAME, you will get the virtual path of the script or /cgi-bin/ping.sh
 	m_env.push_back("SERVER_NAME="+config.getNames().front()); //TODO switch better function call get server_name (localhost)
 	m_env.push_back("SERVER_PORT="+socket.getServerPort_Str());
 	m_env.push_back("SERVER_PROTOCOL=HTTP/1.1");
 	m_env.push_back("SERVER_SOFTWARE=Webserv");
-	//SI PHP
-	m_env.push_back("REDIRECT_STATUS=200");
+	m_env.push_back("REDIRECT_STATUS=200"); //SI fichier php
 	convert.str("");
 	convert << socket.GetSocket();
 	m_tmpfilename = "/tmp/webserv_" + convert.str() + ".tmp";
@@ -92,14 +87,13 @@ CGI::CGI(const CGI &src)
 {
 }
 
-
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
 
 CGI::~CGI()
 {
-	unlink(m_tmpfilename.c_str());
+	//unlink(m_tmpfilename.c_str());
 	for (size_t i = 0; i < m_env.size(); i++)
 		delete [] m_c_env[i];
 	delete [] m_c_env;
@@ -107,7 +101,6 @@ CGI::~CGI()
 		delete [] m_c_args[i];
 	delete [] m_c_args;
 }
-
 
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
@@ -118,7 +111,6 @@ std::ostream &		operator<<( std::ostream & o, CGI const & i )
 	//o << "Value = " << i.getValue();
 	return o;
 }
-
 
 /*
 ** --------------------------------- METHODS ----------------------------------
@@ -156,7 +148,7 @@ void				CGI::execute(const std::string & body) //const ?
 		close(pipes[1]);
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
-			Logger::print("CGI call was successful.", NULL, SUCCESS, VERBOSE);
+			Logger::print("CGI call was successful.", NULL, SUCCESS, NORMAL);
 		else
 		{
 			Logger::print("CGI call failed.", NULL, ERROR, NORMAL);
@@ -186,15 +178,11 @@ void	CGI::process(Response& response)
 		convert.str("");
 		if (content.find("Status: ") != std::string::npos)
 		{
-			/*int status;
+			int status;
 			convert << content.substr(8, content.find(" ", 8) - 8);
 			convert >> status;
+			Logger::print("CGI returned status "+convert.str(), NULL, ERROR, NORMAL);
 			response.setCode(status);
-			return;*/
-			convert.str("");
-			convert << content.size();
-			response.addHeader("Content-Length", convert.str());
-			response.setBody(content);
 			return;
 		}
 		while (content.find(": ") < content.find("\r\n\r\n"))
@@ -209,7 +197,6 @@ void	CGI::process(Response& response)
 		convert << content.size();
 		response.addHeader("Content-Length", convert.str());
 		convert.str("");
-		response.setBody(content);
 		struct timeval 	tv;
 		gettimeofday(&tv, NULL);
 		tv.tv_sec -= 3600; // assume we're GMT+1
@@ -218,13 +205,13 @@ void	CGI::process(Response& response)
 		strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);
 		response.addHeader("Date", buffer);
 		response.addHeader("Server", "Webserv");
+		response.setBody("");
+		response.setBody(content);
 	}
 	else
 	{
-		std::cout << "error 500" << std::endl;
 		response.setCode(500);
 	}
-	std::cout << "leaving" << std::endl;
 }
 
 /*
