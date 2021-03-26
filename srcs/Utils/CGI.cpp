@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/27 00:37:35 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/27 00:38:20 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,8 @@ void	CGI::process(Response& response)
 		}
 		while (content.find(": ") < content.find("\r\n\r\n"))
 		{
-			response.addHeader(content.substr(0, content.find(": ") + 1), content.substr(content.find(": ") + 2, content.find("\r\n")));
+			size_t found = content.find(": ");
+			response.addHeader(content.substr(0, found), content.substr(found + 2, (content.find("\r\n")) - found - 2));
 			content.erase(0, content.find("\r\n"));
 			if (content.find(": ") < content.find("\r\n\r\n"))
 				content.erase(0, 2);
