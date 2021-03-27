@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/27 00:38:20 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/27 02:34:47 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	m_env.push_back("PATH_TRANSLATED=www/index.php"); //PATH_TRANSLATED (use getcwd() + config root + path)
 	if (!request._query_string.empty())
 		m_env.push_back("QUERY_STRING="+request._query_string);
-	//m_env.push_back("REMOTE_ADDR=xxx.xxx.xxx.xxx"); //REMOTE_ADDR TODO get client IP from socket
+	m_env.push_back("REMOTE_ADDR="+socket.getIPAddress()); //REMOTE_ADDR TODO get client IP from socket
 	//m_env.push_back("REMOTE_IDENT=something"); //REMOTE_IDENT This variable stores the user ID running the CGI script. The user ID is stored only if the ident process is running since ident returns a response containing not only user ID information, but also the name of the OS running the script.
 	//if ((header_found = request._headerFactory.getByType(WWWAuthenticateHeader().getType())) != NULL)
 	//	m_env.push_back("REMOTE_USER=something"); //REMOTE_USER Querying the REMOTE_USER variable will give the user name information of the entity making the request. This is only valid if authentication is enabled.
@@ -93,7 +93,7 @@ CGI::CGI(const CGI &src)
 
 CGI::~CGI()
 {
-	//unlink(m_tmpfilename.c_str());
+	unlink(m_tmpfilename.c_str());
 	for (size_t i = 0; i < m_env.size(); i++)
 		delete [] m_c_env[i];
 	delete [] m_c_env;
