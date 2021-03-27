@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/25 00:00:00 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/27 02:26:49 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,11 @@ int 					ServerSocket::getServerPort() const
 std::string				ServerSocket::getServerPort_Str() const
 {
 	return m_port_str;
+}
+
+std::string				ServerSocket::getIPAddress() const
+{
+	return m_ipaddr;
 }
 
 

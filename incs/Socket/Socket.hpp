@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/26 01:51:08 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/27 02:26:17 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,10 @@ class Socket
 		int		Recieve(std::string &str) const;
 		bool	Success(void) const;
 		int		GetSocket(void) const;
+
+	protected:
+
+		std::string	m_ipaddr;
 
 	private:
 

@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/24 23:59:52 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/27 02:24:15 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class ServerSocket : public Socket
 
 		int						getServerPort() const;
 		std::string				getServerPort_Str() const;
+		std::string				getIPAddress() const;
 
 		class ServerSocketException : public std::exception
 		{
