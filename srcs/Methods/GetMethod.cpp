@@ -37,7 +37,7 @@ bool GetMethod::isAllowedInHTMLForms() const { return true; }
 Response GetMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
 {
 	Response response(200); //change code on failure
-	if (request._path.substr(request._path.find_last_of('.') + 1) == "php")	// Parse config, if file ext. associated with CGI
+	if ((request._path.find("php") != std::string::npos) || (request._path.find("/cgi-bin") == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
 	{
 		try
 		{
@@ -47,7 +47,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		catch(const CGI::CGIException &e)
 		{
 			Logger::print(e.what(), NULL, ERROR, NORMAL);
-			response.setCode(500);
+			response.setCode(e.code());
 		}
 	}
 	else
@@ -73,8 +73,6 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		strptime(std::string(convert.str()).c_str(), "%s", &time);
 		if (time.tm_gmtoff > 0) // convert to GMT
 			file_stats.st_mtim.tv_sec -= time.tm_gmtoff;
-		if (time.tm_isdst) // substract Daylight saving time
-			file_stats.st_mtim.tv_sec -= 3600;
 		convert.str("");
 		convert << file_stats.st_mtime;
 		strptime(std::string(convert.str()).c_str(), "%s", &time);
@@ -84,7 +82,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		convert.str("");
 		struct timeval 	tv;
 		gettimeofday(&tv, NULL);
-		tv.tv_sec -= 3600; // assume we're GMT+1
+		tv.tv_sec -= 7200; // assume we're GMT+1 with Daylight Saving Time
 		convert << tv.tv_sec;
 		strptime(std::string(convert.str()).c_str(), "%s", &time);
 		strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);

@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/27 00:26:29 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/30 01:46:17 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,6 @@ bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
 			std::cout << *client.req << std::endl;
 		VirtualHost vhost = VirtualHost::getServerByName(host, client.sckt->getServerPort(), vhosts);
 		Response response = client.req->_method->process(*client.req, vhost.getConfig(), *client.sckt);
-		std::string data = response.getResponseText(vhost.getConfig()).substr(0, 160);
 		*client.sckt << response.getResponseText(vhost.getConfig());
 		if (response.getCode() != 200)
 			return true;
@@ -177,11 +176,11 @@ int	main(int argc, char **argv)
 			it = clients.begin();
 			for (; it != clients.end(); ++it)
 			{
-				FD_SET((*it).sckt->GetSocket(), &read_sockets_z);
-				FD_SET((*it).sckt->GetSocket(), &write_sockets_z);
-				FD_SET((*it).sckt->GetSocket(), &error_sockets_z);
-				if ((*it).sckt->GetSocket() > highestFd)
-					highestFd = (*it).sckt->GetSocket();
+				FD_SET(it->sckt->GetSocket(), &read_sockets_z);
+				FD_SET(it->sckt->GetSocket(), &write_sockets_z);
+				FD_SET(it->sckt->GetSocket(), &error_sockets_z);
+				if (it->sckt->GetSocket() > highestFd)
+					highestFd = it->sckt->GetSocket();
 			}
 			read_sockets = read_sockets_z;
 			write_sockets = write_sockets_z;
@@ -203,23 +202,23 @@ int	main(int argc, char **argv)
 				while (it != clients.end())
 				{
 					bool	error = false;
-					if (FD_ISSET((*it).sckt->GetSocket(), &error_sockets))
+					if (FD_ISSET(it->sckt->GetSocket(), &error_sockets))
 					{
 						error = true;
 						Logger::print("FD Error flagged by Select", NULL, WARNING, NORMAL);
 					}
-					if (!error && FD_ISSET((*it).sckt->GetSocket(), &read_sockets))
+					if (!error && FD_ISSET(it->sckt->GetSocket(), &read_sockets))
 						error = handle_client_request((*it));
-					if (!error && (*it).req->isfinished() && FD_ISSET((*it).sckt->GetSocket(), &write_sockets))
+					if (!error && it->req->isfinished() && FD_ISSET(it->sckt->GetSocket(), &write_sockets))
 						error = handle_server_response((*it), vhosts);
 					if (error)
 					{
 						Logger::print("Client Disconnected", NULL, SUCCESS, VERBOSE);
-						FD_CLR((*it).sckt->GetSocket(), &read_sockets_z);
-						FD_CLR((*it).sckt->GetSocket(), &write_sockets_z);
-						FD_CLR((*it).sckt->GetSocket(), &error_sockets_z);
-						delete (*it).sckt;
-						delete (*it).req;
+						FD_CLR(it->sckt->GetSocket(), &read_sockets_z);
+						FD_CLR(it->sckt->GetSocket(), &write_sockets_z);
+						FD_CLR(it->sckt->GetSocket(), &error_sockets_z);
+						delete it->sckt;
+						delete it->req;
 						it = clients.erase(it);
 					}
 					else
@@ -234,8 +233,8 @@ int	main(int argc, char **argv)
 		while (it != clients.end())
 		{
 			Logger::print("Socket closed", NULL, SUCCESS, SILENT);
-			delete (*it).sckt;
-			delete (*it).req;
+			delete it->sckt;
+			delete it->req;
 			it = clients.erase(it);
 		}
 	}
