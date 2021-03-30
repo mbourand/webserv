@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/30 01:46:17 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/30 03:51:56 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,15 @@ void	handle_new_connection(ServerSocket &server, std::list<Client> &clients)
 	Logger::print("New Client Connected", NULL, SUCCESS, NORMAL);
 }
 
+void	hexdump_str(const std::string &data, int size)
+{
+	for (size_t i = 0; i < data.size(); i += size)
+	{
+		std::string	chunk = data.substr(i, size);
+		std::cout << "\e[35m" << std::setfill(' ') << std::setw(size * 3) << string_to_hex(chunk) << "\e[33m\t" << string_strip_undisplayable(chunk) << "\e[39m" << std::endl;
+	}
+}
+
 bool	handle_client_request(Client &client)
 {
 	std::string	data;
@@ -77,7 +86,7 @@ bool	handle_client_request(Client &client)
 		*client.sckt >> data;
 		client.req->append(data);
 		if (DEBUG)
-			std::cout << "\e[35m" << std::setfill(' ') << std::setw(MAX_RECIEVE * 2 + MAX_RECIEVE) << string_to_hex(data) << "\e[33m\t" << string_strip_undisplayable(data) << "\e[39m" << std::endl;
+			hexdump_str(data, 32);
 	}
 	catch(ServerSocket::ServerSocketException &e)
 	{

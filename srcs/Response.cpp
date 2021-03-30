@@ -1,5 +1,6 @@
 #include "Response.hpp"
 #include <sstream>
+#include <sys/time.h>
 #include "Utils.hpp"
 
 /*
@@ -71,6 +72,21 @@ std::string Response::getResponseText(const ConfigContext& config)
 int	Response::getCode() const
 {
 	return (_code);
+}
+
+void Response::addDateHeader(void)
+{
+	struct timeval		tv;
+	char				buffer[1024];
+	std::stringstream	ss;
+	struct tm			time;
+
+	gettimeofday(&tv, NULL);
+	tv.tv_sec -= 7200;
+	ss << tv.tv_sec;
+	strptime(std::string(ss.str()).c_str(), "%s", &time);
+	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);
+	this->addHeader("Date", buffer);
 }
 
 /*

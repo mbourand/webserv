@@ -8,7 +8,6 @@
 #include <errno.h>
 #include <string.h>
 #include <time.h>
-#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -71,7 +70,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		convert << file_stats.st_mtime;
 		struct tm	time;
 		strptime(std::string(convert.str()).c_str(), "%s", &time);
-		if (time.tm_gmtoff > 0) // convert to GMT
+		if (time.tm_gmtoff > 0)
 			file_stats.st_mtim.tv_sec -= time.tm_gmtoff;
 		convert.str("");
 		convert << file_stats.st_mtime;
@@ -79,14 +78,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		char		buffer[1024];
 		strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);
 		response.addHeader("Last-Modified", buffer);
-		convert.str("");
-		struct timeval 	tv;
-		gettimeofday(&tv, NULL);
-		tv.tv_sec -= 7200; // assume we're GMT+1 with Daylight Saving Time
-		convert << tv.tv_sec;
-		strptime(std::string(convert.str()).c_str(), "%s", &time);
-		strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);
-		response.addHeader("Date", buffer);
+		response.addDateHeader();
 		response.addHeader("Server", "Webserv");
 		t_hnode	*hnode = g_webserv.file_formatname->GetNode(request._path.substr(request._path.find_last_of('.') + 1));
 		if (hnode != NULL)

@@ -126,7 +126,7 @@ void Request::parse()
 			if ((_raw.size() - _parse_start) >= _content_length)
 				_body = _raw.substr(_parse_start, _content_length);
 			else
-				_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size() - 4);
+				_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size() - 2);
 			Logger::print("Request body is " + _body, NULL, INFO, VERBOSE);
 		}
 		_finished_parsing = true;

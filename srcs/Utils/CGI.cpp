@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/30 03:29:08 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/30 17:41:27 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 #include <fcntl.h>
 #include <sstream>
 #include <fstream>
-#include <sys/time.h>
-#include <time.h>
 #include "CGI.hpp"
 #include "Logger.hpp"
 #include "ServerSocket.hpp"
@@ -50,14 +48,14 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	if (m_env_Script_Name.substr(m_env_Script_Name.length() - 4) == ".php")
 	{
 		m_args.push_back("/usr/bin/php-cgi");
-		m_args.push_back("www" + m_env_Script_Name);
+		m_args.push_back("www" + m_env_Script_Name);//getparam root
 		m_env.push_back("REDIRECT_STATUS=200");
 	}
 	else
 	{
-		m_args.push_back("./www" + m_env_Script_Name);
+		m_args.push_back("./www" + m_env_Script_Name);//getparam root
 		if (!m_env_Path_Info.empty())
-			m_args.push_back("www" + m_env_Path_Info);
+			m_args.push_back("www" + m_env_Path_Info);//getparam root
 	}
 	m_c_args = new char*[m_args.size() + 1];
 	for (size_t i = 0; i < m_args.size(); i++)
@@ -267,13 +265,7 @@ void	CGI::process(Response& response)
 		convert.str("");
 		convert << content.size();
 		response.addHeader("Content-Length", convert.str());
-		convert.str("");
-		gettimeofday(&tv, NULL);
-		tv.tv_sec -= 7200; // assume we're GMT+1
-		convert << tv.tv_sec;
-		strptime(std::string(convert.str()).c_str(), "%s", &time);
-		strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);
-		response.addHeader("Date", buffer);
+		response.addDateHeader();
 		response.addHeader("Server", "Webserv");
 		response.setBody(content);
 	}

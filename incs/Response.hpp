@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <ctime>
 #include "ConfigContext.hpp"
 
 class Response
@@ -24,6 +25,7 @@ class Response
 		void setMessage(const std::string& message);
 
 		void addHeader(const std::string& header_name, const std::string& header_value);
+		void addDateHeader(void);
 		void removeHeader(const std::string& header_name);
 
 		void setBody(const std::string& body);
