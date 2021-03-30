@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/30 03:00:17 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/30 03:29:08 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 		m_env.push_back("PATH_INFO="+m_env_Path_Info);
 	else
 		m_env.push_back("PATH_INFO="+m_env_Script_Name);
-	std::cout << m_env.back() << std::endl;
 	m_env.push_back("PATH_TRANSLATED="+m_Document_Root+m_env_Script_Name);
 	if (!request._query_string.empty())
 		m_env.push_back("QUERY_STRING="+request._query_string);
@@ -251,7 +250,6 @@ void	CGI::process(Response& response)
 			if (status != 200)
 			{
 				Logger::print("CGI returned status "+convert.str(), NULL, ERROR, NORMAL);
-				std::cout << "\033[31m" << content << "\033[37m" << std::endl;//DEBUG
 				response.setCode(status);
 				return;
 			}

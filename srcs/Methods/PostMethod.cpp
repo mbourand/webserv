@@ -26,7 +26,7 @@ bool PostMethod::isAllowedInHTMLForms() const { return true; }
 Response PostMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
 {
 	Response response(200); //change code on failure
-	if ((request._path.find("php") != std::string::npos) || (request._path.find("/cgi-bin") == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+	if ((request._path.find(".php") != std::string::npos) || (request._path.find("/cgi-bin") == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
 	{
 		try
 		{
