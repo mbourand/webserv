@@ -47,7 +47,7 @@ client: $(NAME)
 		@$(CC) $(CFLAGS) $(INC) -o client $(OBJ_PATH)tcp-client.o $(OBJ_PATH)/Socket/Socket.o $(OBJ_PATH)/Socket/ClientSocket.o
 
 strace: $(NAME)
-		strace -f -e accept,socket,close,shutdown ./$(NAME)
+		strace -f -e accept,socket,close,read,execve ./$(NAME)
 
 clean:
 	@rm -rf $(OBJ_PATH)

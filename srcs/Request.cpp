@@ -3,7 +3,7 @@
 Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path),
 	_protocolVersion(other._protocolVersion), _body(other._body), _header_section_finished(other._header_section_finished),
 	_finished_parsing(other._finished_parsing), _parse_start(other._parse_start), _max_body_size(other._max_body_size),
-	_error_code(other._error_code), _error_text(other._error_text)
+	_error_code(other._error_code), _query_string(other._query_string), _content_length(other._content_length)
 {
 	init_factories();
 }
@@ -17,7 +17,7 @@ Request::~Request()
 			delete *it;
 }
 
-Request::Request() : _method(NULL), _header_section_finished(false), _finished_parsing(false), _parse_start(0), _max_body_size(1000000), _error_code(0)
+Request::Request() : _method(NULL), _header_section_finished(false), _finished_parsing(false), _parse_start(0), _max_body_size(1000000), _error_code(0), _content_length(0)
 {
 	init_factories();
 }
@@ -113,17 +113,20 @@ void Request::parse()
 
 	}
 
-	if (_header_section_finished && _raw.find("\r\n\r\n", _parse_start) != std::string::npos)
+	if (_header_section_finished && ((_raw.find("\r\n\r\n", _parse_start) != std::string::npos)
+		|| (_content_length && ((_raw.size() - _parse_start) >= _content_length))))
 	{
 		if (_method->requestHasBody())
 		{
 			if ((_raw.size() - _parse_start) > _max_body_size)
 			{
 				_error_code = 413;
-				_error_text = "Request Entity Too Large.";
 				throw std::invalid_argument("Request Entity too large.");
 			}
-			_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size() - 4);
+			if ((_raw.size() - _parse_start) >= _content_length)
+				_body = _raw.substr(_parse_start, _content_length);
+			else
+				_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size() - 2);
 			Logger::print("Request body is " + _body, NULL, INFO, VERBOSE);
 		}
 		_finished_parsing = true;
@@ -131,7 +134,6 @@ void Request::parse()
 	else if (_header_section_finished && _method->requestHasBody() && (_raw.size() - _parse_start) > _max_body_size)
 	{
 		_error_code = 413;
-		_error_text = "Request Entity Too Large.";
 		throw std::invalid_argument("Request Entity too large.");
 	}
 }
@@ -158,6 +160,14 @@ void Request::parse_uri()
 		else
 		{
 			_path = _raw.substr(_parse_start + 1, _raw.find(' ', _parse_start + 1) - (_parse_start + 1));
+			if (_path.find('?') != std::string::npos)
+			{
+				_query_string = _path.substr(_path.find('?') + 1);
+				if (_query_string.find('#') != std::string::npos)
+					_query_string.resize(_query_string.find('#'));
+				_path.resize(_path.find('?'));
+				Logger::print("Query is " + _query_string + ".", true, INFO, VERBOSE);
+			}
 			_parse_start = _raw.find(' ', _parse_start + 1);
 			Logger::print("URI is " + _path + ".", true, INFO, VERBOSE);
 		}
@@ -214,9 +224,9 @@ bool Request::parse_headers()
 	if (_raw.find(':', _parse_start) == std::string::npos)
 		throw std::invalid_argument("Invalid header field in request");
 	std::string header_name = _raw.substr(_parse_start, _raw.find(':', _parse_start) - _parse_start);
-	if (_headerFactory.contains(header_name))
+	if (_headerFactory.contains_ignore_case(header_name))
 	{
-		Header* header = _headerFactory.createByType(header_name);
+		Header* header = _headerFactory.createByType_ignore_case(header_name);
 		if (header == NULL)
 			throw std::invalid_argument("Out of memory");
 		try
@@ -225,6 +235,12 @@ bool Request::parse_headers()
 			_parse_start += header->parse(_raw.substr(_parse_start));
 			Logger::print("Request header : " + header->getType() + " -> " + header->getValue(), true, INFO, VERBOSE);
 			_headers.push_back(header);
+			if (header->getType() == ContentLengthHeader().getType())
+			{
+				std::stringstream ss;
+				ss << header->getValue();
+				ss >> _content_length;
+			}
 		}
 		catch(const std::exception& e)
 		{

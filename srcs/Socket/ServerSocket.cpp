@@ -6,13 +6,14 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/18 17:00:25 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/27 02:26:49 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerSocket.hpp"
 #include <errno.h>
 #include <string.h>
+#include <sstream>
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -80,6 +81,9 @@ void					ServerSocket::Accept(ServerSocket &connection)
 void					ServerSocket::setServerPort(int port)
 {
 	m_port = port;
+	std::ostringstream	convert;
+	convert << m_port;
+	m_port_str = convert.str();
 }
 
 /*
@@ -89,6 +93,16 @@ void					ServerSocket::setServerPort(int port)
 int 					ServerSocket::getServerPort() const
 {
 	return m_port;
+}
+
+std::string				ServerSocket::getServerPort_Str() const
+{
+	return m_port_str;
+}
+
+std::string				ServerSocket::getIPAddress() const
+{
+	return m_ipaddr;
 }
 
 

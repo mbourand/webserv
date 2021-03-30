@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/02 20:44:26 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/30 03:50:59 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@
 # include <strings.h> //bzero, remplacer par libft.
 
 const int MAX_HOSTNAME = 200;
-const int MAX_CONNECTIONS = 10;
-const int MAX_RECIEVE = 16;
+const int MAX_CONNECTIONS = 600;
+const int MAX_RECIEVE = 2048;
 
 class Socket
 {
@@ -49,6 +49,10 @@ class Socket
 		int		Recieve(std::string &str) const;
 		bool	Success(void) const;
 		int		GetSocket(void) const;
+
+	protected:
+
+		std::string	m_ipaddr;
 
 	private:
 

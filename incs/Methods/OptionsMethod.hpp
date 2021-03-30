@@ -28,7 +28,7 @@ class OptionsMethod : public IMethod
 		bool isCacheable() const;
 		bool isAllowedInHTMLForms() const;
 
-		Response process(const Request& request, const ConfigContext& config);
+		Response process(const Request& request, const ConfigContext& config, const ServerSocket& socket);
 };
 
 #endif

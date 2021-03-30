@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/17 14:07:36 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/27 02:34:17 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
 #include "Logger.hpp"
+#include <sstream>
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -66,6 +67,14 @@ bool					Socket::Create(void)
 	return (fcntl(this->m_sockfd, F_SETFL, O_NONBLOCK) != -1);
 }
 
+static std::string		my_inet_ntoa(struct in_addr in)
+{
+	std::stringstream ss;
+	unsigned char *bytes = reinterpret_cast<unsigned char *>(&in);
+	ss << static_cast<int>(bytes[0]) << "." << static_cast<int>(bytes[1]) << "." << static_cast<int>(bytes[2]) << "." << static_cast<int>(bytes[3]);
+	return (ss.str());
+}
+
 bool					Socket::Bind(int const port)
 {
 	if (!this->Success())
@@ -75,6 +84,7 @@ bool					Socket::Bind(int const port)
 	this->m_addr_in.sin_port = (port >> 8) | (port << 8);//byte swap 1234 -> 4321
 	if (bind(this->m_sockfd, reinterpret_cast<sockaddr*>(&this->m_addr_in), sizeof(this->m_addr_in)) != 0)
 		return (false);
+	this->m_ipaddr = my_inet_ntoa(this->m_addr_in.sin_addr);
 	return (true);
 }
 
@@ -106,6 +116,7 @@ bool					Socket::Accept(Socket &connection)
 	connection.m_sockfd = accept(this->m_sockfd, reinterpret_cast<sockaddr *>(&this->m_addr_in), reinterpret_cast<socklen_t*>(&addr_length));
 	if (connection.m_sockfd <= 0)
 		return (false);
+	connection.m_ipaddr = my_inet_ntoa(this->m_addr_in.sin_addr);
 	return (true);
 }
 

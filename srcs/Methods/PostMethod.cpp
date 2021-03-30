@@ -1,5 +1,6 @@
 #include "PostMethod.hpp"
 #include "Logger.hpp"
+#include "CGI.hpp"
 
 PostMethod::PostMethod() {}
 PostMethod::PostMethod(const PostMethod&) {}
@@ -22,7 +23,21 @@ bool PostMethod::isIdempotent() const { return false; }
 bool PostMethod::isCacheable() const { return true; }
 bool PostMethod::isAllowedInHTMLForms() const { return true; }
 
-Response PostMethod::process(const Request&, const ConfigContext&)
+Response PostMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
 {
-	return Response();
+	Response response(200); //change code on failure
+	if ((request._path.find(".php") != std::string::npos) || (request._path.find("/cgi-bin") == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+	{
+		try
+		{
+			CGI	cgi(request, config, socket);
+			cgi.process(response);
+		}
+		catch(const CGI::CGIException &e)
+		{
+			Logger::print(e.what(), NULL, ERROR, NORMAL);
+			response.setCode(e.code());
+		}
+	}
+	return response;
 }
