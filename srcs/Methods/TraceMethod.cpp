@@ -1,5 +1,9 @@
 #include "TraceMethod.hpp"
+#include "Request.hpp"
 #include "Logger.hpp"
+#include <sstream>
+#include <ctime>
+#include <sys/time.h>
 
 TraceMethod::TraceMethod() {}
 TraceMethod::TraceMethod(const TraceMethod&) {}
@@ -22,7 +26,12 @@ bool TraceMethod::isIdempotent() const { return true; }
 bool TraceMethod::isCacheable() const { return false; }
 bool TraceMethod::isAllowedInHTMLForms() const { return false; }
 
-Response TraceMethod::process(const Request&, const ConfigContext&, const ServerSocket&)
+Response TraceMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
 {
-	return Response();
+	Response response(200);
+	response.addHeader("Content-Type", "message/http");
+	response.addHeader("Server", "Webserv");
+	response.addDateHeader();
+	response.setBody(request._raw);
+	return response;
 }
