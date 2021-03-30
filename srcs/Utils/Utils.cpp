@@ -3,6 +3,7 @@
 #include <sstream>
 #include <algorithm>
 #include <iostream>
+#include <dirent.h>
 
 int ft::toInt(const std::string& str)
 {
@@ -80,6 +81,11 @@ std::pair<std::string, int> ft::complete_ip(const std::string& incomplete_ip)
 	else
 		throw std::invalid_argument("Bad ip");
 	return std::make_pair(ip, port);
+}
+
+std::list<std::string> ft::directory_listing(const std::string& directory)
+{
+	return std::list<std::string>();
 }
 
 std::string ft::getErrorMessage(int code)

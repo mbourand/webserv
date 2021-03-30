@@ -14,6 +14,7 @@ class ConfigContext
 		std::list<ConfigContext> _childs;
 		std::map<int, std::string> _error_pages;
 		std::list<std::string> _names;
+		bool _autoIndex;
 
 	private:
 		size_t find_closing_bracket(const std::string& str, size_t start) const;
@@ -21,7 +22,7 @@ class ConfigContext
 	public:
 		ConfigContext();
 		ConfigContext(const ConfigContext& other);
-		ConfigContext(const std::string& raw, const std::string& name = "");
+		ConfigContext(const std::string& raw, const std::string& name = "", const ConfigContext* parent = NULL);
 		virtual ~ConfigContext();
 		ConfigContext& operator=(const ConfigContext& other);
 
@@ -34,6 +35,9 @@ class ConfigContext
 		const std::list<std::string>& getParamPath(const std::string& name, const std::string& path) const;
 		std::string rootPath(const std::string& path) const;
 
+
+		bool hasAutoIndex() const;
+		bool hasAutoIndexPath(const std::string& path) const;
 		const std::map<std::string, std::list<std::string> >& getParams() const;
 		const std::map<int, std::string>& getErrorPages() const;
 		const std::list<std::string>& getNames() const;

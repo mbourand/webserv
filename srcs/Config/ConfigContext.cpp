@@ -25,11 +25,13 @@
 */
 
 ConfigContext::ConfigContext()
+	: _autoIndex(false)
 {
 	_directive_names.push_back("server_name");
 	_directive_names.push_back("listen");
 	_directive_names.push_back("root");
 	_directive_names.push_back("location");
+	_directive_names.push_back("autoindex");
 }
 
 ConfigContext::~ConfigContext()
@@ -43,17 +45,25 @@ ConfigContext::ConfigContext(const ConfigContext& other)
 ConfigContext& ConfigContext::operator=(const ConfigContext& other)
 {
 	_params = other._params;
-	_childs = other._childs;
 	_error_pages = other._error_pages;
-	_names = other._names;
+	_autoIndex = other._autoIndex;
 	_directive_names = other._directive_names;
+	_childs = other._childs;
+	_names = other._names;
 	return *this;
 }
 
-ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
+ConfigContext::ConfigContext(const std::string& raw, const std::string& name, const ConfigContext* parent)
+	: _autoIndex(false)
 {
 	// si name a une valeur, c'est un context de location, on interdit donc certaines directives
-	if (name != "")
+	if (parent != NULL)
+	{
+		_params = parent->_params;
+		_error_pages = parent->_error_pages;
+		_autoIndex = parent->_autoIndex;
+	}
+	if (parent != NULL)
 		_names.push_back(name);
 	else
 	{
@@ -64,6 +74,7 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 	_directive_names.push_back("location");
 	_directive_names.push_back("error_page");
 	_directive_names.push_back("index");
+	_directive_names.push_back("autoindex");
 
 
 	for (size_t i = 0; i < raw.size();)
@@ -85,7 +96,7 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 		if (std::find(_directive_names.begin(), _directive_names.end(), directive_name) == _directive_names.end())
 			throw std::invalid_argument("Unknown directive name in config");
 		if (_params.find(directive_name) != _params.end())
-			throw std::invalid_argument("Multiple declaration of the same directive in config");
+			_params.erase(_params.find(directive_name));
 		i += directive_name.size();
 		i = raw.find_first_not_of(" \t", i);
 
@@ -107,7 +118,7 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 
 			// On récupère le contenu du fichier qui concerne la location
 			std::string location_raw = raw.substr(i, find_closing_bracket(raw, i) - i - 2);
-			_childs.push_back(ConfigContext(location_raw, location_name));
+			_childs.push_back(ConfigContext(location_raw, location_name, this));
 			i += location_raw.size() + 2;
 			if (raw.find('\n', i) == std::string::npos)
 				break;
@@ -148,6 +159,20 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 			for (std::list<std::string>::const_iterator it = words.begin(); it != --words.end(); it++)
 				_error_pages.insert(std::make_pair(ft::toInt(*it), page));
 		}
+		else if (directive_name == "autoindex")
+		{
+			// On récupère la valeur de la directive : exemple "400 404 405 error.html"
+			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+			if (directive_value.size() == 0)
+				throw std::invalid_argument("Empty directive value in config");
+
+			std::list<std::string> words = ft::split(directive_value, " \t\n");
+			std::string val = words.front();
+
+			if (val != "on" && val != "off")
+				throw std::invalid_argument("Bad value for autoindex in config");
+			_autoIndex = (val == "on" ? true : false);
+		}
 		else
 		{
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
@@ -169,6 +194,19 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name)
 ** ---------------------------------- ACCESSOR --------------------------------------
 */
 
+bool ConfigContext::hasAutoIndex() const
+{
+	return _autoIndex;
+}
+
+bool ConfigContext::hasAutoIndexPath(const std::string& path) const
+{
+	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
+		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
+			return it->hasAutoIndex();
+	return hasAutoIndex();
+}
+
 const std::list<std::string>& ConfigContext::getParam(const std::string& name) const
 {
 	return _params.find(name)->second;
@@ -177,8 +215,11 @@ const std::list<std::string>& ConfigContext::getParam(const std::string& name) c
 const std::list<std::string>& ConfigContext::getParamPath(const std::string& name, const std::string& path) const
 {
 	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
+	{
+		std::cout << it->getNames().front() << " " << path.substr(0, std::min(path.size(), it->getNames().front().size())) << std::endl;
 		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
 			return it->getParam(name);
+	}
 	return getParam(name);
 }
 

@@ -30,6 +30,7 @@ class GetMethod : public IMethod
 		bool isAllowedInHTMLForms() const;
 
 		Response process(const Request& request, const ConfigContext& config);
+		Response directory_listing(const Request& request, const ConfigContext& config);
 };
 
 #endif
