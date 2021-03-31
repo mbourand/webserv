@@ -4,6 +4,9 @@
 #include <algorithm>
 #include <iostream>
 #include <dirent.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 int ft::toInt(const std::string& str)
 {
@@ -81,11 +84,6 @@ std::pair<std::string, int> ft::complete_ip(const std::string& incomplete_ip)
 	else
 		throw std::invalid_argument("Bad ip");
 	return std::make_pair(ip, port);
-}
-
-std::list<std::string> ft::directory_listing(const std::string& directory)
-{
-	return std::list<std::string>();
 }
 
 std::string ft::getErrorMessage(int code)
@@ -176,4 +174,12 @@ std::string ft::getErrorMessage(int code)
 		case 527: return "Railgun Error";
 		default: return "Unknown Error";
 	}
+}
+
+bool ft::is_directory(const std::string& realPath)
+{
+	struct stat st;
+	if (lstat(realPath.c_str(), &st) < 0)
+		return false;
+	return S_ISDIR(st.st_mode);
 }

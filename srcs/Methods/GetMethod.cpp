@@ -36,35 +36,105 @@ bool GetMethod::isIdempotent() const { return true; }
 bool GetMethod::isCacheable() const { return true; }
 bool GetMethod::isAllowedInHTMLForms() const { return true; }
 
-Response GetMethod::directory_listing(const Request& request, const ConfigContext& config)
+std::list<std::string> GetMethod::list_directory(const std::string& realPath)
 {
-	URL url(request._path);
-	std::string realPath = config.rootPath(url._path);
-
 	std::list<std::string> list;
-	std::string body = "<html>\n\t<head>\n\t\t<title>Index</title>\n\t</head>\n\t<body>\n";
-
 	DIR* dir;
 	struct dirent *ent;
 
 	if ((dir = opendir(realPath.c_str())) == NULL)
 	{
-		if (errno == ENOENT)
-			return Logger::print("Directory not found", Response(404, url._path), ERROR, VERBOSE);
-		if (errno == EACCES)
-			return Logger::print("Permission denied", Response(403, url._path), ERROR, VERBOSE);
-		return Logger::print("Unexpected error while trying to open directory", Response(500, url._path));
+		Logger::print("Error while trying to open directory", NULL, INFO, VERBOSE);
+		throw std::invalid_argument("Error while trying to open directory");
 	}
 	while ((ent = readdir(dir)) != NULL)
 		list.push_back(std::string(ent->d_name) + (ent->d_type == DT_DIR ? "/" : ""));
 	closedir(dir);
+	return list;
+}
 
-	body += "\t\t<style>\n\t\t\ttable, td {\n\t\t\t\tborder: 1px solid black;\n\t\t\t}\n\n\t\t\ttable {\n\t\t\t\twidth: 100%;\n\t\t\t\tborder-collapse: collapse;\n\t\t\t}\n\t\t</style>\n";
-	body += "\t\t<h1 align=\"center\">Index of " + url._path + "/</h1>\n\t\t<hr>\n\t\t<table>\n\t\t\t<tbody>\n";
+std::string GetMethod::get_last_modified_format(const std::string& realPath, const std::string& format)
+{
+	struct stat st;
+	if (lstat(realPath.c_str(), &st) < 0)
+		return "-";
+	std::ostringstream convert;
+	struct tm	time;
+	strptime(std::string(convert.str()).c_str(), "%s", &time);
+	convert << st.st_mtime;
+	strptime(std::string(convert.str()).c_str(), "%s", &time);
+	char		buffer[1024];
+	strftime(buffer, sizeof(buffer), "%d-%b-%Y %H:%M", &time);
+	convert.str("");
+	return buffer;
+}
+
+std::string GetMethod::get_file_size(const std::string& realPath)
+{
+	struct stat st;
+	if (lstat(realPath.c_str(), &st) < 0)
+		return "-";
+	std::ostringstream convert;
+	convert << st.st_size;
+	return convert.str();
+}
+
+Response GetMethod::directory_listing(const Request& request, const ConfigContext& config)
+{
+	URL url(request._path);
+	std::string realPath = config.rootPath(url._path);
+	std::list<std::string> list;
+	try
+	{
+		list = list_directory(realPath);
+	}
+	catch (std::exception& e)
+	{
+		if (errno == ENOENT)
+			return Logger::print("Directory not found", Response(404, url._path), ERROR, VERBOSE);
+		if (errno == EACCES)
+			return Logger::print("Permission denied", Response(403, url._path), ERROR, VERBOSE);
+		if (errno != 0)
+			return Logger::print("Unknown error while trying to open directory", Response(500, url._path), ERROR, NORMAL);
+	}
+
+	std::string body =
+"<html>\r\n\
+	<head>\r\n\
+		<title>Index</title>\r\n\
+	</head>\r\n\
+	<body>\r\n\
+		<style>\r\n\
+			table, td {\r\n\
+				border: 1px solid black;\r\n\
+			}\r\n\
+\r\n\
+			table {\r\n\
+				width: 100%;\r\n\
+				border-collapse: collapse;\r\n\
+			}\r\n\
+		</style>\r\n\
+\r\n\
+		<h1 align=\"center\">Index of " + url._path + "/</h1>\r\n\
+		<hr>\r\n\
+		<table>\r\n\
+			<tbody>\r\n";
+
 	for (std::list<std::string>::iterator it = ++list.begin(); it != list.end(); it++)
-		body += "\t\t\t\t<tr><td><a href=\"" + *it + "\">" + *it + "</a></td></tr>\n";
-
-	body += "\t\t\t</tbody>\n\t\t</table>\n\t</body>\n</html>\n";
+	{
+		std::string path = realPath + "/" + *it;
+		body +=
+"				<tr>\r\n\
+					<td><a href=\"" + url._path + "/" + *it + "\">" + *it + "</a></td>\r\n\
+					<td>" + (path[path.size() - 1] == '/' ? "-" : get_last_modified_format(path, "%d-%b-%Y %H:%M")) + "</td>\r\n\
+					<td>" + (path[path.size() - 1] == '/' ? "-" : get_file_size(path)) + "</td>\r\n\
+				</tr>\r\n";
+	}
+	body +=
+"			</tbody>\r\n\
+		</table>\r\n\
+	</body>\r\n\
+</html>";
 
 	Response response(200, url._path.substr(0, url._path.size() - 1));
 	std::ostringstream convert;
@@ -95,8 +165,19 @@ Response GetMethod::process(const Request& request, const ConfigContext& config)
 	URL url(request._path);
 	std::string realPath = config.rootPath(url._path);
 
-	if (url._is_directory && config.hasAutoIndexPath(url._path))
-		return directory_listing(request, config);
+	if (ft::is_directory(realPath))
+	{
+		try
+		{
+			std::string index = "/" + config.getParamPath("index", url._path).front();
+			realPath += index;
+		}
+		catch (std::exception& e)
+		{
+			if (config.hasAutoIndexPath(url._path))
+				return directory_listing(request, config);
+		}
+	}
 
 	std::fstream file(realPath.c_str());
 

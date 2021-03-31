@@ -12,7 +12,7 @@ namespace ft
 	std::list<std::string> split(const std::string& str, const std::string& charset);
 	std::pair<std::string, int> complete_ip(const std::string& incomplete_ip);
 	std::string getErrorMessage(int code);
-	std::list<std::string> directory_listing(const std::string& directory);
+	bool is_directory(const std::string& realPath);
 }
 
 #endif

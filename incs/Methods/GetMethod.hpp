@@ -30,7 +30,12 @@ class GetMethod : public IMethod
 		bool isAllowedInHTMLForms() const;
 
 		Response process(const Request& request, const ConfigContext& config);
+
+	private:
 		Response directory_listing(const Request& request, const ConfigContext& config);
+		std::string get_file_size(const std::string& realPath);
+		std::string get_last_modified_format(const std::string& realPath, const std::string& format);
+		std::list<std::string> list_directory(const std::string& realPath);
 };
 
 #endif

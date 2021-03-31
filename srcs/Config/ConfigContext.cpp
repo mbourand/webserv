@@ -69,9 +69,9 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 	{
 		_directive_names.push_back("server_name");
 		_directive_names.push_back("listen");
+		_directive_names.push_back("location");
 	}
 	_directive_names.push_back("root");
-	_directive_names.push_back("location");
 	_directive_names.push_back("error_page");
 	_directive_names.push_back("index");
 	_directive_names.push_back("autoindex");
@@ -209,6 +209,8 @@ bool ConfigContext::hasAutoIndexPath(const std::string& path) const
 
 const std::list<std::string>& ConfigContext::getParam(const std::string& name) const
 {
+	if (_params.find(name) == _params.end())
+		throw std::invalid_argument("Parameter not found in config");
 	return _params.find(name)->second;
 }
 
@@ -216,7 +218,6 @@ const std::list<std::string>& ConfigContext::getParamPath(const std::string& nam
 {
 	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
 	{
-		std::cout << it->getNames().front() << " " << path.substr(0, std::min(path.size(), it->getNames().front().size())) << std::endl;
 		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
 			return it->getParam(name);
 	}
