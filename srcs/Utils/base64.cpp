@@ -23,21 +23,28 @@ std::string	base64_encode(const char *str, unsigned int len)
 			i = 0;
 		}
 	}
-	/*switch (i)
+	switch (i)
 	{
 	case 1:
+		result.push_back(base64_chars[((bytes[0] & 0b11111100) >> 2)]);
+		result.push_back(base64_chars[((bytes[0] & 0b11) << 4)]);
+		result += "==";
 		break;
 	case 2:
+		result.push_back(base64_chars[((bytes[0] & 0b11111100) >> 2)]);
+		result.push_back(base64_chars[((bytes[0] & 0b11) << 4) + ((bytes[1] & 0b11110000) >> 4)]);
+		result.push_back(base64_chars[((bytes[1] & 0b1111) << 2)]);
+		result += "=";
 		break;
 	default:
 		break;
-	}*/
+	}
 	return result;
 }
 
 int	main(void)
 {
-	std::string test("Hi!");
+	std::string test("Bonjour");
 	std::cout << test << " = |" << base64_encode(test.c_str(), test.size()) << "|" << std::endl;
 	return (0);
 }
