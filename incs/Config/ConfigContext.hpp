@@ -33,7 +33,7 @@ class ConfigContext
 		std::string getErrorPagePath(int code, const std::string& path) const;
 		const std::list<std::string>& getParam(const std::string& name) const;
 		const std::list<std::string>& getParamPath(const std::string& name, const std::string& path) const;
-		std::string rootPath(const std::string& path) const;
+		std::string rootPath(const std::string& path, int& base_depth) const;
 
 
 		bool hasAutoIndex() const;

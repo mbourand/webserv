@@ -188,6 +188,8 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 			throw std::invalid_argument("No listen in config");
 	if (_params.find("root") == _params.end())
 		_params["root"].push_back("./");
+	else
+		*(_params["root"].begin()) = ft::simplify_path(*_params["root"].begin());
 }
 
 /*
@@ -224,15 +226,18 @@ const std::list<std::string>& ConfigContext::getParamPath(const std::string& nam
 	return getParam(name);
 }
 
-std::string ConfigContext::rootPath(const std::string& path) const
+std::string ConfigContext::rootPath(const std::string& path, int& base_depth) const
 {
-	std::string res = "./";
+	std::string res;
 
 	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
 	{
 		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
 		{
+			res = (it->getParam("root").front()[0] == '/' ? "/" : "");
+
 			std::list<std::string> splitted = ft::split(it->getParam("root").front(), "/");
+			base_depth = splitted.size();
 			std::list<std::string> splitted_path = ft::split(path.substr(it->getNames().front().size()), "/");
 
 			for (std::list<std::string>::iterator it = splitted.begin(); it != splitted.end(); it++)
@@ -243,7 +248,10 @@ std::string ConfigContext::rootPath(const std::string& path) const
 			return res;
 		}
 	}
+	res = (getParam("root").front()[0] == '/' ? "/" : "");
+
 	std::list<std::string> splitted = ft::split(getParam("root").front(), "/");
+	base_depth = splitted.size();
 	std::list<std::string> splitted_path = ft::split(path, "/");
 
 	for (std::list<std::string>::iterator it = splitted.begin(); it != splitted.end(); it++)

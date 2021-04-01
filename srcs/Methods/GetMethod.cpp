@@ -79,10 +79,9 @@ std::string GetMethod::get_file_size(const std::string& realPath)
 	return convert.str();
 }
 
-Response GetMethod::directory_listing(const Request& request, const ConfigContext& config)
+Response GetMethod::directory_listing(const Request& request, const ConfigContext& config, std::string realPath)
 {
 	URL url(request._path);
-	std::string realPath = config.rootPath(url._path);
 	std::list<std::string> list;
 	try
 	{
@@ -163,7 +162,19 @@ Response GetMethod::directory_listing(const Request& request, const ConfigContex
 Response GetMethod::process(const Request& request, const ConfigContext& config)
 {
 	URL url(request._path);
-	std::string realPath = config.rootPath(url._path);
+	int base_depth = 0;
+	std::string realPath = config.rootPath(url._path, base_depth);
+	try
+	{
+		realPath = ft::simplify_path(realPath, true, base_depth);
+	}
+	catch (std::exception& e)
+	{
+		return Response(404, url._path);
+	}
+	if (realPath[0] != '/')
+		realPath = g_webserv.cwd + "/" + realPath;
+	realPath.erase(--realPath.end());
 
 	if (ft::is_directory(realPath))
 	{
@@ -175,8 +186,12 @@ Response GetMethod::process(const Request& request, const ConfigContext& config)
 		catch (std::exception& e)
 		{
 			if (config.hasAutoIndexPath(url._path))
-				return directory_listing(request, config);
+				return directory_listing(request, config, realPath);
 		}
+	}
+	else if (url._is_directory)
+	{
+		return Logger::print("File not found", Response(404, url._path), ERROR, VERBOSE);
 	}
 
 	std::fstream file(realPath.c_str());

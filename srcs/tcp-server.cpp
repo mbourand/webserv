@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/25 16:17:08 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/03/31 23:46:18 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include "Types_parser.hpp"
 #include "VirtualHost.hpp"
 #include "Config.h"
+#include "Utils.hpp"
 
 #ifndef DEBUG
 # define DEBUG 0
@@ -150,6 +151,7 @@ int	main(int argc, char **argv)
 
 	g_webserv.run = true;
 	g_webserv.file_formatname = new HashTable(256);
+	g_webserv.cwd = ft::get_cwd();
 	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
 	try

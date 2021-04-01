@@ -183,3 +183,61 @@ bool ft::is_directory(const std::string& realPath)
 		return false;
 	return S_ISDIR(st.st_mode);
 }
+
+std::string ft::simplify_path(const std::string& input, bool safe, int base_depth)
+{
+	if (input.size() == 0)
+		return "";
+
+	std::list<std::string> splitted = ft::split(input, "/");
+	std::string ret;
+
+	if (safe)
+	{
+		int depth = 0;
+		for (std::list<std::string>::iterator it = splitted.begin(); it != splitted.end(); it++)
+		{
+			if (base_depth-- > 0)
+				continue;
+			if (*it == ".")
+				continue;
+
+			if (*it == "..")
+				depth--;
+			else
+				depth++;
+			if (depth == -1)
+				throw std::invalid_argument("Path go out of current directory");
+		}
+	}
+
+	if (input[0] == '/')
+		ret += "/";
+
+	for (std::list<std::string>::iterator it = splitted.begin(); it != splitted.end(); it++)
+	{
+		if (*it == ".")
+			continue;
+		else if (*it == ".." && ret.size() > 0)
+		{
+			it--;
+			ret = ret.substr(0, ret.size() - it->size() - 1);
+			it++;
+		}
+		else
+			ret += *it + "/";
+	}
+	return ret;
+}
+
+std::string ft::get_cwd()
+{
+	std::string cwd;
+	char *buf;
+	int size = 1024;
+	while (!(buf = getcwd(NULL, size)))
+		size++;
+	cwd += buf;
+	delete buf;
+	return cwd;
+}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 19:37:11 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/18 16:45:04 by nforay           ###   ########.fr       */
+/*   Updated: 2021/03/31 23:45:39 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct	s_webserv
 	bool		run;
 	HashTable	*file_formatname;
 	std::map<int, ServerSocket*> sockets;
+	std::string cwd;
 }				t_webserv;
 
 void		sighandler(void);
