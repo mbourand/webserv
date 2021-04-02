@@ -19,6 +19,8 @@
 #include <algorithm>
 #include <sstream>
 #include <fstream>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 /*
 ** ---------------------------------- CONSTRUCTOR --------------------------------------
@@ -75,6 +77,7 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 	_directive_names.push_back("error_page");
 	_directive_names.push_back("index");
 	_directive_names.push_back("autoindex");
+	_directive_names.push_back("max_client_body_size");
 
 
 	for (size_t i = 0; i < raw.size();)
@@ -189,7 +192,21 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 	if (_params.find("root") == _params.end())
 		_params["root"].push_back("./");
 	else
-		*(_params["root"].begin()) = ft::simplify_path(*_params["root"].begin());
+	{
+		_params["root"].front() = ft::simplify_path(_params["root"].front());
+		_params["root"].front().erase(--_params["root"].front().end());
+		if (!ft::is_directory(_params["root"].front().c_str()))
+			throw std::invalid_argument("Root parameter is not a folder in config");
+	}
+	if (_params.find("max_client_body_size") == _params.end())
+		_params["max_client_body_size"].push_back("8000");
+	else
+	{
+		if (!ft::is_integer<int>(_params["max_client_body_size"].front()))
+			throw std::invalid_argument("max_client_body_size is not an integer in config.");
+		if (_params["max_client_body_size"].front()[0] == '-')
+			throw std::invalid_argument("Negative max_client_body_size in config.");
+	}
 }
 
 /*

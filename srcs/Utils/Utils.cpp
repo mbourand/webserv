@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <limits>
 
 int ft::toInt(const std::string& str)
 {
@@ -176,9 +177,11 @@ std::string ft::getErrorMessage(int code)
 	}
 }
 
-bool ft::is_directory(const std::string& realPath)
+bool ft::is_directory(std::string realPath)
 {
 	struct stat st;
+	if (realPath[0] != '/')
+		realPath = ft::get_cwd() + "/" + realPath;
 	if (lstat(realPath.c_str(), &st) < 0)
 		return false;
 	return S_ISDIR(st.st_mode);
@@ -221,7 +224,10 @@ std::string ft::simplify_path(const std::string& input, bool safe, int base_dept
 		else if (*it == ".." && ret.size() > 0)
 		{
 			it--;
-			ret = ret.substr(0, ret.size() - it->size() - 1);
+			if (*it == "..")
+				ret += "../";
+			else
+				ret = ret.substr(0, ret.size() - it->size() - 1);
 			it++;
 		}
 		else
