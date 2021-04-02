@@ -26,8 +26,10 @@ namespace ft
 		size_t res = 0;
 		for (size_t i = (str[0] == '-' || str[0] == '+'); i < str.size(); i++)
 		{
+			if (!std::isdigit(str[i]))
+				return false;
 			res = res * 10 + (str[i] - '0');
-			if ((str[0] != '-' && res > std::numeric_limits<IntegralType>::max()) || (str[0] == '-' && res < std::numeric_limits<IntegralType>::min()))
+			if ((str[0] != '-' && res > std::numeric_limits<IntegralType>::max()) || (str[0] == '-' && res > std::numeric_limits<IntegralType>::min() * -1))
 				return false;
 		}
 		return true;

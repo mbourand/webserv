@@ -117,23 +117,11 @@ void Request::parse()
 	{
 		if (_method->requestHasBody())
 		{
-			/*if ((_raw.size() - _parse_start) > _max_body_size)
-			{
-				_error_code = 413;
-				_error_text = "Request Entity Too Large.";
-				throw std::invalid_argument("Request Entity too large.");
-			}*/
 			_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size() - 4);
 			Logger::print("Request body is " + _body, NULL, INFO, VERBOSE);
 		}
 		_finished_parsing = true;
 	}
-	/*else if (_header_section_finished && _method->requestHasBody() && (_raw.size() - _parse_start) > _max_body_size)
-	{
-		_error_code = 413;
-		_error_text = "Request Entity Too Large.";
-		throw std::invalid_argument("Request Entity too large.");
-	}*/
 }
 
 void Request::parse_method()

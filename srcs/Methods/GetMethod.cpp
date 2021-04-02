@@ -162,8 +162,6 @@ Response GetMethod::directory_listing(const Request& request, const ConfigContex
 Response GetMethod::process(const Request& request, const ConfigContext& config)
 {
 	URL url(request._path);
-	if (request._body.size() > ft::toInt(config.getParam("max_client_body_size").front()))
-		return Response(413, url._path);
 	int base_depth = 0;
 	std::string realPath = config.rootPath(url._path, base_depth);
 	try
