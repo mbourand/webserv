@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/04 01:58:15 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/04 03:42:44 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ bool	handle_server_response(Client &client)
 				break;
 			}
 		}
-		if (DEBUG)
+		if (false && DEBUG)
 			std::cout << *client.req << std::endl;
 		VirtualHost vhost = VirtualHost::getServerByName(host, client.sckt->getServerPort(), g_webserv.vhosts);
 		Response response = client.req->_method->process(*client.req, vhost.getConfig(), *client.sckt);
@@ -158,7 +158,7 @@ int	main(int argc, char **argv)
 
 	g_webserv.run = true;
 	g_webserv.file_formatname = new HashTable(256);
-	Threadpool workers(4);
+	Threadpool workers(10);
 	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
 	try
@@ -225,11 +225,14 @@ int	main(int argc, char **argv)
 						Logger::print("FD Error flagged by Select", NULL, WARNING, NORMAL);
 					}
 					if (!error && FD_ISSET(it->sckt->GetSocket(), &read_sockets))
-						workers.AddJob((*it), false);
-						//error = handle_client_request((*it));
+						//workers.AddJob((*it), false);
+						error = handle_client_request((*it));
 					if (!error && it->req->isfinished() && FD_ISSET(it->sckt->GetSocket(), &write_sockets))
+					{	
+						it->req->_finished_parsing = false;
 						workers.AddJob((*it), true);
 						//error = handle_server_response((*it));
+					}
 					if (error)
 					{
 						Logger::print("Client Disconnected", NULL, SUCCESS, VERBOSE);

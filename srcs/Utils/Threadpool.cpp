@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/04 02:14:57 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/04 03:34:55 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 
 Threadpool::Threadpool(unsigned int numworkers) : m_numworkers(numworkers)
 {
-	std::cout << "Threadpool constructor" << std::endl;
 	if (!m_numworkers)
 		return;
 	m_workers.reserve(m_numworkers);
@@ -27,7 +26,6 @@ Threadpool::Threadpool(unsigned int numworkers) : m_numworkers(numworkers)
 	for (unsigned int it = 0; it < m_numworkers; it++)
 	{
 		pthread_t *new_thread = new pthread_t;
-		std::cout << "worker created " << it << std::endl;
 		pthread_create(new_thread, NULL, worker_entry, this);
 		m_workers.push_back(new_thread);
 	}
@@ -71,29 +69,28 @@ std::ostream &			operator<<(std::ostream &o, Threadpool const &i)
 
 void					Threadpool::Lock(void)
 {
-	std::cout << "worker Lock" << std::endl;
 	pthread_mutex_lock(&m_jobsmutex);
 }
 
 void					Threadpool::Unlock(void)
 {
-	std::cout << "worker Unlock" << std::endl;
 	pthread_mutex_unlock(&m_jobsmutex);
 }
 
 void					Threadpool::AddJob(Client &client, bool type)
 {
 	if (type)
-		std::cout << "response job added" << std::endl;
+		std::cout << "Response job added" << std::endl;
 	else
-		std::cout << "request job added" << std::endl;
-	Job *job = new Job;
-	job->client = &client;
-	job->type = type;
+		std::cout << "Request job added" << std::endl;
+	Job job;
+	job.client = &client;
+	job.type = type;
 	m_jobs.push_front(job);
 	Unlock();
 }
 
+#include <unistd.h>
 void					*Threadpool::WaitForWork(void *)
 {
 	std::cout << "worker WaitForWork" << std::endl;
@@ -105,13 +102,13 @@ void					*Threadpool::WaitForWork(void *)
 		if (m_jobs.size())
 		{
 			std::cout << "worker taking job" << std::endl;
-			Job *job = m_jobs.back();
+			Job job = m_jobs.back();
 			m_jobs.pop_back();
-			if (job->type)
-				handle_server_response(*job->client);
+			if (job.type)
+				handle_server_response(*job.client);
 			else
-				handle_client_request(*job->client);
-			delete job;
+				handle_client_request(*job.client);
+			//delete job;
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/04 02:10:33 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/04 03:18:39 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ class Threadpool
 		void	Unlock(void);
 
 		std::vector<pthread_t*>	m_workers;
-		std::deque<Job*>		m_jobs;
+		std::deque<Job>			m_jobs;
 		unsigned int			m_numworkers;
 		pthread_mutex_t			m_jobsmutex;
 

@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/30 17:41:27 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/04 03:39:06 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ static std::string		find_first_file(const std::string &root, const std::string &
 	size_t		start = 0;
 	size_t		end = 0;
 
-	end = path.find("/", end + 1);
+	end = path.find("/", end);
 	while (end != std::string::npos)
 	{
 		if (lstat((std::string(root) + path.substr(start, end)).c_str(), &file_stats) < 0)
