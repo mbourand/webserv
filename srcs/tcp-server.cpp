@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/30 18:30:25 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/04 01:58:15 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <signal.h>
 #include "Types_parser.hpp"
 #include "VirtualHost.hpp"
+#include "Threadpool.hpp"
 #include "Config.h"
 
 #ifndef DEBUG
@@ -112,7 +113,7 @@ bool	handle_client_request(Client &client)
 	return false;
 }
 
-bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
+bool	handle_server_response(Client &client)
 {
 	try
 	{
@@ -127,7 +128,7 @@ bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
 		}
 		if (DEBUG)
 			std::cout << *client.req << std::endl;
-		VirtualHost vhost = VirtualHost::getServerByName(host, client.sckt->getServerPort(), vhosts);
+		VirtualHost vhost = VirtualHost::getServerByName(host, client.sckt->getServerPort(), g_webserv.vhosts);
 		Response response = client.req->_method->process(*client.req, vhost.getConfig(), *client.sckt);
 		*client.sckt << response.getResponseText(vhost.getConfig());
 		if (response.getCode() != 200)
@@ -153,18 +154,18 @@ int	main(int argc, char **argv)
 		return 1;
 	}
 
-	std::list<VirtualHost> vhosts;
 	std::string config_path = (argc == 1 ? "./config/default.conf" : argv[1]);
 
 	g_webserv.run = true;
 	g_webserv.file_formatname = new HashTable(256);
+	Threadpool workers(4);
 	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
 	try
 	{
 		try
 		{
-			init_config(config_path, vhosts);
+			init_config(config_path, g_webserv.vhosts);
 		}
 		catch(const std::exception& e)
 		{
@@ -224,9 +225,11 @@ int	main(int argc, char **argv)
 						Logger::print("FD Error flagged by Select", NULL, WARNING, NORMAL);
 					}
 					if (!error && FD_ISSET(it->sckt->GetSocket(), &read_sockets))
-						error = handle_client_request((*it));
+						workers.AddJob((*it), false);
+						//error = handle_client_request((*it));
 					if (!error && it->req->isfinished() && FD_ISSET(it->sckt->GetSocket(), &write_sockets))
-						error = handle_server_response((*it), vhosts);
+						workers.AddJob((*it), true);
+						//error = handle_server_response((*it));
 					if (error)
 					{
 						Logger::print("Client Disconnected", NULL, SUCCESS, VERBOSE);
