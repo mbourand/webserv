@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/30 02:37:44 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/04 22:13:13 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ class CGI
 	public:
 
 		CGI(const Request& request, const ConfigContext& config, const ServerSocket& socket);
-		CGI(CGI const & src);
 		~CGI();
 
 		void	process(Response& response);
@@ -61,7 +60,5 @@ class CGI
 		char						**m_c_env;
 
 };
-
-std::ostream &			operator<<( std::ostream & o, CGI const & i );
 
 #endif /* ************************************************************* CGI_H */

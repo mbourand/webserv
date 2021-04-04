@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/04 03:18:39 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/04 21:51:49 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,10 @@
 # include <vector>
 # include <pthread.h>
 # include "Webserv.hpp"
+# include "Logger.hpp"
 
 bool	handle_server_response(Client &client); //temp
 bool	handle_client_request(Client &client); //temp
-
-struct Job {
-	Client				*client;
-	bool				type;
-};
 
 class Threadpool
 {
@@ -34,12 +30,11 @@ class Threadpool
 	public:
 
 		Threadpool(unsigned int numworkers);
-		Threadpool(Threadpool const &src);
 		~Threadpool();
 
-		void	AddJob(Client &client, bool type);
+		bool	AddJob(Client &client);
 		void	*WaitForWork(void *);
-		static void	*worker_entry(void *context){std::cout << "worker waiting" << std::endl;return (((Threadpool *)context)->WaitForWork(context));}
+		static void	*worker_entry(void *context){return (((Threadpool *)context)->WaitForWork(context));}
 
 		Threadpool &		operator=(Threadpool const &rhs);
 
@@ -49,12 +44,10 @@ class Threadpool
 		void	Unlock(void);
 
 		std::vector<pthread_t*>	m_workers;
-		std::deque<Job>			m_jobs;
+		std::deque<Client*>			m_jobs;
 		unsigned int			m_numworkers;
 		pthread_mutex_t			m_jobsmutex;
 
 };
-
-std::ostream &			operator<<(std::ostream &o, Threadpool const &i);
 
 #endif /* ****************************************************** THREADPOOL_H */

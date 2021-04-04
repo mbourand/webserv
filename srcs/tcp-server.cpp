@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/04 03:42:44 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/04 22:03:46 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ bool	handle_client_request(Client &client)
 	{
 		*client.sckt >> data;
 		client.req->append(data);
-		if (DEBUG)
+		if (false && DEBUG)
 			hexdump_str(data, 32);
 	}
 	catch(ServerSocket::ServerSocketException &e)
@@ -139,14 +139,17 @@ bool	handle_server_response(Client &client)
 	{
 		Logger::print(e.what(), NULL, ERROR, NORMAL);
 	}
-	delete client.req;
-	client.req = new Request;
+	if (client.req && client.sckt->Success())
+	{
+		delete client.req;
+		client.req = new Request;
+	}
 	return false;
 }
 
 int	main(int argc, char **argv)
 {
-	Logger::setMode(NORMAL);
+	Logger::setMode(SILENT);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	if (argc > 2)
 	{
@@ -158,7 +161,7 @@ int	main(int argc, char **argv)
 
 	g_webserv.run = true;
 	g_webserv.file_formatname = new HashTable(256);
-	Threadpool workers(10);
+	Threadpool workers(0);//todo: get number of workers from config
 	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
 	try
@@ -225,14 +228,9 @@ int	main(int argc, char **argv)
 						Logger::print("FD Error flagged by Select", NULL, WARNING, NORMAL);
 					}
 					if (!error && FD_ISSET(it->sckt->GetSocket(), &read_sockets))
-						//workers.AddJob((*it), false);
 						error = handle_client_request((*it));
 					if (!error && it->req->isfinished() && FD_ISSET(it->sckt->GetSocket(), &write_sockets))
-					{	
-						it->req->_finished_parsing = false;
-						workers.AddJob((*it), true);
-						//error = handle_server_response((*it));
-					}
+						error = workers.AddJob((*it)); //handle_server_response((*it));
 					if (error)
 					{
 						Logger::print("Client Disconnected", NULL, SUCCESS, VERBOSE);
