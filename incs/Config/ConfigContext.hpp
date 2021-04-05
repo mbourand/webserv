@@ -5,6 +5,8 @@
 #include <map>
 #include <list>
 
+class IMethod;
+
 class ConfigContext
 {
 	private:
@@ -14,6 +16,7 @@ class ConfigContext
 		std::list<ConfigContext> _childs;
 		std::map<int, std::string> _error_pages;
 		std::list<std::string> _names;
+		std::list<const IMethod*> _acceptedMethods;
 		bool _autoIndex;
 
 	private:
@@ -41,6 +44,8 @@ class ConfigContext
 		const std::map<std::string, std::list<std::string> >& getParams() const;
 		const std::map<int, std::string>& getErrorPages() const;
 		const std::list<std::string>& getNames() const;
+		const std::list<const IMethod*>& getAllowedMethodsPath(const std::string& path) const;
+		const std::list<const IMethod*>& getAllowedMethods() const;
 		std::string toString() const;
 		std::string findFileWithRoot(const std::string& name) const;
 };

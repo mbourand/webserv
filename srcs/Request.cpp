@@ -1,17 +1,15 @@
 #include "Request.hpp"
+#include "Webserv.hpp"
 
 Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path),
 	_protocolVersion(other._protocolVersion), _body(other._body), _header_section_finished(other._header_section_finished),
 	_finished_parsing(other._finished_parsing), _parse_start(other._parse_start), _max_body_size(other._max_body_size),
 	_error_code(other._error_code), _error_text(other._error_text)
 {
-	init_factories();
 }
 
 Request::~Request()
 {
-	if (_method)
-		delete _method;
 	for (HeadersVector::iterator it = _headers.begin(); it != _headers.end(); it++)
 		if (*it)
 			delete *it;
@@ -19,38 +17,6 @@ Request::~Request()
 
 Request::Request() : _method(NULL), _header_section_finished(false), _finished_parsing(false), _parse_start(0), _max_body_size(1000000), _error_code(0)
 {
-	init_factories();
-}
-
-void Request::init_factories()
-{
-	_methodFactory.add(new ConnectMethod());
-	_methodFactory.add(new DeleteMethod());
-	_methodFactory.add(new GetMethod());
-	_methodFactory.add(new HeadMethod());
-	_methodFactory.add(new OptionsMethod());
-	_methodFactory.add(new PostMethod());
-	_methodFactory.add(new PutMethod());
-	_methodFactory.add(new TraceMethod());
-
-	_headerFactory.add(new AcceptCharsetsHeader());
-	_headerFactory.add(new AcceptLanguageHeader());
-	_headerFactory.add(new AllowHeader());
-	_headerFactory.add(new AuthorizationHeader());
-	_headerFactory.add(new ContentLanguageHeader());
-	_headerFactory.add(new ContentLengthHeader());
-	_headerFactory.add(new ContentLocationHeader());
-	_headerFactory.add(new ContentTypeHeader());
-	_headerFactory.add(new DateHeader());
-	_headerFactory.add(new HostHeader());
-	_headerFactory.add(new LastModifiedHeader());
-	_headerFactory.add(new LocationHeader());
-	_headerFactory.add(new RefererHeader());
-	_headerFactory.add(new RetryAfterHeader());
-	_headerFactory.add(new ServerHeader());
-	_headerFactory.add(new TransferEncodingHeader());
-	_headerFactory.add(new UserAgentHeader());
-	_headerFactory.add(new WWWAuthenticateHeader());
 }
 
 bool Request::append(const std::string& raw)
@@ -127,12 +93,12 @@ void Request::parse()
 void Request::parse_method()
 {
 	std::string method = _raw.substr(0, _raw.find(' '));
-	if (!_methodFactory.hasCandidates(method))
+	if (!g_webserv.methods.hasCandidates(method))
 		throw std::invalid_argument("Method could not be recognized.");
-	if (_raw.find(' ') != std::string::npos && _methodFactory.getByType(method) != NULL)
+	if (_raw.find(' ') != std::string::npos && g_webserv.methods.getByType(method) != NULL)
 	{
 		Logger::print("Request method is " + method + ".", true, INFO, VERBOSE);
-		_method = _methodFactory.createByType(method);
+		_method = g_webserv.methods.getByType(method);
 		_parse_start = _raw.find(' ');
 	}
 }
@@ -202,9 +168,9 @@ bool Request::parse_headers()
 	if (_raw.find(':', _parse_start) == std::string::npos)
 		throw std::invalid_argument("Invalid header field in request");
 	std::string header_name = _raw.substr(_parse_start, _raw.find(':', _parse_start) - _parse_start);
-	if (_headerFactory.contains(header_name))
+	if (g_webserv.headers.contains(header_name))
 	{
-		Header* header = _headerFactory.createByType(header_name);
+		Header* header = g_webserv.headers.createByType(header_name);
 		if (header == NULL)
 			throw std::invalid_argument("Out of memory");
 		try

@@ -14,6 +14,7 @@
 #include "URL.hpp"
 #include "Utils.hpp"
 #include <dirent.h>
+#include <algorithm>
 
 GetMethod::GetMethod() {}
 GetMethod::GetMethod(const GetMethod&) {}
@@ -162,6 +163,10 @@ Response GetMethod::directory_listing(const Request& request, const ConfigContex
 Response GetMethod::process(const Request& request, const ConfigContext& config)
 {
 	URL url(request._path);
+	std::list<const IMethod*> allowedMethods = config.getAllowedMethodsPath(url._path);
+	if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
+		return Response(405, url._path);
+
 	int base_depth = 0;
 	std::string realPath = config.rootPath(url._path, base_depth);
 	try

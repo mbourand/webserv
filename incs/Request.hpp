@@ -17,8 +17,6 @@ class Request
 		typedef std::vector<Header*> HeadersVector;
 
 	public:
-		Factory<IMethod*> _methodFactory;
-		Factory<Header*> _headerFactory;
 		std::string _raw;
 		IMethod* _method;
 		std::string _path;
@@ -44,8 +42,6 @@ class Request
 		void parse_protocol_version();
 		bool parse_headers();
 		void parse_body();
-
-		void init_factories();
 
 	public:
 		Request();

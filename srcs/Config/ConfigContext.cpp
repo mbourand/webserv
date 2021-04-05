@@ -21,6 +21,9 @@
 #include <fstream>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <list>
+#include "Webserv.hpp"
+#include "Methods.h"
 
 /*
 ** ---------------------------------- CONSTRUCTOR --------------------------------------
@@ -34,6 +37,8 @@ ConfigContext::ConfigContext()
 	_directive_names.push_back("root");
 	_directive_names.push_back("location");
 	_directive_names.push_back("autoindex");
+	_directive_names.push_back("max_client_body_size");
+	_directive_names.push_back("methods");
 }
 
 ConfigContext::~ConfigContext()
@@ -52,6 +57,7 @@ ConfigContext& ConfigContext::operator=(const ConfigContext& other)
 	_directive_names = other._directive_names;
 	_childs = other._childs;
 	_names = other._names;
+	_acceptedMethods = other._acceptedMethods;
 	return *this;
 }
 
@@ -64,20 +70,23 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 		_params = parent->_params;
 		_error_pages = parent->_error_pages;
 		_autoIndex = parent->_autoIndex;
-	}
-	if (parent != NULL)
+		_acceptedMethods = parent->_acceptedMethods;
 		_names.push_back(name);
+	}
 	else
 	{
 		_directive_names.push_back("server_name");
 		_directive_names.push_back("listen");
 		_directive_names.push_back("location");
+		for (std::list<IMethod*>::const_iterator it = g_webserv.methods.getRegistered().begin(); it != g_webserv.methods.getRegistered().end(); it++)
+			_acceptedMethods.push_back(*it);
 	}
 	_directive_names.push_back("root");
 	_directive_names.push_back("error_page");
 	_directive_names.push_back("index");
 	_directive_names.push_back("autoindex");
 	_directive_names.push_back("max_client_body_size");
+	_directive_names.push_back("methods");
 
 
 	for (size_t i = 0; i < raw.size();)
@@ -176,6 +185,19 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 				throw std::invalid_argument("Bad value for autoindex in config");
 			_autoIndex = (val == "on" ? true : false);
 		}
+		else if (directive_name == "methods")
+		{
+			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+			if (directive_value.size() == 0)
+				throw std::invalid_argument("Empty directive value in config");
+			std::list<std::string> words = ft::split(directive_value, " \t\n");
+			for (std::list<std::string>::const_iterator it = words.begin(); it != words.end(); it++)
+			{
+				if (g_webserv.methods.getByType(*it) == NULL)
+					throw std::invalid_argument("Bad method name in method field in config.");
+				_acceptedMethods.remove(g_webserv.methods.getByType(*it));
+			}
+		}
 		else
 		{
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
@@ -213,6 +235,11 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 ** ---------------------------------- ACCESSOR --------------------------------------
 */
 
+const std::list<const IMethod*>& ConfigContext::getAllowedMethods() const
+{
+	return _acceptedMethods;
+}
+
 bool ConfigContext::hasAutoIndex() const
 {
 	return _autoIndex;
@@ -241,6 +268,16 @@ const std::list<std::string>& ConfigContext::getParamPath(const std::string& nam
 			return it->getParam(name);
 	}
 	return getParam(name);
+}
+
+const std::list<const IMethod*>& ConfigContext::getAllowedMethodsPath(const std::string& path) const
+{
+	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
+	{
+		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
+			return it->getAllowedMethods();
+	}
+	return getAllowedMethods();
 }
 
 std::string ConfigContext::rootPath(const std::string& path, int& base_depth) const
