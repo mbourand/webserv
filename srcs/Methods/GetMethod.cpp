@@ -143,17 +143,7 @@ Response GetMethod::directory_listing(const Request& request, const ConfigContex
 	response.addHeader("Content-Length", convert.str());
 	response.setBody(body);
 	convert.str("");
-
-	struct timeval 	tv;
-	struct tm time;
-	char buffer[1024];
-	gettimeofday(&tv, NULL);
-	tv.tv_sec -= 3600; // assume we're GMT+1
-	convert << tv.tv_sec;
-	strptime(std::string(convert.str()).c_str(), "%s", &time);
-	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);
-	response.addHeader("Date", buffer);
-
+	response.addDateHeader();
 	response.addHeader("Server", "Webserv");
 	response.addHeader("Content-Type", "text/html");
 
@@ -241,16 +231,8 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	response.addHeader("Last-Modified", buffer);
 	convert.str("");
 
-	struct timeval 	tv;
-	gettimeofday(&tv, NULL);
-	tv.tv_sec -= 3600; // assume we're GMT+1
-	convert << tv.tv_sec;
-	strptime(std::string(convert.str()).c_str(), "%s", &time);
-	strftime(buffer, sizeof(buffer), "%a, %d %b %Y %H:%M:%S GMT", &time);
-	response.addHeader("Date", buffer);
-
+	response.addDateHeader();
 	response.addHeader("Server", "Webserv");
-
 	t_hnode	*hnode = g_webserv.file_formatname->GetNode(realPath.substr(realPath.find_last_of('.') + 1));
 	if (hnode != NULL)
 		response.addHeader("Content-Type", hnode->value);
