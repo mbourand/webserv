@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/06 21:16:08 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/06 23:05:56 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <sys/time.h>
 #include <fcntl.h>
 #include <sstream>
 #include <fstream>
@@ -95,7 +96,12 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	m_env.push_back("SERVER_SOFTWARE=Webserv");
 	convert.str("");
 	convert << socket.GetSocket();
-	m_tmpfilename = "/tmp/webserv_" + convert.str() + ".tmp";
+	m_tmpfilename = "/tmp/webserv_" + convert.str() + "-";
+	convert.str("");
+	struct timeval	tv;
+	gettimeofday(&tv, NULL);
+	convert << tv.tv_usec;
+	m_tmpfilename += convert.str() + ".tmp";
 	m_c_env = new char*[m_env.size() + 1];
 	for (size_t i = 0; i < m_env.size(); i++)
 	{
@@ -104,10 +110,6 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	}
 	m_c_env[m_env.size()] = NULL;
 	this->execute(request._body);
-}
-
-CGI::CGI(const CGI &src)
-{
 }
 
 /*
@@ -123,16 +125,6 @@ CGI::~CGI()
 	for (size_t i = 0; i < m_args.size(); i++)
 		delete [] m_c_args[i];
 	delete [] m_c_args;
-}
-
-/*
-** --------------------------------- OVERLOAD ---------------------------------
-*/
-
-std::ostream &		operator<<( std::ostream & o, CGI const & i )
-{
-	//o << "Value = " << i.getValue();
-	return o;
 }
 
 /*

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/06 14:31:51 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/06 23:08:10 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <signal.h>
 #include "Types_parser.hpp"
 #include "VirtualHost.hpp"
+#include "Threadpool.hpp"
 #include "Config.h"
 #include "Utils.hpp"
 
@@ -86,7 +87,7 @@ bool	handle_client_request(Client &client)
 	{
 		*client.sckt >> data;
 		client.req->append(data);
-		if (DEBUG)
+		if (false && DEBUG)
 			hexdump_str(data, 32);
 	}
 	catch(ServerSocket::ServerSocketException &e)
@@ -113,7 +114,7 @@ bool	handle_client_request(Client &client)
 	return false;
 }
 
-bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
+bool	handle_server_response(Client &client)
 {
 	try
 	{
@@ -126,9 +127,9 @@ bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
 				break;
 			}
 		}
-		if (DEBUG)
+		if (false && DEBUG)
 			std::cout << *client.req << std::endl;
-		VirtualHost vhost = VirtualHost::getServerByName(host, client.sckt->getServerPort(), vhosts);
+		VirtualHost vhost = VirtualHost::getServerByName(host, client.sckt->getServerPort(), g_webserv.vhosts);
 		Response response = client.req->_method->process(*client.req, vhost.getConfig(), *client.sckt);
 		*client.sckt << response.getResponseText(vhost.getConfig());
 		if (response.getCode() != 200)
@@ -139,8 +140,11 @@ bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
 	{
 		Logger::print(e.what(), NULL, ERROR, NORMAL);
 	}
-	delete client.req;
-	client.req = new Request;
+	if (client.req && client.sckt->Success())
+	{
+		delete client.req;
+		client.req = new Request;
+	}
 	return false;
 }
 
@@ -177,7 +181,7 @@ void init_factories()
 
 int	main(int argc, char **argv)
 {
-	Logger::setMode(NORMAL);
+	Logger::setMode(SILENT);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	if (argc > 2)
 	{
@@ -185,20 +189,20 @@ int	main(int argc, char **argv)
 		return 1;
 	}
 
-	std::list<VirtualHost> vhosts;
 	std::string config_path = (argc == 1 ? "./config/default.conf" : argv[1]);
 
 	g_webserv.run = true;
 	g_webserv.file_formatname = new HashTable(256);
 	g_webserv.cwd = ft::get_cwd();
 	init_factories();
+	Threadpool workers(0);//positive number to enable, todo: get number of workers from config
 	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
 	try
 	{
 		try
 		{
-			init_config(config_path, vhosts);
+			init_config(config_path, g_webserv.vhosts);
 		}
 		catch(const std::exception& e)
 		{
@@ -260,7 +264,7 @@ int	main(int argc, char **argv)
 					if (!error && FD_ISSET(it->sckt->GetSocket(), &read_sockets))
 						error = handle_client_request((*it));
 					if (!error && it->req->isfinished() && FD_ISSET(it->sckt->GetSocket(), &write_sockets))
-						error = handle_server_response((*it), vhosts);
+						error = workers.AddJob((*it)); //handle_server_response((*it));
 					if (error)
 					{
 						Logger::print("Client Disconnected", NULL, SUCCESS, VERBOSE);
