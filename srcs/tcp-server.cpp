@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/04 22:03:46 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/04 23:55:10 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@ int	main(int argc, char **argv)
 
 	g_webserv.run = true;
 	g_webserv.file_formatname = new HashTable(256);
-	Threadpool workers(0);//todo: get number of workers from config
+	Threadpool workers(8);//todo: get number of workers from config
 	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
 	try

@@ -6,17 +6,18 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/04 21:51:47 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/05 00:50:46 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Threadpool.hpp"
+#include <unistd.h>
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-Threadpool::Threadpool(unsigned int numworkers) : m_numworkers(numworkers)
+Threadpool::Threadpool(unsigned int numworkers) : m_numworkers(numworkers), m_maxqueuedjobs(100)
 {
 	if (!m_numworkers)
 		return;
@@ -57,6 +58,7 @@ Threadpool &				Threadpool::operator=(Threadpool const &rhs)
 		this->m_workers = rhs.m_workers;
 		this->m_jobs = rhs.m_jobs;
 		this->m_jobsmutex = rhs.m_jobsmutex;
+		this->m_maxqueuedjobs = rhs.m_maxqueuedjobs;
 	}
 	return *this;
 }
@@ -77,7 +79,7 @@ void					Threadpool::Unlock(void)
 
 bool					Threadpool::AddJob(Client &client)
 {
-	if (!m_numworkers)
+	if (!m_numworkers || (m_jobs.size() > m_maxqueuedjobs))
 		return(handle_server_response(client));
 	Client *threaded_client = new Client;
 	threaded_client->sckt = client.sckt;
@@ -89,7 +91,6 @@ bool					Threadpool::AddJob(Client &client)
 	return (false);
 }
 
-#include <unistd.h>
 void					*Threadpool::WaitForWork(void *)
 {
 	while (42)

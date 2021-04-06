@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/04 21:51:49 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/05 00:46:12 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ class Threadpool
 		std::deque<Client*>			m_jobs;
 		unsigned int			m_numworkers;
 		pthread_mutex_t			m_jobsmutex;
+		size_t					m_maxqueuedjobs;
 
 };
 

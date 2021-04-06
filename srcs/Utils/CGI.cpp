@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/04 22:13:18 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/06 17:03:31 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,8 +205,8 @@ void				CGI::execute(const std::string & body)
 				Logger::print("Couldn't send Body to CGI.", NULL, ERROR, NORMAL);
 				kill(pid, SIGINT);
 			}
-		close(pipes[1]);
 		waitpid(pid, &status, 0);
+		close(pipes[1]);
 		close(fd);
 		if (WIFEXITED(status))
 			Logger::print("CGI execution was successful.", NULL, SUCCESS, NORMAL);
