@@ -22,6 +22,14 @@ URL::URL(const std::string& url)
 		_port = "80";
 	if (_path == "")
 		_path = "/";
+	if (_path.find_first_not_of("/") != std::string::npos && _path[_path.size() - 1] == '/')
+	{
+		while (_path[_path.size() - 1] == '/')
+			_path = _path.substr(0, _path.size() - 1);
+		_is_directory = true;
+	}
+	else
+		_is_directory = false;
 }
 
 URL::URL(const URL& other)
@@ -50,7 +58,6 @@ void URL::parse_userinfo(size_t& i, const std::string& url)
 	i += _userinfo.size() + 1;
 }
 
-#include <iostream>
 void URL::parse_full(const std::string& url)
 {
 	if (url.substr(0, 7) != "http://")
@@ -110,5 +117,6 @@ URL& URL::operator=(const URL& other)
 	_port = other._port;
 	_query = other._query;
 	_fragment = other._fragment;
+	_is_directory = other._is_directory;
 	return *this;
 }

@@ -7,6 +7,7 @@ class URL
 {
 	public:
 		std::string _scheme, _userinfo, _host, _port, _path, _query, _fragment;
+		bool _is_directory;
 
 	public:
 		URL();

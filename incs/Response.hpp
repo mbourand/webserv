@@ -13,11 +13,12 @@ class Response
 		std::string _message;
 		std::map<std::string, std::string> _headers;
 		std::string _body;
+		std::string _path;
 
 	public:
 		Response();
 		Response(const Response& other);
-		Response(int code);
+		Response(int code, const std::string& path);
 		virtual ~Response();
 		Response& operator=(const Response& other);
 

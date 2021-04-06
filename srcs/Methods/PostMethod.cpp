@@ -1,6 +1,8 @@
 #include "PostMethod.hpp"
 #include "Logger.hpp"
 #include "CGI.hpp"
+#include "URL.hpp"
+#include "Utils.hpp"
 
 PostMethod::PostMethod() {}
 PostMethod::PostMethod(const PostMethod&) {}
@@ -25,12 +27,27 @@ bool PostMethod::isAllowedInHTMLForms() const { return true; }
 
 Response PostMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
 {
-	Response response(200); //change code on failure
+	URL url(request._path);
+	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethodsPath(url._path);
+	if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
+		return Response(405, url._path);
+	int base_depth = 0;
+	std::string realPath = config.rootPath(url._path, base_depth);
+	try
+	{
+		realPath = ft::simplify_path(realPath, true, base_depth);
+	}
+	catch (std::exception& e)
+	{
+		return Response(404, url._path);
+	}
+
+	Response response(200, url._path); //change code on failure
 	if ((request._path.find(".php") != std::string::npos) || (request._path.find("/cgi-bin") == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
 	{
 		try
 		{
-			CGI	cgi(request, config, socket);
+			CGI	cgi(request, config, socket, realPath);
 			cgi.process(response);
 		}
 		catch(const CGI::CGIException &e)

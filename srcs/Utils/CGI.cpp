@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/30 17:41:27 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/06 17:10:45 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,15 @@
 #include "Logger.hpp"
 #include "ServerSocket.hpp"
 #include <string.h> // !remove! use libft (strncpy)
+#include "Webserv.hpp"
+#include "Utils.hpp"
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
-CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket& socket)
+CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket& socket, const std::string& realPath)
+	: m_realPath(realPath)
 {
 	Header				*header_found;
 	std::ostringstream	convert;
@@ -45,17 +48,19 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	m_Document_Root.erase(m_Document_Root.length() - 1);
 	if ((code = ParseURI(request)))
 		throw CGI::CGIException("ParseURI failed.", code);
+
+	std::string document_root = ft::simplify_path(config.getParamPath("root", request._path).front(), false, 0);
 	if (m_env_Script_Name.substr(m_env_Script_Name.length() - 4) == ".php")
 	{
 		m_args.push_back("/usr/bin/php-cgi");
-		m_args.push_back("www" + m_env_Script_Name);//getparam root
+		m_args.push_back(document_root + m_env_Script_Name);//getparam root
 		m_env.push_back("REDIRECT_STATUS=200");
 	}
 	else
 	{
-		m_args.push_back("./www" + m_env_Script_Name);//getparam root
+		m_args.push_back(document_root + m_env_Script_Name);//getparam root
 		if (!m_env_Path_Info.empty())
-			m_args.push_back("www" + m_env_Path_Info);//getparam root
+			m_args.push_back(document_root + m_env_Path_Info);//getparam root
 	}
 	m_c_args = new char*[m_args.size() + 1];
 	for (size_t i = 0; i < m_args.size(); i++)
@@ -64,13 +69,13 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 		strncpy(m_c_args[i], m_args[i].c_str(), m_args[i].size() + 1);
 	}
 	m_c_args[m_args.size()] = NULL;
-	if ((header_found = request._headerFactory.getByType(WWWAuthenticateHeader().getType())) != NULL)
+	if ((header_found = g_webserv.headers.getByType(WWWAuthenticateHeader().getType())) != NULL)
 		m_env.push_back("AUTH_TYPE="+header_found->getValue());
 	if (request._method->requestHasBody() && !request._body.empty())
 	{
 		convert << request._body.size();
 		m_env.push_back("CONTENT_LENGTH="+convert.str());
-		if ((header_found = request._headerFactory.getByType(ContentTypeHeader().getType())) != NULL)
+		if ((header_found = g_webserv.headers.getByType(ContentTypeHeader().getType())) != NULL)
 			m_env.push_back("CONTENT_TYPE="+header_found->getValue());
 		else
 			m_env.push_back("CONTENT_TYPE=US-ASCII");
@@ -80,7 +85,7 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 		m_env.push_back("PATH_INFO="+m_env_Path_Info);
 	else
 		m_env.push_back("PATH_INFO="+m_env_Script_Name);
-	m_env.push_back("PATH_TRANSLATED="+m_Document_Root+m_env_Script_Name);
+	m_env.push_back("PATH_TRANSLATED=" + document_root + m_env_Script_Name);
 	if (!request._query_string.empty())
 		m_env.push_back("QUERY_STRING="+request._query_string);
 	m_env.push_back("REMOTE_ADDR="+socket.getIPAddress());
@@ -140,23 +145,25 @@ std::ostream &		operator<<( std::ostream & o, CGI const & i )
 ** --------------------------------- METHODS ----------------------------------
 */
 
-static std::string		find_first_file(const std::string &root, const std::string &path)
+std::string		CGI::find_first_file(const std::string &path)
 {
 	struct stat	file_stats;
 	size_t		start = 0;
 	size_t		end = 0;
 
-	end = path.find("/", end + 1);
+	std::string url_after_root = m_realPath.substr(m_realPath.rfind(path));
+	std::string url_until_root = m_realPath.substr(0, m_realPath.rfind(path));
+	end = url_after_root.find("/", end);
 	while (end != std::string::npos)
 	{
-		if (lstat((std::string(root) + path.substr(start, end)).c_str(), &file_stats) < 0)
+		if (lstat((url_until_root + url_after_root.substr(start, end)).c_str(), &file_stats) < 0)
 			break;
-		if ((path.substr((path.length() - 4), 4) == ".php" && S_ISREG(file_stats.st_mode)) || S_ISREG(file_stats.st_mode))
-			return (path.substr(start, end));
+		if ((url_after_root.size() > 4 && (url_after_root.substr(url_after_root.length() - 4, 4) == ".php" && S_ISREG(file_stats.st_mode))) || S_ISREG(file_stats.st_mode))
+			return (url_after_root.substr(start, end));
 		else if (S_ISDIR(file_stats.st_mode))
 		{
-			if ((end = path.find("/", end + 1)) == std::string::npos)
-				end = path.length();
+			if ((end = url_after_root.find("/", end + 1)) == std::string::npos)
+				end = url_after_root.length();
 		}
 		else
 			break;
@@ -169,11 +176,11 @@ int	CGI::ParseURI(const Request& req)
 	size_t	start = 0;
 	size_t	end = 0;
 	std::string	cgi_path("cgi-bin/"); //replace with config->getparam
-	
-	m_env_Script_Name = find_first_file(m_Document_Root, req._path);
+
+	m_env_Script_Name = find_first_file(req._path);
 	if (m_env_Script_Name.empty())
 		return (404);
-	m_env_Path_Info = req._path.substr(m_env_Script_Name.size());
+	m_env_Path_Info = m_realPath.substr(m_realPath.find(m_env_Script_Name) + m_env_Script_Name.size());
 	if (m_env_Path_Info.empty())
 		m_env_Path_Info = "";
 	return (0);
@@ -213,8 +220,8 @@ void				CGI::execute(const std::string & body)
 				Logger::print("Couldn't send Body to CGI.", NULL, ERROR, NORMAL);
 				kill(pid, SIGINT);
 			}
-		close(pipes[1]);
 		waitpid(pid, &status, 0);
+		close(pipes[1]);
 		close(fd);
 		if (WIFEXITED(status))
 			Logger::print("CGI execution was successful.", NULL, SUCCESS, NORMAL);

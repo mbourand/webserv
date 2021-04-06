@@ -6,7 +6,7 @@
 		{
 			"label": "make",
 			"type": "shell",
-			"command": "make DB=1"
+			"command": "make DB=1 re_multi"
 		}
 	]
 }

@@ -1,8 +1,8 @@
 #ifndef FACTORY_HPP
 #define FACTORY_HPP
 
-#include <set>
 #include <algorithm>
+#include <list>
 
 template<class T>
 class Factory
@@ -11,7 +11,8 @@ class Factory
 		typedef T value_type;
 
 	private:
-		std::set<value_type> _elements;
+		std::list<value_type> _elements;
+
 		bool	compare_type_lowercase(std::string str1, std::string str2) const
 		{
 			if (str1.length() != str2.length())
@@ -26,68 +27,68 @@ class Factory
 		Factory() {}
 		Factory(const Factory& other)
 		{
-			for (typename std::set<value_type>::iterator it = other._elements.begin(); it != other._elements.end(); it++)
-				_elements.insert((*it)->clone());
+			for (typename std::list<value_type>::iterator it = other._elements.begin(); it != other._elements.end(); it++)
+				_elements.push_back((*it)->clone());
 		}
 
 		virtual ~Factory()
 		{
 			if (_elements.empty())
 				return;
-			for (typename std::set<value_type>::iterator it = _elements.begin(); it != _elements.end(); it++)
+			for (typename std::list<value_type>::iterator it = _elements.begin(); it != _elements.end(); it++)
 				delete *it;
 		}
 
 		Factory& operator=(const Factory& other)
 		{
-			for (typename std::set<value_type>::iterator it = other._elements.begin(); it != other._elements.end(); it++)
-				_elements.insert((*it)->clone());
+			for (typename std::list<value_type>::iterator it = other._elements.begin(); it != other._elements.end(); it++)
+				_elements.push_back((*it)->clone());
 			return *this;
 		}
 
-		value_type createByType(std::string type) const
+		value_type createByType(const std::string& type) const
 		{
-			for (typename std::set<value_type>::iterator it = _elements.begin(); it != _elements.end(); it++)
+			for (typename std::list<value_type>::const_iterator it = _elements.begin(); it != _elements.end(); it++)
 				if ((*it)->getType() == type)
 					return (*it)->clone();
 			return NULL;
 		}
 
-		value_type createByType_ignore_case(std::string type) const
+		value_type createByType_ignore_case(const std::string& type) const
 		{
-			for (typename std::set<value_type>::iterator it = _elements.begin(); it != _elements.end(); it++)
+			for (typename std::list<value_type>::const_iterator it = _elements.begin(); it != _elements.end(); it++)
 				if (compare_type_lowercase((*it)->getType(), type))
 					return (*it)->clone();
 			return NULL;
 		}
 
-		value_type getByType(std::string type) const
+		value_type getByType(const std::string& type) const
 		{
-			for (typename std::set<value_type>::iterator it = _elements.begin(); it != _elements.end(); it++)
+			for (typename std::list<value_type>::const_iterator it = _elements.begin(); it != _elements.end(); it++)
 				if ((*it)->getType() == type)
 					return *it;
 			return NULL;
 		}
 
-		value_type getByType_ignore_case(std::string type) const
+		value_type getByType_ignore_case(const std::string& type) const
 		{
-			for (typename std::set<value_type>::iterator it = _elements.begin(); it != _elements.end(); it++)
+			for (typename std::list<value_type>::const_iterator it = _elements.begin(); it != _elements.end(); it++)
 				if (compare_type_lowercase((*it)->getType(), type))
 					return *it;
 			return NULL;
 		}
 
-		bool contains(std::string type) const
+		bool contains(const std::string& type) const
 		{
-			for (typename std::set<value_type>::iterator it = _elements.begin(); it != _elements.end(); it++)
+			for (typename std::list<value_type>::const_iterator it = _elements.begin(); it != _elements.end(); it++)
 				if ((*it)->getType() == type)
 					return true;
 			return false;
 		}
 
-		bool contains_ignore_case(std::string type) const
+		bool contains_ignore_case(const std::string& type) const
 		{
-			for (typename std::set<value_type>::iterator it = _elements.begin(); it != _elements.end(); it++)
+			for (typename std::list<value_type>::const_iterator it = _elements.begin(); it != _elements.end(); it++)
 				if (compare_type_lowercase((*it)->getType(), type))
 					return true;
 			return false;
@@ -95,7 +96,7 @@ class Factory
 
 		bool hasCandidates(const std::string& type) const
 		{
-			for (typename std::set<value_type>::iterator it = _elements.begin(); it != _elements.end(); it++)
+			for (typename std::list<value_type>::const_iterator it = _elements.begin(); it != _elements.end(); it++)
 				if ((*it)->getType().substr(0, type.size()) == type)
 					return true;
 			return false;
@@ -103,7 +104,12 @@ class Factory
 
 		void add(value_type elem)
 		{
-			_elements.insert(elem);
+			_elements.push_back(elem);
+		}
+
+		const std::list<value_type>& getRegistered() const
+		{
+			return _elements;
 		}
 };
 

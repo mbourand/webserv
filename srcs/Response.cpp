@@ -19,8 +19,8 @@ Response::Response(const Response& other)
 	*this = other;
 }
 
-Response::Response(int code)
-	: _code(code)
+Response::Response(int code, const std::string& path)
+	: _code(code), _path(path)
 {}
 
 Response& Response::operator=(const Response& other)
@@ -29,6 +29,7 @@ Response& Response::operator=(const Response& other)
 	_message = other._message;
 	_headers = other._headers;
 	_body = other._body;
+	_path = other._path;
 	return *this;
 }
 
@@ -64,7 +65,7 @@ std::string Response::getResponseText(const ConfigContext& config)
 		str += _body;
 	if (_body == "" && _code >= 300)
 	{
-		str += config.getErrorPage(_code);
+		str += config.getErrorPagePath(_code, _path);
 	}
 	return str;
 }

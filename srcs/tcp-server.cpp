@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/30 18:30:25 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/06 14:31:51 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "Types_parser.hpp"
 #include "VirtualHost.hpp"
 #include "Config.h"
+#include "Utils.hpp"
 
 #ifndef DEBUG
 # define DEBUG 0
@@ -97,7 +98,7 @@ bool	handle_client_request(Client &client)
 	{
 		try
 		{
-			Response response(400);
+			Response response(400, "");
 			if (client.req->_error_code)
 				response.setCode(client.req->_error_code);
 			ConfigContext bad_request_context;
@@ -143,6 +144,37 @@ bool	handle_server_response(Client &client, std::list<VirtualHost>& vhosts)
 	return false;
 }
 
+void init_factories()
+{
+	g_webserv.methods.add(new ConnectMethod());
+	g_webserv.methods.add(new DeleteMethod());
+	g_webserv.methods.add(new GetMethod());
+	g_webserv.methods.add(new HeadMethod());
+	g_webserv.methods.add(new OptionsMethod());
+	g_webserv.methods.add(new PostMethod());
+	g_webserv.methods.add(new PutMethod());
+	g_webserv.methods.add(new TraceMethod());
+
+	g_webserv.headers.add(new AcceptCharsetsHeader());
+	g_webserv.headers.add(new AcceptLanguageHeader());
+	g_webserv.headers.add(new AllowHeader());
+	g_webserv.headers.add(new AuthorizationHeader());
+	g_webserv.headers.add(new ContentLanguageHeader());
+	g_webserv.headers.add(new ContentLengthHeader());
+	g_webserv.headers.add(new ContentLocationHeader());
+	g_webserv.headers.add(new ContentTypeHeader());
+	g_webserv.headers.add(new DateHeader());
+	g_webserv.headers.add(new HostHeader());
+	g_webserv.headers.add(new LastModifiedHeader());
+	g_webserv.headers.add(new LocationHeader());
+	g_webserv.headers.add(new RefererHeader());
+	g_webserv.headers.add(new RetryAfterHeader());
+	g_webserv.headers.add(new ServerHeader());
+	g_webserv.headers.add(new TransferEncodingHeader());
+	g_webserv.headers.add(new UserAgentHeader());
+	g_webserv.headers.add(new WWWAuthenticateHeader());
+}
+
 int	main(int argc, char **argv)
 {
 	Logger::setMode(NORMAL);
@@ -158,6 +190,8 @@ int	main(int argc, char **argv)
 
 	g_webserv.run = true;
 	g_webserv.file_formatname = new HashTable(256);
+	g_webserv.cwd = ft::get_cwd();
+	init_factories();
 	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
 	try
