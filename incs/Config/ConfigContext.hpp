@@ -21,6 +21,12 @@ class ConfigContext
 
 	private:
 		size_t find_closing_bracket(const std::string& str, size_t start) const;
+		void set_root_default();
+		void set_max_body_size_default();
+		void parse_server_name(const std::string& raw, const int i);
+		void parse_error_page(const std::string& raw, const int i);
+		void parse_methods(const std::string& raw, const int i);
+		void parse_autoindex(const std::string& raw, const int i);
 
 	public:
 		ConfigContext();
