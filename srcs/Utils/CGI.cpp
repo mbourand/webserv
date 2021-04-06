@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/06 23:05:56 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/07 00:26:22 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 #include "Webserv.hpp"
 #include "Utils.hpp"
 
+#include <string.h>
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
@@ -36,7 +38,7 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	int					code;
 	char	*buffer;
 
-	if ((code = ParseURI(request)))
+	if ((code = ParseURI(request, config)))
 		throw CGI::CGIException("ParseURI failed.", code);
 	std::string document_root = ft::simplify_path(config.getParamPath("root", request._path).front(), false, 0);
 	if (m_env_Script_Name.substr(m_env_Script_Name.length() - 4) == ".php")
@@ -106,7 +108,7 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	for (size_t i = 0; i < m_env.size(); i++)
 	{
 		m_c_env[i] = new char[m_env[i].length() + 1];
-		ft::strncpy(m_c_env[i], m_env[i].c_str(), m_env[i].size());
+		ft::strncpy(m_c_env[i], m_env[i].c_str(), m_env[i].size() + 1);
 	}
 	m_c_env[m_env.size()] = NULL;
 	this->execute(request._body);
@@ -131,14 +133,15 @@ CGI::~CGI()
 ** --------------------------------- METHODS ----------------------------------
 */
 
-std::string		CGI::find_first_file(const std::string &path)
+std::string		CGI::find_first_file(const std::string &path, const ConfigContext& config)
 {
 	struct stat	file_stats;
 	size_t		start = 0;
 	size_t		end = 0;
 
-	std::string url_after_root = m_realPath.substr(m_realPath.rfind(path));
-	std::string url_until_root = m_realPath.substr(0, m_realPath.rfind(path));
+	std::string config_root = config.getParamPath("root", path).front();
+	std::string url_after_root = m_realPath.substr(m_realPath.rfind(config_root) + config_root.size());
+	std::string url_until_root = m_realPath.substr(0, m_realPath.rfind(config_root) + config_root.size());
 	if (url_until_root.empty())
 		url_until_root = "/";
 
@@ -161,13 +164,13 @@ std::string		CGI::find_first_file(const std::string &path)
 	return ("");
 }
 
-int	CGI::ParseURI(const Request& req)
+int	CGI::ParseURI(const Request& req, const ConfigContext& config)
 {
 	size_t	start = 0;
 	size_t	end = 0;
 	std::string	cgi_path("cgi-bin/"); //replace with config->getparam
 
-	m_env_Script_Name = find_first_file(req._path);
+	m_env_Script_Name = find_first_file(req._path, config);
 	if (m_env_Script_Name.empty())
 		return (404);
 	m_env_Path_Info = m_realPath.substr(m_realPath.find(m_env_Script_Name) + m_env_Script_Name.size());

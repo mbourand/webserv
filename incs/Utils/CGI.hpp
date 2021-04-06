@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/06 23:05:43 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/07 00:11:29 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ class CGI
 
 	private:
 
-		std::string		find_first_file(const std::string &path);
-		void	execute(const std::string & body);
-		int		ParseURI(const Request& req);
+		std::string		find_first_file(const std::string &path, const ConfigContext& config);
+		void			execute(const std::string & body);
+		int				ParseURI(const Request& req, const ConfigContext& config);
 
 		std::string					m_cgi_path;
 		std::string					m_tmpfilename;
