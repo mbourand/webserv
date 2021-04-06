@@ -16,6 +16,7 @@ namespace ft
 	bool is_directory(std::string realPath);
 	std::string get_cwd();
 	std::string simplify_path(const std::string& input, bool safe = false, int base_depth = 0);
+	char		*strncpy(char *dest, const char *src, size_t n);
 
 	template<class IntegralType>
 	bool is_integer(const std::string& str)

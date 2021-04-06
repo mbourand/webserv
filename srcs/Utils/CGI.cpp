@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/06 17:57:40 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/06 21:16:08 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 #include "CGI.hpp"
 #include "Logger.hpp"
 #include "ServerSocket.hpp"
-#include <string.h> // !remove! use libft (strncpy)
 #include "Webserv.hpp"
 #include "Utils.hpp"
 
@@ -38,25 +37,24 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 
 	if ((code = ParseURI(request)))
 		throw CGI::CGIException("ParseURI failed.", code);
-
 	std::string document_root = ft::simplify_path(config.getParamPath("root", request._path).front(), false, 0);
 	if (m_env_Script_Name.substr(m_env_Script_Name.length() - 4) == ".php")
 	{
 		m_args.push_back("/usr/bin/php-cgi");
-		m_args.push_back(document_root + m_env_Script_Name);//getparam root
+		m_args.push_back(document_root + m_env_Script_Name);
 		m_env.push_back("REDIRECT_STATUS=200");
 	}
 	else
 	{
-		m_args.push_back(document_root + m_env_Script_Name);//getparam root
+		m_args.push_back(document_root + m_env_Script_Name);
 		if (!m_env_Path_Info.empty())
-			m_args.push_back(document_root + m_env_Path_Info);//getparam root
+			m_args.push_back(document_root + m_env_Path_Info);
 	}
 	m_c_args = new char*[m_args.size() + 1];
 	for (size_t i = 0; i < m_args.size(); i++)
 	{
 		m_c_args[i] = new char[m_args[i].size() + 1];
-		strncpy(m_c_args[i], m_args[i].c_str(), m_args[i].size() + 1);
+		ft::strncpy(m_c_args[i], m_args[i].c_str(), m_args[i].size() + 1);
 	}
 	m_c_args[m_args.size()] = NULL;
 	if ((header_found = g_webserv.headers.getByType(WWWAuthenticateHeader().getType())) != NULL)
@@ -75,6 +73,12 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 		m_env.push_back("PATH_INFO="+m_env_Path_Info);
 	else
 		m_env.push_back("PATH_INFO="+m_env_Script_Name);
+	if (document_root.find("..") != std::string::npos)
+	{
+		chdir(document_root.substr(0, document_root.find_last_of("/")).c_str());
+		document_root = ft::get_cwd();
+		chdir(g_webserv.cwd.c_str());
+	}
 	m_env.push_back("PATH_TRANSLATED=" + document_root + m_env_Script_Name);
 	if (!request._query_string.empty())
 		m_env.push_back("QUERY_STRING="+request._query_string);
@@ -95,8 +99,8 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	m_c_env = new char*[m_env.size() + 1];
 	for (size_t i = 0; i < m_env.size(); i++)
 	{
-		m_c_env[i] = new char[m_env[i].size() + 1];
-		strncpy(m_c_env[i], m_env[i].c_str(), m_env[i].size() + 1);
+		m_c_env[i] = new char[m_env[i].length() + 1];
+		ft::strncpy(m_c_env[i], m_env[i].c_str(), m_env[i].size());
 	}
 	m_c_env[m_env.size()] = NULL;
 	this->execute(request._body);
