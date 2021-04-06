@@ -5,6 +5,7 @@
 #include "ConfigContext.hpp"
 
 class Request;
+class URL;
 
 class GetMethod : public IMethod
 {
@@ -32,6 +33,7 @@ class GetMethod : public IMethod
 		Response process(const Request& request, const ConfigContext& config, const ServerSocket& socket);
 
 	private:
+		Response process_cgi(const std::string& realPath, const URL& url, const ConfigContext& config, const ServerSocket& socket, const Request& request);
 		Response directory_listing(const Request& request, const ConfigContext& config, std::string realPath);
 		std::string get_file_size(const std::string& realPath);
 		std::string get_last_modified_format(const std::string& realPath, const std::string& format);

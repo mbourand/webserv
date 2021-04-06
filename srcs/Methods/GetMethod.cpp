@@ -178,7 +178,8 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	}
 	if (realPath[0] != '/')
 		realPath = g_webserv.cwd + "/" + realPath;
-	realPath.erase(--realPath.end());
+	if (!realPath.empty() && realPath != "/")
+		realPath.erase(--realPath.end());
 
 	if (ft::is_directory(realPath))
 	{
@@ -186,6 +187,8 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		{
 			std::string index = "/" + config.getParamPath("index", url._path).front();
 			realPath += index;
+			if ((realPath.find(".php") != std::string::npos) || (realPath.find("/cgi-bin") == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+				return process_cgi(realPath, url, config, socket, request);
 		}
 		catch (std::exception& e)
 		{
@@ -199,20 +202,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	}
 
 	if ((realPath.find(".php") != std::string::npos) || (realPath.find("/cgi-bin") == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
-	{
-		Response response(200, url._path);
-		try
-		{
-			CGI	cgi(request, config, socket, realPath);
-			cgi.process(response);
-		}
-		catch(const CGI::CGIException &e)
-		{
-			Logger::print(e.what(), NULL, ERROR, NORMAL);
-			response.setCode(e.code());
-		}
-		return response;
-	}
+		return process_cgi(realPath, url, config, socket, request);
 
 	std::fstream file(realPath.c_str());
 
@@ -267,5 +257,21 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 
 	response.setBody(content);
 
+	return response;
+}
+
+Response GetMethod::process_cgi(const std::string& realPath, const URL& url, const ConfigContext& config, const ServerSocket& socket, const Request& request)
+{
+	Response response(200, url._path);
+	try
+	{
+		CGI	cgi(request, config, socket, realPath);
+		cgi.process(response);
+	}
+	catch(const CGI::CGIException &e)
+	{
+		Logger::print(e.what(), NULL, ERROR, NORMAL);
+		response.setCode(e.code());
+	}
 	return response;
 }

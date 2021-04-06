@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/06 17:10:45 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/06 17:57:40 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,6 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	int					code;
 	char	*buffer;
 
-	m_Document_Root = "www/"; //parse config
-	if (m_Document_Root[0] != '/')
-	{
-		if ((buffer = getcwd(NULL, 0)) == NULL)
-			throw CGI::CGIException("getcwd failed.", 500);
-		m_Document_Root.insert(0, "/");
-		m_Document_Root = buffer + m_Document_Root;
-		free(buffer);
-	}
-	m_Document_Root.erase(m_Document_Root.length() - 1);
 	if ((code = ParseURI(request)))
 		throw CGI::CGIException("ParseURI failed.", code);
 
@@ -153,7 +143,11 @@ std::string		CGI::find_first_file(const std::string &path)
 
 	std::string url_after_root = m_realPath.substr(m_realPath.rfind(path));
 	std::string url_until_root = m_realPath.substr(0, m_realPath.rfind(path));
+	if (url_until_root.empty())
+		url_until_root = "/";
+
 	end = url_after_root.find("/", end);
+
 	while (end != std::string::npos)
 	{
 		if (lstat((url_until_root + url_after_root.substr(start, end)).c_str(), &file_stats) < 0)

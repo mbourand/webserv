@@ -234,7 +234,8 @@ void ConfigContext::set_root_default()
 	else
 	{
 		_params["root"].front() = ft::simplify_path(_params["root"].front());
-		_params["root"].front().erase(--_params["root"].front().end());
+		if (_params["root"].front() != "/" && _params["root"].front() != "")
+			_params["root"].front().erase(--_params["root"].front().end());
 		if (!ft::is_directory(_params["root"].front().c_str()))
 			throw std::invalid_argument("Root parameter is not a folder in config");
 	}
@@ -320,7 +321,8 @@ std::string ConfigContext::rootPath(const std::string& path, int& base_depth) co
 				res += *it + "/";
 			for (std::list<std::string>::iterator it2 = splitted_path.begin(); it2 != splitted_path.end(); it2++)
 				res += *it2 + "/";
-			res.erase(--res.end()); // Enlève le / à la fin
+			if (res[res.size() - 1] == '/' && res != "/")
+				res.erase(--res.end()); // Enlève le / à la fin
 			return res;
 		}
 	}
@@ -334,7 +336,8 @@ std::string ConfigContext::rootPath(const std::string& path, int& base_depth) co
 		res += *it + "/";
 	for (std::list<std::string>::iterator it2 = splitted_path.begin(); it2 != splitted_path.end(); it2++)
 		res += *it2 + "/";
-	res.erase(--res.end()); // Enlève le / à la fin
+	if (res[res.size() - 1] == '/' && res != "/")
+		res.erase(--res.end()); // Enlève le / à la fin
 	return res;
 }
 
