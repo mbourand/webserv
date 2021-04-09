@@ -41,6 +41,7 @@ ConfigContext::ConfigContext()
 	_directive_names.push_back("disable_methods");
 	_directive_names.push_back("cgi-dir");
 	_directive_names.push_back("cgi-ext");
+	_directive_names.push_back("uploads");
 }
 
 ConfigContext::~ConfigContext()
@@ -93,6 +94,7 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 	_directive_names.push_back("disable_methods");
 	_directive_names.push_back("cgi-dir");
 	_directive_names.push_back("cgi-ext");
+	_directive_names.push_back("uploads");
 
 
 	for (size_t i = 0; i < raw.size();)
@@ -166,6 +168,7 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 	}
 	if ((std::find(_directive_names.begin(), _directive_names.end(), "listen") != _directive_names.end() && _params.find("listen") == _params.end()))
 		throw std::invalid_argument("No listen in config");
+	set_uploads_default();
 	set_root_default();
 	set_max_body_size_default();
 	set_cgi_dir_default();
@@ -203,6 +206,20 @@ void ConfigContext::parse_cgi_ext(const std::string& raw, const int i)
 	}
 }
 
+void ConfigContext::set_root_default()
+{
+	if (_params.find("root") == _params.end())
+		_params["root"].push_back("./");
+	else
+	{
+		_params["root"].front() = ft::simplify_path(_params["root"].front());
+		if (_params["root"].front() != "/" && _params["root"].front() != "")
+			_params["root"].front().erase(--_params["root"].front().end());
+		if (!ft::is_directory(_params["root"].front().c_str()))
+			throw std::invalid_argument("Root parameter is not a folder in config");
+	}
+}
+
 void ConfigContext::set_cgi_dir_default()
 {
 	if (_params.find("cgi-dir") == _params.end())
@@ -223,6 +240,9 @@ void ConfigContext::parse_methods(const std::string& raw, const int i)
 	if (directive_value.size() == 0)
 		throw std::invalid_argument("Empty directive value in config");
 	std::list<std::string> words = ft::split(directive_value, " \t\n");
+	_acceptedMethods.assign(g_webserv.methods.getRegistered().begin(), g_webserv.methods.getRegistered().end());
+	if (words.front() == "none")
+		return;
 	for (std::list<std::string>::const_iterator it = words.begin(); it != words.end(); it++)
 	{
 		if (g_webserv.methods.getByType(*it) == NULL)
@@ -282,17 +302,17 @@ void ConfigContext::parse_server_name(const std::string& raw, const int i)
 	}
 }
 
-void ConfigContext::set_root_default()
+void ConfigContext::set_uploads_default()
 {
-	if (_params.find("root") == _params.end())
-		_params["root"].push_back("./");
+	if (_params.find("uploads") == _params.end())
+		_params["uploads"].push_back("./");
 	else
 	{
-		_params["root"].front() = ft::simplify_path(_params["root"].front());
-		if (_params["root"].front() != "/" && _params["root"].front() != "")
-			_params["root"].front().erase(--_params["root"].front().end());
-		if (!ft::is_directory(_params["root"].front().c_str()))
-			throw std::invalid_argument("Root parameter is not a folder in config");
+		_params["uploads"].front() = ft::simplify_path(_params["uploads"].front());
+		if (_params["uploads"].front() != "/" && _params["uploads"].front() != "")
+			_params["uploads"].front().erase(--_params["uploads"].front().end());
+		if (!ft::is_directory(_params["uploads"].front().c_str()))
+			throw std::invalid_argument("Uploads parameter is not a folder in config");
 	}
 }
 

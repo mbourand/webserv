@@ -25,6 +25,7 @@ class ConfigContext
 		void set_root_default();
 		void set_max_body_size_default();
 		void set_cgi_dir_default();
+		void set_uploads_default();
 		void parse_server_name(const std::string& raw, const int i);
 		void parse_error_page(const std::string& raw, const int i);
 		void parse_methods(const std::string& raw, const int i);
