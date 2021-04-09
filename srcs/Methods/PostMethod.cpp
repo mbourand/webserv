@@ -44,10 +44,10 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 
 	Response response(200, url._path); //change code on failure
 	std::list<std::string> splitted = ft::split(realPath, "/");
-	if (splitted.back().rfind(".") != std::string::npos)
-	{
-		std::string extension = realPath.substr(realPath.rfind("."));
-		if (config.getCGIExtensionsPath(url._path).find(extension) != config.getCGIExtensionsPath(url._path).end() || (realPath.find(config.getParamPath("cgi-dir", url._path).front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+		std::string extension;
+		if (splitted.back().rfind(".") != std::string::npos)
+			extension = realPath.substr(realPath.rfind("."));
+		if ((!extension.empty() && config.getCGIExtensionsPath(url._path).find(extension) != config.getCGIExtensionsPath(url._path).end()) || (realPath.find(config.getParamPath("cgi-dir", url._path).front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
 		{
 			try
 			{
@@ -60,6 +60,5 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 				response.setCode(e.code());
 			}
 		}
-	}
 	return response;
 }

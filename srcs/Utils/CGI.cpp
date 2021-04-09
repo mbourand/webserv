@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/09 02:57:42 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/09 18:02:52 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,17 +42,29 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	Header				*header_found;
 	std::ostringstream	convert;
 	int					code;
-	char	*buffer;
+	char				*buffer;
+	Header				*auth_type = NULL;
+	Header				*content_type = NULL;
+	std::string			extension;
 
 	if ((code = ParseURI(request, config)))
 		throw CGI::CGIException("ParseURI failed.", code);
+	for (Request::HeadersVector::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
+	{
+		if ((*it)->getType() == WWWAuthenticateHeader().getType())
+			auth_type = *it;
+		else if ((*it)->getType() == ContentTypeHeader().getType())
+			content_type = *it;
+	}
 	std::string document_root = ft::simplify_path(config.getParamPath("root", request._path).front(), false, 0);
-	std::string extension = m_env_Script_Name.substr(m_env_Script_Name.find('.'));
-	if (config.getCGIExtensionsPath(request._path).find(extension) != config.getCGIExtensionsPath(request._path).end())
+	if (m_env_Script_Name.rfind(".") != std::string::npos)
+		extension = m_env_Script_Name.substr(m_env_Script_Name.find('.'));
+	if (!extension.empty() && config.getCGIExtensionsPath(request._path).find(extension) != config.getCGIExtensionsPath(request._path).end())
 	{
 		m_args.push_back(config.getCGIExtensionsPath(request._path).find(extension)->second); // c'est le chemin vers l'exécutable cgi
 		m_args.push_back(document_root + m_env_Script_Name);
-		m_env.push_back("REDIRECT_STATUS=200");
+		if (extension == ".php")
+			m_env.push_back("REDIRECT_STATUS=200");
 	}
 	else
 	{
@@ -67,21 +79,21 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 		ft::strncpy(m_c_args[i], m_args[i].c_str(), m_args[i].size() + 1);
 	}
 	m_c_args[m_args.size()] = NULL;
-	if ((header_found = g_webserv.headers.getByType(WWWAuthenticateHeader().getType())) != NULL)
-		m_env.push_back("AUTH_TYPE="+header_found->getValue());
+	if (auth_type)
+		m_env.push_back("AUTH_TYPE="+auth_type->getValue());
 	if (request._method->requestHasBody() && !request._body.empty())
 	{
 		convert << request._body.size();
 		m_env.push_back("CONTENT_LENGTH="+convert.str());
-		if ((header_found = g_webserv.headers.getByType(ContentTypeHeader().getType())) != NULL)
-			m_env.push_back("CONTENT_TYPE="+header_found->getValue());
+		if (content_type)
+			m_env.push_back("CONTENT_TYPE="+content_type->getValue());
 		else
 			m_env.push_back("CONTENT_TYPE=US-ASCII");
 	}
 	m_env.push_back("GATEWAY_INTERFACE=CGI/1.1");
 	if (!m_env_Path_Info.empty())
 		m_env.push_back("PATH_INFO="+m_env_Path_Info);
-	else
+	else if (m_env_Script_Name.find("ubuntu_cgi_tester") != std::string::npos)
 		m_env.push_back("PATH_INFO="+m_env_Script_Name);
 	if (document_root.find("..") != std::string::npos)
 	{
@@ -89,6 +101,8 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 		document_root = ft::get_cwd();
 		chdir(g_webserv.cwd.c_str());
 	}
+	if (document_root[document_root.size() - 1] == '/')
+		document_root.erase(document_root.size() - 1);
 	m_env.push_back("PATH_TRANSLATED=" + document_root + m_env_Script_Name);
 	if (!request._query_string.empty())
 		m_env.push_back("QUERY_STRING="+request._query_string);
@@ -149,6 +163,7 @@ std::string		CGI::find_first_file(const std::string &path, const ConfigContext& 
 	std::string config_root = config.getParamPath("root", path).front();
 	std::string url_after_root = m_realPath.substr(m_realPath.rfind(config_root) + config_root.size());
 	std::string url_until_root = m_realPath.substr(0, m_realPath.rfind(config_root) + config_root.size());
+	std::string extension;
 	if (url_until_root.empty())
 		url_until_root = "/";
 
@@ -158,8 +173,9 @@ std::string		CGI::find_first_file(const std::string &path, const ConfigContext& 
 	{
 		if (lstat((url_until_root + url_after_root.substr(start, end)).c_str(), &file_stats) < 0)
 			break;
-		std::string extension = url_after_root.substr(url_after_root.find('.'));
-		if ((config.getCGIExtensionsPath(path).find(extension) != config.getCGIExtensionsPath(path).end() && S_ISREG(file_stats.st_mode)) || S_ISREG(file_stats.st_mode))
+		if (url_after_root.rfind(".") != std::string::npos)
+			extension = url_after_root.substr(url_after_root.find('.'));
+		if ((!extension.empty() && config.getCGIExtensionsPath(path).find(extension) != config.getCGIExtensionsPath(path).end() && S_ISREG(file_stats.st_mode)) || S_ISREG(file_stats.st_mode))
 			return (url_after_root.substr(start, end));
 		else if (S_ISDIR(file_stats.st_mode))
 		{
@@ -184,6 +200,8 @@ int	CGI::ParseURI(const Request& req, const ConfigContext& config)
 	m_env_Path_Info = m_realPath.substr(m_realPath.find(m_env_Script_Name) + m_env_Script_Name.size());
 	if (m_env_Path_Info.empty())
 		m_env_Path_Info = "";
+	else if (m_env_Path_Info[m_env_Path_Info.size() - 1] == '/')
+		m_env_Path_Info.erase(m_env_Path_Info.size() - 1);
 	return (0);
 }
 

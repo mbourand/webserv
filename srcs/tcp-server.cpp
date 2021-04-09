@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/06 23:08:10 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/09 18:10:25 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ bool	handle_client_request(Client &client)
 	{
 		*client.sckt >> data;
 		client.req->append(data);
-		if (false && DEBUG)
+		if (DEBUG)
 			hexdump_str(data, 32);
 	}
 	catch(ServerSocket::ServerSocketException &e)
@@ -127,7 +127,7 @@ bool	handle_server_response(Client &client)
 				break;
 			}
 		}
-		if (false && DEBUG)
+		if (DEBUG)
 			std::cout << *client.req << std::endl;
 		VirtualHost vhost = VirtualHost::getServerByName(host, client.sckt->getServerPort(), g_webserv.vhosts);
 		Response response = client.req->_method->process(*client.req, vhost.getConfig(), *client.sckt);
@@ -181,7 +181,7 @@ void init_factories()
 
 int	main(int argc, char **argv)
 {
-	Logger::setMode(SILENT);
+	Logger::setMode(NORMAL);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	if (argc > 2)
 	{
