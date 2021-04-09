@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Threadpool.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/05 00:50:46 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/09 19:30:22 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ bool					Threadpool::AddJob(Client &client)
 	Client *threaded_client = new Client;
 	threaded_client->sckt = client.sckt;
 	threaded_client->req = client.req;
-	client.req = new Request;
+	client.req = new Request(client.sckt->getServerPort());
 	Lock();
 	m_jobs.push_front(threaded_client);
 	Unlock();
