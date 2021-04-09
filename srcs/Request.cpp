@@ -1,5 +1,6 @@
 #include "Request.hpp"
 #include "Webserv.hpp"
+#include <sstream>
 
 Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path),
 	_protocolVersion(other._protocolVersion), _body(other._body), _header_section_finished(other._header_section_finished),
@@ -14,7 +15,11 @@ Request::~Request()
 		delete *it;
 }
 
-Request::Request() : _method(NULL), _header_section_finished(false), _finished_parsing(false), _parse_start(0), _max_body_size(1000000), _error_code(0), _content_length(0)
+Request::Request(int port) : _method(NULL), _header_section_finished(false), _finished_parsing(false), _parse_start(0), _max_body_size(0), _error_code(0), _content_length(0), _port(port)
+{
+}
+
+Request::Request() : _method(NULL), _header_section_finished(false), _finished_parsing(false), _parse_start(0), _max_body_size(0), _error_code(0), _content_length(0), _port(0)
 {
 }
 
@@ -68,8 +73,17 @@ void Request::parse()
 		for (size_t i = 0; i < _headers.size(); i++)
 		{
 			if (_headers[i]->getType() == HostHeader().getType())
+			{
 				if (++cnt > 1)
 					break ;
+				if (_port && !_max_body_size)
+				{
+					VirtualHost vhost = VirtualHost::getServerByName(_headers[i]->getValue(), _port, g_webserv.vhosts);;
+					std::stringstream	convert;
+					convert << vhost.getConfig().getParam("max_client_body_size").front();
+					convert >> _max_body_size;
+				}
+			}
 		}
 		if (cnt > 1)
 			throw std::invalid_argument("Multiple Host header in request");
@@ -83,6 +97,11 @@ void Request::parse()
 	{
 		if (_method->requestHasBody())
 		{
+			if ((_raw.size() - _parse_start) > _max_body_size)
+			{
+				_error_code = 413;
+				throw std::invalid_argument("Request Entity too large.");
+			}
 			if ((_raw.size() - _parse_start) == _content_length)
 				_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size());
 			else
@@ -90,6 +109,11 @@ void Request::parse()
 			Logger::print("Request body is " + _body, NULL, INFO, VERBOSE);
 		}
 		_finished_parsing = true;
+	}
+	else if (_header_section_finished && _method->requestHasBody() && (_raw.size() - _parse_start) > _max_body_size)
+	{
+		_error_code = 413;
+		throw std::invalid_argument("Request Entity too large.");
 	}
 }
 

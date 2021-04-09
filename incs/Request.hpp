@@ -8,6 +8,7 @@
 #include "Methods.h"
 #include "Headers.h"
 #include "Factory.hpp"
+#include "ConfigContext.hpp"
 
 #include <vector>
 
@@ -17,19 +18,20 @@ class Request
 		typedef std::vector<Header*> HeadersVector;
 
 	public:
-		std::string _raw;
-		IMethod* _method;
-		std::string _path;
-		std::string _protocolVersion;
-		HeadersVector _headers;
-		std::string	_query_string;
-		std::string _body;
-		size_t 		_content_length;
-		size_t		_max_body_size; //default size 1000000(1M), parse config for custom size
-		int			_error_code;
-		bool _header_section_finished;
-		bool _finished_parsing;
-		size_t _parse_start;
+		std::string		_raw;
+		IMethod*		_method;
+		std::string		_path;
+		std::string		_protocolVersion;
+		HeadersVector	_headers;
+		std::string		_query_string;
+		std::string		_body;
+		size_t 			_content_length;
+		size_t			_max_body_size; //default size 1000000(1M), parse config for custom size
+		int				_error_code;
+		int				_port;
+		bool			_header_section_finished;
+		bool			_finished_parsing;
+		size_t			_parse_start;
 
 	private:
 
@@ -46,6 +48,7 @@ class Request
 
 	public:
 		Request();
+		Request(int port);
 		Request(const Request& other);
 		virtual ~Request();
 		Request& operator=(const Request& other);

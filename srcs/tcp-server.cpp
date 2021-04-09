@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/09 18:10:25 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/09 18:48:27 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	handle_new_connection(ServerSocket &server, std::list<Client> &clients)
 {
 	Client	new_client;
 	new_client.sckt = new ServerSocket;
-	new_client.req = new Request;
+	new_client.req = new Request(server.getServerPort());
 	new_client.sckt->setServerPort(server.getServerPort());
 	server.Accept(*new_client.sckt);
 	clients.push_back(new_client);
@@ -143,7 +143,7 @@ bool	handle_server_response(Client &client)
 	if (client.req && client.sckt->Success())
 	{
 		delete client.req;
-		client.req = new Request;
+		client.req = new Request(client.sckt->getServerPort());
 	}
 	return false;
 }
