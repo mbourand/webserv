@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/08 20:14:54 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/09 02:57:42 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,15 @@
 
 #include <string.h>
 
+/**
+ * !Note : CGI n'a pas besoin de vérifier que realPath contient une extension, c'est déjà vérifié dans les methods
+ */
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
+
+
 
 CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket& socket, const std::string& realPath)
 	: m_realPath(realPath)

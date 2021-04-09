@@ -43,18 +43,22 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 	}
 
 	Response response(200, url._path); //change code on failure
-	std::string extension = realPath.substr(realPath.rfind("."));
-	if (config.getCGIExtensionsPath(url._path).find(extension) != config.getCGIExtensionsPath(url._path).end() || (realPath.find(config.getParamPath("cgi-dir", url._path).front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+	std::list<std::string> splitted = ft::split(realPath, "/");
+	if (splitted.back().rfind(".") != std::string::npos)
 	{
-		try
+		std::string extension = realPath.substr(realPath.rfind("."));
+		if (config.getCGIExtensionsPath(url._path).find(extension) != config.getCGIExtensionsPath(url._path).end() || (realPath.find(config.getParamPath("cgi-dir", url._path).front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
 		{
-			CGI	cgi(request, config, socket, realPath);
-			cgi.process(response);
-		}
-		catch(const CGI::CGIException &e)
-		{
-			Logger::print(e.what(), NULL, ERROR, NORMAL);
-			response.setCode(e.code());
+			try
+			{
+				CGI	cgi(request, config, socket, realPath);
+				cgi.process(response);
+			}
+			catch(const CGI::CGIException &e)
+			{
+				Logger::print(e.what(), NULL, ERROR, NORMAL);
+				response.setCode(e.code());
+			}
 		}
 	}
 	return response;
