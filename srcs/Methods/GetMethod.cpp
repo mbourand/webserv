@@ -177,7 +177,8 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		{
 			std::string index = "/" + config.getParamPath("index", url._path).front();
 			realPath += index;
-			if ((realPath.find(".php") != std::string::npos) || (realPath.find("/cgi-bin") == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+			std::string extension = index.substr(index.rfind('.'));
+			if (config.getCGIExtensionsPath(url._path).find(extension) != config.getCGIExtensionsPath(url._path).end() || (realPath.find(config.getParamPath("cgi-dir", url._path).front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
 				return process_cgi(realPath, url, config, socket, request);
 		}
 		catch (std::exception& e)
@@ -191,7 +192,8 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		return Logger::print("File not found", Response(404, url._path), ERROR, VERBOSE);
 	}
 
-	if ((realPath.find(".php") != std::string::npos) || (realPath.find("/cgi-bin") == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+	std::string extension = realPath.substr(realPath.rfind('.'));
+	if (config.getCGIExtensionsPath(url._path).find(extension) != config.getCGIExtensionsPath(url._path).end() || (realPath.find(config.getParamPath("cgi-dir", url._path).front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
 		return process_cgi(realPath, url, config, socket, request);
 
 	std::fstream file(realPath.c_str());

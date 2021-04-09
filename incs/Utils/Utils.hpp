@@ -14,6 +14,8 @@ namespace ft
 	std::pair<std::string, int> complete_ip(const std::string& incomplete_ip);
 	std::string getErrorMessage(int code);
 	bool is_directory(std::string realPath);
+	bool is_regular_file(std::string realPath);
+	bool is_executable(std::string realPath);
 	std::string get_cwd();
 	std::string simplify_path(const std::string& input, bool safe = false, int base_depth = 0);
 	char		*strncpy(char *dest, const char *src, size_t n);

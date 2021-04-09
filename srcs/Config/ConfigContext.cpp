@@ -38,7 +38,9 @@ ConfigContext::ConfigContext()
 	_directive_names.push_back("location");
 	_directive_names.push_back("autoindex");
 	_directive_names.push_back("max_client_body_size");
-	_directive_names.push_back("methods");
+	_directive_names.push_back("disable_methods");
+	_directive_names.push_back("cgi-dir");
+	_directive_names.push_back("cgi-ext");
 }
 
 ConfigContext::~ConfigContext()
@@ -58,6 +60,7 @@ ConfigContext& ConfigContext::operator=(const ConfigContext& other)
 	_childs = other._childs;
 	_names = other._names;
 	_acceptedMethods = other._acceptedMethods;
+	_cgi_exts = other._cgi_exts;
 	return *this;
 }
 
@@ -71,6 +74,7 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 		_error_pages = parent->_error_pages;
 		_autoIndex = parent->_autoIndex;
 		_acceptedMethods = parent->_acceptedMethods;
+		_cgi_exts = parent->_cgi_exts;
 		_names.push_back(name);
 	}
 	else
@@ -87,6 +91,8 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 	_directive_names.push_back("autoindex");
 	_directive_names.push_back("max_client_body_size");
 	_directive_names.push_back("disable_methods");
+	_directive_names.push_back("cgi-dir");
+	_directive_names.push_back("cgi-ext");
 
 
 	for (size_t i = 0; i < raw.size();)
@@ -145,6 +151,8 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 			parse_autoindex(raw, i);
 		else if (directive_name == "disable_methods")
 			parse_methods(raw, i);
+		else if (directive_name == "cgi-ext")
+			parse_cgi_ext(raw, i);
 		else
 		{
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
@@ -160,6 +168,53 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 		throw std::invalid_argument("No listen in config");
 	set_root_default();
 	set_max_body_size_default();
+	set_cgi_dir_default();
+}
+
+void ConfigContext::parse_cgi_ext(const std::string& raw, const int i)
+{
+	std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+	if (directive_value.size() == 0)
+		throw std::invalid_argument("Empty directive value in config");
+	std::list<std::string> words = ft::split(directive_value, " \t\n");
+	if (words.size() & 1)
+		throw std::invalid_argument("No cgi path was provided for cgi-ext in config");
+	bool extension_arg = true;
+	std::string extension;
+	for (std::list<std::string>::iterator it = words.begin(); it != words.end(); it++)
+	{
+		if (extension_arg)
+		{
+			if ((*it)[0] != '.')
+				throw std::invalid_argument("Extension doesn't start with a dot for cgi-ext in config");
+			extension = *it;
+		}
+		else
+			_cgi_exts.insert(std::make_pair(extension, *it));
+		extension_arg = !extension_arg;
+	}
+	for (std::map<std::string, std::string>::iterator it = _cgi_exts.begin(); it != _cgi_exts.end(); it++)
+	{
+		it->second = ft::simplify_path(it->second);
+		if (it->second != "/" && it->second != "")
+			it->second.erase(--(it->second.end()));
+		if (!ft::is_executable(it->second.c_str()))
+			throw std::invalid_argument("cgi-ext parameter is not an executable in config");
+	}
+}
+
+void ConfigContext::set_cgi_dir_default()
+{
+	if (_params.find("cgi-dir") == _params.end())
+		_params["cgi-dir"].push_back("/cgi-bin/");
+	else
+	{
+		_params["cgi-dir"].front() = ft::simplify_path(_params["cgi-dir"].front());
+		if (_params["cgi-dir"].front() != "/" && !_params["cgi-dir"].front().empty())
+			_params["cgi-dir"].front().erase(--_params["cgi-dir"].front().end());
+		if (!ft::is_directory(_params["cgi-dir"].front().c_str()))
+			throw std::invalid_argument("cgi-dir parameter is not a folder in config");
+	}
 }
 
 void ConfigContext::parse_methods(const std::string& raw, const int i)
@@ -370,6 +425,20 @@ std::string ConfigContext::getErrorPage(int code) const
 		<hr><center>Webserv 1.0.0</center>\r\n\
 	</body>\r\n\
 </html>";
+}
+
+const std::map<std::string, std::string>& ConfigContext::getCGIExtensions() const
+{
+	return _cgi_exts;
+}
+
+const std::map<std::string, std::string>& ConfigContext::getCGIExtensionsPath(const std::string& path) const
+{
+	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
+		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
+			return it->getCGIExtensions();
+
+	return getCGIExtensions();
 }
 
 std::string ConfigContext::getErrorPagePath(int code, const std::string& path) const

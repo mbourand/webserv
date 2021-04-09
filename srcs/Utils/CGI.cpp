@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/07 00:26:22 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/08 20:14:54 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,10 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	if ((code = ParseURI(request, config)))
 		throw CGI::CGIException("ParseURI failed.", code);
 	std::string document_root = ft::simplify_path(config.getParamPath("root", request._path).front(), false, 0);
-	if (m_env_Script_Name.substr(m_env_Script_Name.length() - 4) == ".php")
+	std::string extension = m_env_Script_Name.substr(m_env_Script_Name.find('.'));
+	if (config.getCGIExtensionsPath(request._path).find(extension) != config.getCGIExtensionsPath(request._path).end())
 	{
-		m_args.push_back("/usr/bin/php-cgi");
+		m_args.push_back(config.getCGIExtensionsPath(request._path).find(extension)->second); // c'est le chemin vers l'exécutable cgi
 		m_args.push_back(document_root + m_env_Script_Name);
 		m_env.push_back("REDIRECT_STATUS=200");
 	}
@@ -151,7 +152,8 @@ std::string		CGI::find_first_file(const std::string &path, const ConfigContext& 
 	{
 		if (lstat((url_until_root + url_after_root.substr(start, end)).c_str(), &file_stats) < 0)
 			break;
-		if ((url_after_root.size() > 4 && (url_after_root.substr(url_after_root.length() - 4, 4) == ".php" && S_ISREG(file_stats.st_mode))) || S_ISREG(file_stats.st_mode))
+		std::string extension = url_after_root.substr(url_after_root.find('.'));
+		if ((config.getCGIExtensionsPath(path).find(extension) != config.getCGIExtensionsPath(path).end() && S_ISREG(file_stats.st_mode)) || S_ISREG(file_stats.st_mode))
 			return (url_after_root.substr(start, end));
 		else if (S_ISDIR(file_stats.st_mode))
 		{
@@ -168,7 +170,7 @@ int	CGI::ParseURI(const Request& req, const ConfigContext& config)
 {
 	size_t	start = 0;
 	size_t	end = 0;
-	std::string	cgi_path("cgi-bin/"); //replace with config->getparam
+	std::string	cgi_path = config.getParamPath("cgi-dir", req._path).front(); //replace with config->getparam
 
 	m_env_Script_Name = find_first_file(req._path, config);
 	if (m_env_Script_Name.empty())
