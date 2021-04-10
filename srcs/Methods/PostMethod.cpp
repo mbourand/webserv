@@ -28,7 +28,7 @@ bool PostMethod::isAllowedInHTMLForms() const { return true; }
 Response PostMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
 {
 	URL url(request._path);
-	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethodsPath(url._path);
+	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethods();
 	if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
 		return Response(405, url._path);
 	int base_depth = 0;
@@ -47,7 +47,7 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 		std::string extension;
 		if (splitted.back().rfind(".") != std::string::npos)
 			extension = realPath.substr(realPath.rfind("."));
-		if ((!extension.empty() && config.getCGIExtensionsPath(url._path).find(extension) != config.getCGIExtensionsPath(url._path).end()) || (realPath.find(config.getParamPath("cgi-dir", url._path).front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+		if ((!extension.empty() && config.getCGIExtensions().find(extension) != config.getCGIExtensions().end()) || (realPath.find(config.getParam("cgi-dir").front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
 		{
 			try
 			{

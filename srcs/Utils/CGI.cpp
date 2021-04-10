@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/09 18:02:52 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/10 01:06:44 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,12 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 		else if ((*it)->getType() == ContentTypeHeader().getType())
 			content_type = *it;
 	}
-	std::string document_root = ft::simplify_path(config.getParamPath("root", request._path).front(), false, 0);
+	std::string document_root = ft::simplify_path(config.getParam("root").front(), false, 0);
 	if (m_env_Script_Name.rfind(".") != std::string::npos)
 		extension = m_env_Script_Name.substr(m_env_Script_Name.find('.'));
-	if (!extension.empty() && config.getCGIExtensionsPath(request._path).find(extension) != config.getCGIExtensionsPath(request._path).end())
+	if (!extension.empty() && config.getCGIExtensions().find(extension) != config.getCGIExtensions().end())
 	{
-		m_args.push_back(config.getCGIExtensionsPath(request._path).find(extension)->second); // c'est le chemin vers l'exécutable cgi
+		m_args.push_back(config.getCGIExtensions().find(extension)->second); // c'est le chemin vers l'exécutable cgi
 		m_args.push_back(document_root + m_env_Script_Name);
 		if (extension == ".php")
 			m_env.push_back("REDIRECT_STATUS=200");
@@ -160,7 +160,7 @@ std::string		CGI::find_first_file(const std::string &path, const ConfigContext& 
 	size_t		start = 0;
 	size_t		end = 0;
 
-	std::string config_root = config.getParamPath("root", path).front();
+	std::string config_root = config.getParam("root").front();
 	std::string url_after_root = m_realPath.substr(m_realPath.rfind(config_root) + config_root.size());
 	std::string url_until_root = m_realPath.substr(0, m_realPath.rfind(config_root) + config_root.size());
 	std::string extension;
@@ -175,7 +175,7 @@ std::string		CGI::find_first_file(const std::string &path, const ConfigContext& 
 			break;
 		if (url_after_root.rfind(".") != std::string::npos)
 			extension = url_after_root.substr(url_after_root.find('.'));
-		if ((!extension.empty() && config.getCGIExtensionsPath(path).find(extension) != config.getCGIExtensionsPath(path).end() && S_ISREG(file_stats.st_mode)) || S_ISREG(file_stats.st_mode))
+		if ((!extension.empty() && config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() && S_ISREG(file_stats.st_mode)) || S_ISREG(file_stats.st_mode))
 			return (url_after_root.substr(start, end));
 		else if (S_ISDIR(file_stats.st_mode))
 		{
@@ -192,7 +192,7 @@ int	CGI::ParseURI(const Request& req, const ConfigContext& config)
 {
 	size_t	start = 0;
 	size_t	end = 0;
-	std::string	cgi_path = config.getParamPath("cgi-dir", req._path).front(); //replace with config->getparam
+	std::string	cgi_path = config.getParam("cgi-dir").front(); //replace with config->getparam
 
 	m_env_Script_Name = find_first_file(req._path, config);
 	if (m_env_Script_Name.empty())

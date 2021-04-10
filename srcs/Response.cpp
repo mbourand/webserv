@@ -65,7 +65,7 @@ std::string Response::getResponseText(const ConfigContext& config)
 		str += _body;
 	if (_body == "" && _code >= 300)
 	{
-		str += config.getErrorPagePath(_code, _path);
+		str += config.getErrorPage(_code);
 	}
 	return str;
 }

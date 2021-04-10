@@ -343,39 +343,11 @@ bool ConfigContext::hasAutoIndex() const
 	return _autoIndex;
 }
 
-bool ConfigContext::hasAutoIndexPath(const std::string& path) const
-{
-	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
-		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
-			return it->hasAutoIndex();
-	return hasAutoIndex();
-}
-
 const std::list<std::string>& ConfigContext::getParam(const std::string& name) const
 {
 	if (_params.find(name) == _params.end())
 		throw std::invalid_argument("Parameter not found in config");
 	return _params.find(name)->second;
-}
-
-const std::list<std::string>& ConfigContext::getParamPath(const std::string& name, const std::string& path) const
-{
-	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
-	{
-		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
-			return it->getParam(name);
-	}
-	return getParam(name);
-}
-
-const std::list<const IMethod*>& ConfigContext::getAllowedMethodsPath(const std::string& path) const
-{
-	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
-	{
-		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
-			return it->getAllowedMethods();
-	}
-	return getAllowedMethods();
 }
 
 std::string ConfigContext::rootPath(const std::string& path, int& base_depth) const
@@ -452,28 +424,6 @@ const std::map<std::string, std::string>& ConfigContext::getCGIExtensions() cons
 	return _cgi_exts;
 }
 
-const std::map<std::string, std::string>& ConfigContext::getCGIExtensionsPath(const std::string& path) const
-{
-	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
-		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
-			return it->getCGIExtensions();
-
-	return getCGIExtensions();
-}
-
-std::string ConfigContext::getErrorPagePath(int code, const std::string& path) const
-{
-	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
-	{
-		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
-		{
-			if (it->getErrorPages().find(code) != it->getErrorPages().end())
-				return it->getErrorPage(code);
-		}
-	}
-	return getErrorPage(code);
-}
-
 std::string ConfigContext::findFileWithRoot(const std::string& name) const
 {
 	const std::list<std::string>& roots = getParam("root");
@@ -547,4 +497,14 @@ std::string ConfigContext::toString() const
 			str += it->toString();
 	}
 	return str;
+}
+
+const ConfigContext& ConfigContext::getConfigPath(const std::string& path) const
+{
+	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
+	{
+		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
+			return *it;
+	}
+	return *this;
 }
