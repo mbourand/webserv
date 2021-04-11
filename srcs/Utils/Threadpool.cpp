@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Threadpool.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/09 19:30:22 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/11 02:15:48 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ Threadpool::Threadpool(unsigned int numworkers) : m_numworkers(numworkers), m_ma
 {
 	if (!m_numworkers)
 		return;
-	Logger::print("Populating Threadpool with workers...", NULL, SUCCESS, SILENT);
+	Logger::print("Populating Threadpool with workers...", NULL, INFO, SILENT);
 	m_workers.reserve(m_numworkers);
 	pthread_mutex_init(&m_jobsmutex, NULL);
 	for (unsigned int it = 0; it < m_numworkers; it++)

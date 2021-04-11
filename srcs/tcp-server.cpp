@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/10 01:01:40 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/11 02:35:53 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	handle_new_connection(ServerSocket &server, std::list<Client> &clients)
 	new_client.sckt->setServerPort(server.getServerPort());
 	server.Accept(*new_client.sckt);
 	clients.push_back(new_client);
-	Logger::print("New Client Connected", NULL, SUCCESS, NORMAL);
+	Logger::print("New Client Connected ("+new_client.sckt->getIPAddress()+")", NULL, SUCCESS, NORMAL);
 }
 
 void	hexdump_str(const std::string &data, int size)
@@ -181,7 +181,7 @@ void init_factories()
 
 int	main(int argc, char **argv)
 {
-	Logger::setMode(NORMAL);
+	Logger::setMode(SILENT);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	if (argc > 2)
 	{
@@ -195,7 +195,7 @@ int	main(int argc, char **argv)
 	g_webserv.file_formatname = new HashTable(256);
 	g_webserv.cwd = ft::get_cwd();
 	init_factories();
-	Threadpool workers(0);//positive number to enable, todo: get number of workers from config
+	Threadpool workers(7);//positive number to enable, todo: get number of workers from config
 	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
 	try
