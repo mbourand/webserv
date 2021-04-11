@@ -43,22 +43,18 @@ class ConfigContext
 		std::string getString(const std::string& param, size_t token) const;
 		std::list<ConfigContext>& getChilds();
 		std::string getErrorPage(int code) const;
-		std::string getErrorPagePath(int code, const std::string& path) const;
 		const std::list<std::string>& getParam(const std::string& name) const;
-		const std::list<std::string>& getParamPath(const std::string& name, const std::string& path) const;
 		std::string rootPath(const std::string& path, int& base_depth) const;
 
 		bool hasAutoIndex() const;
-		bool hasAutoIndexPath(const std::string& path) const;
 		const std::map<std::string, std::list<std::string> >& getParams() const;
 		const std::map<int, std::string>& getErrorPages() const;
 		const std::list<std::string>& getNames() const;
-		const std::list<const IMethod*>& getAllowedMethodsPath(const std::string& path) const;
 		const std::list<const IMethod*>& getAllowedMethods() const;
 		const std::map<std::string, std::string>& getCGIExtensions() const;
-		const std::map<std::string, std::string>& getCGIExtensionsPath(const std::string& path) const;
 		std::string toString() const;
 		std::string findFileWithRoot(const std::string& name) const;
+		const ConfigContext& getConfigPath(const std::string& path) const;
 };
 
 #endif
