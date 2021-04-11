@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/09 18:02:52 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/11 02:13:02 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,8 +216,6 @@ void				CGI::execute(const std::string & body)
 		throw CGI::CGIException("open() failed.", 500);
 	if (pipe(pipes) < 0)
 		throw CGI::CGIException("pipe() failed.", 500);
-	if (body.empty())
-		close(pipes[1]);
 	pid = fork();
 	switch (pid) {
 	case -1:
@@ -226,21 +224,20 @@ void				CGI::execute(const std::string & body)
 		close(fd);
 		throw CGI::CGIException("fork() failed.", 500);
 	case 0:
-		close(pipes[1]);
-		dup2(pipes[0], STDIN_FILENO);
-		dup2(fd, STDOUT_FILENO);
-		status = execve(m_c_args[0], m_c_args, m_c_env);
-		exit(status);
+		close(pipes[1]); //close writing end query pipe
+		dup2(pipes[0], STDIN_FILENO); //dup reading end query pipe to STDIN
+		dup2(fd, STDOUT_FILENO); //dup stdout to tmp file
+		execve(m_c_args[0], m_c_args, m_c_env);
 	default:
-		close(pipes[0]);
+		close(pipes[0]); // close reading end query pipe
 		if (!body.empty())
-			if (write(pipes[1], body.c_str(), body.size()) <= 0)
+			if (write(pipes[1], body.c_str(), body.size()) <= 0) // input writing end query pipe
 			{
 				Logger::print("Couldn't send Body to CGI.", NULL, ERROR, NORMAL);
 				kill(pid, SIGINT);
 			}
-		waitpid(pid, &status, 0);
 		close(pipes[1]);
+		waitpid(pid, &status, 0);
 		close(fd);
 		if (WIFEXITED(status))
 			Logger::print("CGI execution was successful.", NULL, SUCCESS, NORMAL);
