@@ -33,9 +33,13 @@ Response& Response::operator=(const Response& other)
 	return *this;
 }
 
+
+
 /*
 ** ------------------------------- METHODS --------------------------------
 */
+
+
 
 void Response::addHeader(const std::string& header_name, const std::string& header_value)
 {
@@ -90,9 +94,13 @@ void Response::addDateHeader(void)
 	this->addHeader("Date", buffer);
 }
 
+
+
 /*
 ** ------------------------------- ACCESSORS --------------------------------
 */
+
+
 
 void Response::setCode(int code)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/27 02:34:17 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/11 22:07:50 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,8 @@ Socket::~Socket()
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-Socket &				Socket::operator=(Socket const &rhs)
+Socket &				Socket::operator=(Socket const &)
 {
-	(void)rhs;
 	//if ( this != &rhs )
 	//{
 		//this->_value = rhs.getValue();

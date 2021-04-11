@@ -25,9 +25,13 @@
 #include "Webserv.hpp"
 #include "Methods.h"
 
+
+
 /*
 ** ---------------------------------- CONSTRUCTOR --------------------------------------
 */
+
+
 
 ConfigContext::ConfigContext()
 	: _autoIndex(false)
@@ -319,9 +323,13 @@ void ConfigContext::set_max_body_size_default()
 	}
 }
 
+
+
 /*
 ** ---------------------------------- ACCESSOR --------------------------------------
 */
+
+
 
 const std::list<const IMethod*>& ConfigContext::getAllowedMethods() const
 {
@@ -422,9 +430,13 @@ const std::list<std::string>& ConfigContext::getNames() const
 	return _names;
 }
 
+
+
 /*
 ** --------------------------------------- METHODS ---------------------------------------
 */
+
+
 
 size_t ConfigContext::find_closing_bracket(const std::string& str, size_t start) const
 {

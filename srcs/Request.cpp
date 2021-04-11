@@ -3,6 +3,10 @@
 #include <sstream>
 #include "Utils.hpp"
 
+/*
+** --------------------------------------- CONSTRUCTOR ---------------------------------------
+*/
+
 Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path),
 	_protocolVersion(other._protocolVersion), _body(other._body), _header_section_finished(other._header_section_finished),
 	_finished_parsing(other._finished_parsing), _parse_start(other._parse_start), _max_body_size(other._max_body_size),
@@ -23,6 +27,14 @@ Request::Request(int port) : _method(NULL), _header_section_finished(false), _fi
 Request::Request() : _method(NULL), _header_section_finished(false), _finished_parsing(false), _parse_start(0), _max_body_size(0), _error_code(0), _content_length(0), _port(0)
 {
 }
+
+
+
+/*
+** --------------------------------------- METHODS ---------------------------------------
+*/
+
+
 
 bool Request::append(const std::string& raw)
 {
@@ -185,16 +197,6 @@ size_t is_header_field_finished(std::string str)
 	return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
 }
 
-/*
-** header-field = field-name ":" OWS field-value OWS
-** field-name = token
-** field-value = *( field-content / obs-fold )
-** field-content = field-vchar [ 1*( SP / HTAB ) field-vchar ]
-** field-vchar = VCHAR / obs-text
-** obs-fold = CRLF 1*( SP / HTAB )
-** obsolete line folding
-** see Section 3.2.4
-*/
 bool Request::parse_headers()
 {
 	size_t header_len = is_header_field_finished(_raw.substr(_parse_start));
@@ -279,6 +281,14 @@ size_t Request::count_concurrent_occurences(size_t index, char c) const
 		cnt++;
 	return cnt;
 }
+
+
+
+/*
+** --------------------------------------- OPERATOR ---------------------------------------
+*/
+
+
 
 Request& Request::operator=(const Request& other)
 {

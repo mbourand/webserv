@@ -5,9 +5,13 @@
 #include "Utils.hpp"
 #include "Webserv.hpp"
 
+
+
 /*
 ** ------------------------------- CONSTRUCTOR ------------------------------
 */
+
+
 
 VirtualHost::VirtualHost() {}
 
@@ -32,9 +36,13 @@ VirtualHost::VirtualHost(const ConfigContext& config)
 VirtualHost::~VirtualHost()
 {}
 
+
+
 /*
 ** ------------------------------- OPERATOR ------------------------------
 */
+
+
 
 VirtualHost& VirtualHost::operator=(const VirtualHost& other)
 {
@@ -43,18 +51,26 @@ VirtualHost& VirtualHost::operator=(const VirtualHost& other)
 	return *this;
 }
 
+
+
 /*
 ** ------------------------------- METHODS ------------------------------
 */
+
+
 
 std::string VirtualHost::toString() const
 {
 	return _config.toString();
 }
 
+
+
 /*
 ** ------------------------------- ACCESSORS ------------------------------
 */
+
+
 
 const ConfigContext& VirtualHost::getConfig() const
 {
@@ -66,9 +82,13 @@ const std::list<int>& VirtualHost::getPorts() const
 	return _ports;
 }
 
+
+
 /*
 ** ------------------------------- STATIC ------------------------------
 */
+
+
 
 // D'ABORD CHECKER LES IP SOCKET POUR LISTEN, LE NOM DE DOMAINE DANS L'URI N'EST QUE LE SERVER_NAME
 VirtualHost& VirtualHost::getServerByName(const std::string& name, int port, std::list<VirtualHost>& vhosts)
