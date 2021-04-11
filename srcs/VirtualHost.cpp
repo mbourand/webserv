@@ -76,14 +76,14 @@ VirtualHost& VirtualHost::getServerByName(const std::string& name, int port, std
 	std::list<VirtualHost*> matches;
 
 	for (std::list<VirtualHost>::iterator vhost_it = vhosts.begin(); vhost_it != vhosts.end(); vhost_it++)
-		if (std::find(vhost_it->getPorts().begin(), vhost_it->getPorts().end(), port) != vhost_it->getPorts().end())
+		if (ft::contains(vhost_it->getPorts(), port))
 			matches.push_back(&(*vhost_it));
 
 	if (matches.empty())
 		throw std::invalid_argument("No matching server found"); // Si ça arrive c'est parce qu'on a un socket ouvert sur un port relié à aucun serveur
 
 	for (std::list<VirtualHost*>::iterator matches_it = matches.begin(); matches_it != matches.end(); matches_it++)
-		if (std::find((*matches_it)->getConfig().getNames().begin(), (*matches_it)->getConfig().getNames().end(), name) != (*matches_it)->getConfig().getNames().end())
+		if (ft::contains((*matches_it)->getConfig().getNames(), name))
 			return *(*matches_it);
 	return (*matches.front());
 }

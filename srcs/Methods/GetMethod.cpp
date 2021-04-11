@@ -164,7 +164,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	}
 	catch (std::exception& e)
 	{
-		return Response(404, url._path);
+		return Logger::print("Path is not safe", Response(404, url._path), ERROR, VERBOSE);
 	}
 	if (realPath[0] != '/')
 		realPath = g_webserv.cwd + "/" + realPath;

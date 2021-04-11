@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/11 02:39:21 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/11 19:54:30 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 			content_type = *it;
 	}
 	std::string document_root = ft::simplify_path(config.getParam("root").front(), false, 0);
-	if (m_env_Script_Name.rfind(".") != std::string::npos)
+	if (ft::contains(m_env_Script_Name, '.'))
 		extension = m_env_Script_Name.substr(m_env_Script_Name.find('.'));
 	if (!extension.empty() && config.getCGIExtensions().find(extension) != config.getCGIExtensions().end())
 	{

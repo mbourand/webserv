@@ -31,18 +31,7 @@
 
 ConfigContext::ConfigContext()
 	: _autoIndex(false)
-{
-	_directive_names.push_back("server_name");
-	_directive_names.push_back("listen");
-	_directive_names.push_back("root");
-	_directive_names.push_back("location");
-	_directive_names.push_back("autoindex");
-	_directive_names.push_back("max_client_body_size");
-	_directive_names.push_back("disable_methods");
-	_directive_names.push_back("cgi-dir");
-	_directive_names.push_back("cgi-ext");
-	_directive_names.push_back("uploads");
-}
+{}
 
 ConfigContext::~ConfigContext()
 {}
@@ -68,34 +57,7 @@ ConfigContext& ConfigContext::operator=(const ConfigContext& other)
 ConfigContext::ConfigContext(const std::string& raw, const std::string& name, const ConfigContext* parent)
 	: _autoIndex(false)
 {
-	// si name a une valeur, c'est un context de location, on interdit donc certaines directives
-	if (parent != NULL)
-	{
-		_params = parent->_params;
-		_error_pages = parent->_error_pages;
-		_autoIndex = parent->_autoIndex;
-		_acceptedMethods = parent->_acceptedMethods;
-		_cgi_exts = parent->_cgi_exts;
-		_names.push_back(name);
-	}
-	else
-	{
-		_directive_names.push_back("server_name");
-		_directive_names.push_back("listen");
-		_directive_names.push_back("location");
-		for (std::list<IMethod*>::const_iterator it = g_webserv.methods.getRegistered().begin(); it != g_webserv.methods.getRegistered().end(); it++)
-			_acceptedMethods.push_back(*it);
-	}
-	_directive_names.push_back("root");
-	_directive_names.push_back("error_page");
-	_directive_names.push_back("index");
-	_directive_names.push_back("autoindex");
-	_directive_names.push_back("max_client_body_size");
-	_directive_names.push_back("disable_methods");
-	_directive_names.push_back("cgi-dir");
-	_directive_names.push_back("cgi-ext");
-	_directive_names.push_back("uploads");
-
+	handle_parent_and_directives(parent, name);
 
 	for (size_t i = 0; i < raw.size();)
 	{
@@ -113,12 +75,19 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 
 		// On récupère le nom de la directive, par exemple : "server_name" ou "root", etc.
 		std::string directive_name = raw.substr(i, raw.find_first_of(" \t", i) - i);
-		if (std::find(_directive_names.begin(), _directive_names.end(), directive_name) == _directive_names.end())
+		if (!ft::contains(_directive_names, directive_name))
 			throw std::invalid_argument("Unknown directive name in config");
+
+		// Pour empêcher une directive d'apparaître deux fois dans le même context
 		if (_params.find(directive_name) != _params.end())
 			_params.erase(_params.find(directive_name));
+
 		i += directive_name.size();
 		i = raw.find_first_not_of(" \t", i);
+
+		std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+		if (directive_value.empty())
+			throw std::invalid_argument("Empty directive value in config");
 
 		if (directive_name == "location")
 		{
@@ -146,15 +115,15 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 			continue;
 		}
 		else if (directive_name == "server_name")
-			parse_server_name(raw, i);
+			parse_server_name(directive_value, raw, i);
 		else if (directive_name == "error_page")
-			parse_error_page(raw, i);
+			parse_error_page(directive_value, raw, i);
 		else if (directive_name == "autoindex")
-			parse_autoindex(raw, i);
+			parse_autoindex(directive_value, raw, i);
 		else if (directive_name == "disable_methods")
-			parse_methods(raw, i);
+			parse_methods(directive_value, raw, i);
 		else if (directive_name == "cgi-ext")
-			parse_cgi_ext(raw, i);
+			parse_cgi_ext(directive_value, raw, i);
 		else
 		{
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
@@ -166,7 +135,7 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 			break;
 		i = raw.find('\n', i) + 1;
 	}
-	if ((std::find(_directive_names.begin(), _directive_names.end(), "listen") != _directive_names.end() && _params.find("listen") == _params.end()))
+	if (ft::contains(_directive_names, "listen") && _params.find("listen") == _params.end())
 		throw std::invalid_argument("No listen in config");
 	set_uploads_default();
 	set_root_default();
@@ -174,11 +143,50 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 	set_cgi_dir_default();
 }
 
-void ConfigContext::parse_cgi_ext(const std::string& raw, const int i)
+void ConfigContext::add_server_directives()
 {
-	std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
-	if (directive_value.size() == 0)
-		throw std::invalid_argument("Empty directive value in config");
+	_directive_names.push_back("server_name");
+	_directive_names.push_back("listen");
+	_directive_names.push_back("location");
+}
+
+void ConfigContext::add_location_directives()
+{
+	_directive_names.push_back("root");
+	_directive_names.push_back("error_page");
+	_directive_names.push_back("index");
+	_directive_names.push_back("autoindex");
+	_directive_names.push_back("max_client_body_size");
+	_directive_names.push_back("disable_methods");
+	_directive_names.push_back("cgi-dir");
+	_directive_names.push_back("cgi-ext");
+	_directive_names.push_back("uploads");
+}
+
+void ConfigContext::handle_parent_and_directives(const ConfigContext* parent, const std::string& name)
+{
+	if (parent != NULL)
+	{
+		_params = parent->_params;
+		_error_pages = parent->_error_pages;
+		_autoIndex = parent->_autoIndex;
+		_acceptedMethods = parent->_acceptedMethods;
+		_cgi_exts = parent->_cgi_exts;
+		_names.push_back(name);
+	}
+	else
+	{
+		// Directives réservées aux contexts server{}
+		add_server_directives();
+		for (std::list<IMethod*>::const_iterator it = g_webserv.methods.getRegistered().begin(); it != g_webserv.methods.getRegistered().end(); it++)
+			_acceptedMethods.push_back(*it);
+	}
+	add_location_directives();
+}
+
+
+void ConfigContext::parse_cgi_ext(const std::string& directive_value, const std::string& raw, const int i)
+{
 	std::list<std::string> words = ft::split(directive_value, " \t\n");
 	if (words.size() & 1)
 		throw std::invalid_argument("No cgi path was provided for cgi-ext in config");
@@ -234,11 +242,8 @@ void ConfigContext::set_cgi_dir_default()
 	}
 }
 
-void ConfigContext::parse_methods(const std::string& raw, const int i)
+void ConfigContext::parse_methods(const std::string& directive_value, const std::string& raw, const int i)
 {
-	std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
-	if (directive_value.size() == 0)
-		throw std::invalid_argument("Empty directive value in config");
 	std::list<std::string> words = ft::split(directive_value, " \t\n");
 	_acceptedMethods.assign(g_webserv.methods.getRegistered().begin(), g_webserv.methods.getRegistered().end());
 	if (words.front() == "none")
@@ -251,13 +256,8 @@ void ConfigContext::parse_methods(const std::string& raw, const int i)
 	}
 }
 
-void ConfigContext::parse_autoindex(const std::string& raw, const int i)
+void ConfigContext::parse_autoindex(const std::string& directive_value, const std::string& raw, const int i)
 {
-	// On récupère la valeur de la directive : exemple "400 404 405 error.html"
-	std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
-	if (directive_value.size() == 0)
-		throw std::invalid_argument("Empty directive value in config");
-
 	std::list<std::string> words = ft::split(directive_value, " \t\n");
 	std::string val = words.front();
 
@@ -266,13 +266,8 @@ void ConfigContext::parse_autoindex(const std::string& raw, const int i)
 	_autoIndex = (val == "on" ? true : false);
 }
 
-void ConfigContext::parse_error_page(const std::string& raw, const int i)
+void ConfigContext::parse_error_page(const std::string& directive_value, const std::string& raw, const int i)
 {
-	// On récupère la valeur de la directive : exemple "400 404 405 error.html"
-	std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
-	if (directive_value.size() == 0)
-		throw std::invalid_argument("Empty directive value in config");
-
 	std::list<std::string> words = ft::split(directive_value, " \t\n");
 	std::string page = words.back();
 
@@ -280,13 +275,8 @@ void ConfigContext::parse_error_page(const std::string& raw, const int i)
 		_error_pages.insert(std::make_pair(ft::toInt(*it), page));
 }
 
-void ConfigContext::parse_server_name(const std::string& raw, const int i)
+void ConfigContext::parse_server_name(const std::string& directive_value, const std::string& raw, const int i)
 {
-	// On récupère la valeur de la directive : exemple "localhost www.localhost.com pouetpouet.fr"
-	std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
-	if (directive_value.size() == 0)
-		throw std::invalid_argument("Empty directive value in config");
-
 	for (size_t j = 0; j < directive_value.size();)
 	{
 		std::string name = directive_value.substr(j, directive_value.find_first_of(" \t\n", j) - j);
@@ -354,30 +344,11 @@ std::string ConfigContext::rootPath(const std::string& path, int& base_depth) co
 {
 	std::string res;
 
-	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
-	{
-		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
-		{
-			res = (it->getParam("root").front()[0] == '/' ? "/" : "");
-
-			std::list<std::string> splitted = ft::split(it->getParam("root").front(), "/");
-			base_depth = splitted.size();
-			std::list<std::string> splitted_path = ft::split(path.substr(it->getNames().front().size()), "/");
-
-			for (std::list<std::string>::iterator it = splitted.begin(); it != splitted.end(); it++)
-				res += *it + "/";
-			for (std::list<std::string>::iterator it2 = splitted_path.begin(); it2 != splitted_path.end(); it2++)
-				res += *it2 + "/";
-			if (res[res.size() - 1] == '/' && res != "/")
-				res.erase(--res.end()); // Enlève le / à la fin
-			return res;
-		}
-	}
 	res = (getParam("root").front()[0] == '/' ? "/" : "");
 
 	std::list<std::string> splitted = ft::split(getParam("root").front(), "/");
 	base_depth = splitted.size();
-	std::list<std::string> splitted_path = ft::split(path, "/");
+	std::list<std::string> splitted_path = ft::split(path.substr(getNames().front().size()), "/");
 
 	for (std::list<std::string>::iterator it = splitted.begin(); it != splitted.end(); it++)
 		res += *it + "/";

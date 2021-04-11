@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/11 02:35:53 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/11 20:45:39 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ int	main(int argc, char **argv)
 	g_webserv.file_formatname = new HashTable(256);
 	g_webserv.cwd = ft::get_cwd();
 	init_factories();
-	Threadpool workers(7);//positive number to enable, todo: get number of workers from config
+	Threadpool workers(0);//positive number to enable, todo: get number of workers from config
 	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
 	try

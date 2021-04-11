@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include <limits>
+#include <algorithm>
 
 namespace ft
 {
@@ -36,6 +37,12 @@ namespace ft
 				return false;
 		}
 		return true;
+	}
+
+	template<class ContainerType, class ValueType>
+	inline bool contains(const ContainerType& container, const ValueType& val)
+	{
+		return std::find(container.begin(), container.end(), val) != container.end();
 	}
 }
 

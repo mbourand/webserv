@@ -1,6 +1,7 @@
 #include "Request.hpp"
 #include "Webserv.hpp"
 #include <sstream>
+#include "Utils.hpp"
 
 Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path),
 	_protocolVersion(other._protocolVersion), _body(other._body), _header_section_finished(other._header_section_finished),
@@ -122,7 +123,7 @@ void Request::parse_method()
 	std::string method = _raw.substr(0, _raw.find(' '));
 	if (!g_webserv.methods.hasCandidates(method))
 		throw std::invalid_argument("Method could not be recognized.");
-	if (_raw.find(' ') != std::string::npos && g_webserv.methods.getByType(method) != NULL)
+	if (ft::contains(_raw, ' ') && g_webserv.methods.getByType(method) != NULL)
 	{
 		Logger::print("Request method is " + method + ".", true, INFO, VERBOSE);
 		_method = g_webserv.methods.getByType(method);
@@ -139,10 +140,10 @@ void Request::parse_uri()
 		else
 		{
 			_path = _raw.substr(_parse_start + 1, _raw.find(' ', _parse_start + 1) - (_parse_start + 1));
-			if (_path.find('?') != std::string::npos)
+			if (ft::contains(_path, '?'))
 			{
 				_query_string = _path.substr(_path.find('?') + 1);
-				if (_query_string.find('#') != std::string::npos)
+				if (ft::contains(_query_string, '#'))
 					_query_string.resize(_query_string.find('#'));
 				_path.resize(_path.find('?'));
 				Logger::print("Query is " + _query_string + ".", true, INFO, VERBOSE);

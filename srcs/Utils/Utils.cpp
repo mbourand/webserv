@@ -56,7 +56,7 @@ std::pair<std::string, int> ft::complete_ip(const std::string& incomplete_ip)
 	if (incomplete_ip.find_first_not_of("0123456789:.") != std::string::npos || std::count(incomplete_ip.begin(), incomplete_ip.end(), ':') > 1)
 		throw std::invalid_argument("Bad ip");
 
-	if (incomplete_ip.find(':') != std::string::npos)
+	if (ft::contains(incomplete_ip, ':'))
 	{
 		std::string part1 = incomplete_ip.substr(0, incomplete_ip.find(':'));
 		std::string part2 = incomplete_ip.substr(incomplete_ip.find(':') + 1);

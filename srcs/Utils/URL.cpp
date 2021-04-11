@@ -1,5 +1,6 @@
 #include "URL.hpp"
 #include <stdexcept>
+#include "Utils.hpp"
 
 /*
 ** ------------------------------- CONSTRUCTOR -------------------------------
@@ -49,7 +50,7 @@ void URL::parse_userinfo(size_t& i, const std::string& url)
 
 	if (authority.find('@') == 0)
 		throw std::invalid_argument("@ delimiter is present but no user info was given in uri");
-	if (authority.find('@') == std::string::npos)
+	if (!ft::contains(authority, '@'))
 	{
 		_userinfo = "";
 		return;
