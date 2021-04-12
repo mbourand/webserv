@@ -60,6 +60,8 @@ class Request
 		bool operator==(const Request& other) const;
 		bool operator!=(const Request& other) const;
 
+		std::string	getHeaderValue(const std::string& name) const;
+
 		friend std::ostream& operator<<(std::ostream& out, const Request& request);
 };
 

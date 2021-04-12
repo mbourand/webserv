@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/12 18:05:44 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/12 19:10:58 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,17 @@ void	handle_new_connection(ServerSocket &server, std::list<Client> &clients)
 	new_client.req = new Request(server.getServerPort());
 	new_client.sckt->setServerPort(server.getServerPort());
 	server.Accept(*new_client.sckt);
+	if (clients.size() >= 1000) // get max_connections from config ? choose value depending of # file descriptor available
+	{
+		Logger::print("Webserv overloaded, New Client bounced back ("+new_client.sckt->getIPAddress()+")", NULL, ERROR, NORMAL);
+		Response response(503, new_client.req->_path);
+		response.addHeader("Connection", "close");
+		response.addHeader("Retry-After", "120");
+		*new_client.sckt << response.getResponseText(g_webserv.vhosts.front().getConfig());
+		delete new_client.sckt;
+		delete new_client.req;
+		return;
+	}
 	clients.push_back(new_client);
 	Logger::print("New Client Connected ("+new_client.sckt->getIPAddress()+")", NULL, SUCCESS, NORMAL);
 }
@@ -119,18 +130,9 @@ bool	handle_server_response(Client &client)
 {
 	try
 	{
-		std::string host;
-		for (Request::HeadersVector::iterator header_it = client.req->_headers.begin(); header_it != client.req->_headers.end(); header_it++)
-		{
-			if ((*header_it)->getType() == "Host")
-			{
-				host = (*header_it)->getValue().substr(0, std::min((*header_it)->getValue().find(':'), (*header_it)->getValue().size()));
-				break;
-			}
-		}
 		if (DEBUG)
 			std::cout << *client.req << std::endl;
-		VirtualHost vhost = VirtualHost::getServerByName(host, client.sckt->getServerPort(), g_webserv.vhosts);
+		VirtualHost vhost = VirtualHost::getServerByName(client.req->getHeaderValue("Host"), client.sckt->getServerPort(), g_webserv.vhosts);
 		Response response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_path), *client.sckt);
 		*client.sckt << response.getResponseText(vhost.getConfig());
 		if (response.getCode() != 200)
