@@ -30,6 +30,7 @@ class Response
 		void removeHeader(const std::string& header_name);
 
 		void setBody(const std::string& body);
+		std::string	Chunk(const std::string& str);
 
 		std::string getResponseText(const ConfigContext& config);
 		int			getCode(void) const;

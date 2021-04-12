@@ -21,7 +21,15 @@ Response::Response(const Response& other)
 
 Response::Response(int code, const std::string& path)
 	: _code(code), _path(path)
-{}
+{
+	if (this->_code >= 300)
+	{
+		this->addHeader("Content-Type", "text/html");
+		this->addDateHeader();
+		this->addHeader("Server", "Webserv");
+		this->addHeader("Transfer-Encoding", "chunked");
+	}
+}
 
 Response& Response::operator=(const Response& other)
 {
@@ -47,6 +55,21 @@ void Response::removeHeader(const std::string& header_name)
 	_headers.erase(header_name);
 }
 
+std::string	Response::Chunk(const std::string& str)
+{
+	std::string result;
+	size_t		start = 0;
+
+	while (str.size() > 4 && start < (str.size() - 4))
+	{
+		std::string line = str.substr(start, (str.find("\r\n", start) + 2 - start));
+		start += line.size();
+		result += ft::toHex(line.size()) + "\r\n" + line + "\r\n";
+	}
+	result += "0\r\n\r\n";
+	return (result);
+}
+
 std::string Response::getResponseText(const ConfigContext& config)
 {
 	std::stringstream ss;
@@ -65,7 +88,7 @@ std::string Response::getResponseText(const ConfigContext& config)
 		str += _body;
 	if (_body == "" && _code >= 300)
 	{
-		str += config.getErrorPage(_code);
+		str += Chunk(config.getErrorPage(_code));
 	}
 	return str;
 }

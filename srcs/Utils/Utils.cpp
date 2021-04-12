@@ -28,6 +28,14 @@ std::string ft::toString(int i)
 	return ss.str();
 }
 
+std::string ft::toHex(int i)
+{
+	std::stringstream ss;
+	ss << std::hex << i;
+	return ss.str();
+}
+
+
 std::list<std::string> ft::split(const std::string& str, const std::string& charset)
 {
 	std::list<std::string> ret;
