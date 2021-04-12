@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/11 19:54:30 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/12 03:06:20 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	//if ((header_found = request._headerFactory.getByType(WWWAuthenticateHeader().getType())) != NULL)
 	//	m_env.push_back("REMOTE_USER=something"); //REMOTE_USER Querying the REMOTE_USER variable will give the user name information of the entity making the request. This is only valid if authentication is enabled.
 	m_env.push_back("REQUEST_METHOD="+request._method->getType());
-	m_env.push_back("REQUEST_URI="+request._path);
+	m_env.push_back("REQUEST_URI="+request._url._path);
 	m_env.push_back("SCRIPT_NAME="+m_env_Script_Name);
 	m_env.push_back("SERVER_NAME="+config.getNames().front()); //TODO switch better function call get server_name (localhost)
 	m_env.push_back("SERVER_PORT="+socket.getServerPort_Str());
@@ -194,7 +194,7 @@ int	CGI::ParseURI(const Request& req, const ConfigContext& config)
 	size_t	end = 0;
 	std::string	cgi_path = config.getParam("cgi-dir").front(); //replace with config->getparam
 
-	m_env_Script_Name = find_first_file(req._path, config);
+	m_env_Script_Name = find_first_file(req._url._path, config);
 	if (m_env_Script_Name.empty())
 		return (404);
 	m_env_Path_Info = m_realPath.substr(m_realPath.find(m_env_Script_Name) + m_env_Script_Name.size());

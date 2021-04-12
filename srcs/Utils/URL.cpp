@@ -1,5 +1,6 @@
 #include "URL.hpp"
 #include <stdexcept>
+#include <iostream>
 #include "Utils.hpp"
 
 /*
@@ -116,6 +117,7 @@ URL& URL::operator=(const URL& other)
 	_userinfo = other._userinfo;
 	_host = other._host;
 	_port = other._port;
+	_path = other._path;
 	_query = other._query;
 	_fragment = other._fragment;
 	_is_directory = other._is_directory;

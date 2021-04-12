@@ -27,7 +27,7 @@ bool PostMethod::isAllowedInHTMLForms() const { return true; }
 
 Response PostMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
 {
-	URL url(request._path);
+	const URL& url = request._url;
 	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethods();
 	if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
 		return Response(405, url._path);
