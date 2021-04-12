@@ -64,7 +64,7 @@ std::string	Response::Chunk(const std::string& str)
 	{
 		std::string line = str.substr(start, (str.find("\r\n", start) + 2 - start));
 		start += line.size();
-		result += ft::toHex(line.size()) + "\r\n" + line + "\r\n";
+		result += ft::toHex(line.size()) + "\r\n" + line;
 	}
 	result += "0\r\n\r\n";
 	return (result);
@@ -74,6 +74,7 @@ std::string Response::getResponseText(const ConfigContext& config)
 {
 	std::stringstream ss;
 	ss << _code;
+	bool chunked = false;
 
 	std::string code_str = ss.str();
 
@@ -119,6 +120,10 @@ void Response::addDateHeader(void)
 
 void Response::setCode(int code)
 {
+	if (code >= 300 and _code < 300)
+		this->addHeader("Transfer-Encoding", "chunked");
+	else if (code < 300 and _code >= 300)
+		this->removeHeader("Transfer-Encoding");
 	_code = code;
 }
 
