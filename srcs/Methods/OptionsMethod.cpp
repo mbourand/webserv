@@ -32,6 +32,8 @@ Response OptionsMethod::process(const Request& request, const ConfigContext& con
 	if (request._path == "*")
 	{
 		const std::list<const IMethod*>& allowedMethods = g_webserv.vhosts.front().getConfig().getAllowedMethods();
+		if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
+			return Response(405, request._path);
 		for (std::list<const IMethod*>::const_iterator it = allowedMethods.begin(); it != allowedMethods.end(); it++)
 		{
 			if (it != allowedMethods.begin())
