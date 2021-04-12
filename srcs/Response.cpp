@@ -74,7 +74,6 @@ std::string Response::getResponseText(const ConfigContext& config)
 {
 	std::stringstream ss;
 	ss << _code;
-	bool chunked = false;
 
 	std::string code_str = ss.str();
 

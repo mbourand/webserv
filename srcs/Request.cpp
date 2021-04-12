@@ -254,14 +254,14 @@ bool Request::is_valid_URI(const std::string& uri) const
 			return true;
 
 	if (_method->allowCompleteURL())
-		if (uri.substr(0, 7) == "http://" && uri.size() > 7)
+		if (uri.size() > 7 && uri.substr(0, 7) == "http://")
 			return true;
 
 	if (_method->allowAuthorityURI())
 		return true;
 
 	if (_method->allowAsteriskURI())
-		if (uri == "*")
+		if (uri[0] == '*' && uri[1] == ' ')
 			return true;
 	return false;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/11 02:35:53 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/12 18:05:44 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ bool	handle_client_request(Client &client)
 	}
 	catch(std::invalid_argument &e)
 	{
+		Logger::print(e.what(), NULL, ERROR, NORMAL);
 		try
 		{
 			Response response(400, "");
@@ -264,7 +265,7 @@ int	main(int argc, char **argv)
 					if (!error && FD_ISSET(it->sckt->GetSocket(), &read_sockets))
 						error = handle_client_request((*it));
 					if (!error && it->req->isfinished() && FD_ISSET(it->sckt->GetSocket(), &write_sockets))
-						error = workers.AddJob((*it)); //handle_server_response((*it));
+						workers.AddJob((*it)); //handle_server_response((*it));
 					if (error)
 					{
 						Logger::print("Client Disconnected", NULL, SUCCESS, VERBOSE);
