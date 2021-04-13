@@ -29,7 +29,7 @@ bool OptionsMethod::isAllowedInHTMLForms() const { return false; }
 Response OptionsMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
 {
 	std::string	allowed_header;
-	if (request._url._host == "*")
+	if (request._url._path == "*")
 	{
 		const std::list<const IMethod*>& allowedMethods = g_webserv.vhosts.front().getConfig().getAllowedMethods();
 		if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())

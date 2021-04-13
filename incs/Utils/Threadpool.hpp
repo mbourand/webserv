@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/13 17:51:51 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/13 21:45:21 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ class Threadpool
 		const std::deque<Client*>& getJobs() const;
 		const std::list<Client*>& getCurrentJobs() const;
 
-	private:
 
+	private:
 		void	Lock(void);
 		void	Unlock(void);
 

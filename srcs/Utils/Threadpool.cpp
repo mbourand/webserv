@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/13 17:52:52 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/13 21:44:21 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,9 +105,9 @@ void					*Threadpool::WaitForWork(void *)
 			m_currentjobs.push_back(job);
 			Unlock();
 			handle_server_response(*job);
+			m_currentjobs.remove(job);
 			delete job->req;
 			delete job;
-			m_currentjobs.remove(job);
 		}
 		else
 		{

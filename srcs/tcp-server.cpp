@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/13 18:25:16 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/13 21:43:44 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,12 +245,14 @@ int	main(int argc, char **argv)
 					if (error)
 					{
 						bool busy = false;
-						for (std::deque<Client*>::const_iterator jobs_it = workers.getJobs().begin(); jobs_it != workers.getJobs().end(); jobs_it++)
-							if (it->sckt == (*jobs_it)->sckt)
-								busy = true;
-						for (std::list<Client*>::const_iterator jobs_it = workers.getCurrentJobs().begin(); jobs_it != workers.getCurrentJobs().end(); jobs_it++)
-							if (it->sckt == (*jobs_it)->sckt)
-								busy = true;
+						if (!workers.getJobs().empty())
+							for (std::deque<Client*>::const_iterator jobs_it = workers.getJobs().begin(); jobs_it != workers.getJobs().end(); jobs_it++)
+								if (it->sckt == (*jobs_it)->sckt)
+									busy = true;
+						if (!workers.getCurrentJobs().empty())
+							for (std::list<Client*>::const_iterator jobs_it = workers.getCurrentJobs().begin(); jobs_it != workers.getCurrentJobs().end(); jobs_it++)
+								if (it->sckt == (*jobs_it)->sckt)
+									busy = true;
 						if (busy)
 							continue;
 
