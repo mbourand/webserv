@@ -1,6 +1,9 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "PutMethod.hpp"
 #include "Request.hpp"
 #include "Logger.hpp"
@@ -54,29 +57,33 @@ Response PutMethod::process(const Request& request, const ConfigContext& config,
 	if (extension != "html" || !g_webserv.file_formatname->GetNode(extension)
 	|| request.getHeaderValue("Content-Type") != g_webserv.file_formatname->Lookup(extension))// si l'extension n'est pas autoritée ou que le content-type déclaré ne correspond pas au content-type connu
 		return Response(415, url._path); //TODO: lookup extension in uploads_ext withelist
-	std::cout << config.getParam("uploads").front() << std::endl;
-	std::cout << realPath << std::endl;
 	std::string file_path = config.getParam("uploads").front() + realPath.substr(realPath.find("/"));
-	std::cout << "file_path:" << file_path << std::endl;
-	std::fstream file(file_path.c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
+	std::fstream file;
+	struct stat	file_stats;
+	if (lstat(file_path.c_str(), &file_stats) < 0 || file_stats.st_size != request._body.size())
+	{
+		file.open(file_path.c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
+		if (!S_ISREG(file_stats.st_mode))
+			response.setCode(201);
+	}
+	else if (!S_ISREG(file_stats.st_mode))
+		return Response(500, url._path);
+	else
+		file.open(file_path.c_str());
 	if (!file.good() || !file.is_open())
 		return Response(500, url._path);
 	response.addHeader("Content-Location", realPath.substr(realPath.find("/")));
 	std::stringstream ss;
 	ss << file.rdbuf();
-	std::cout << "file_content:|" << ss.str() << "|" << std::endl;
-	std::cout << "body_content:|" << request._body << "|" << std::endl;
-	if (ss.str() == request._body)
+	if (request._body.size() == ss.str().size() && ss.str() == request._body)
 	{
 		response.setCode(204);
 	}
 	else
 	{
-		//file.seekg(std::ios_base::beg);
-		file << request._body << std::endl;
-		response.setCode(201);
+		file.seekg(std::fstream::beg);
+		file << request._body;
 	}
-	std::cout << file_path << std::endl;
 	file.close();
 	return (response);
 }
