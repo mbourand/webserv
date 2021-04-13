@@ -36,7 +36,12 @@ Request::Request() : _method(NULL), _header_section_finished(false), _finished_p
 */
 
 
-
+/**
+ * @brief Ajoute le paramètre à la fin du raw de la Requête, puis parse aussi loin que possible avec le nouveau raw
+ *
+ * @param str
+ * @return false si le parsing est terminé, sinon true
+ */
 bool Request::append(const std::string& raw)
 {
 	if (_finished_parsing)
@@ -67,7 +72,7 @@ void Request::parse()
 	if (!_url_finished)
 		return;
 
-	if (_protocolVersion == "")
+	if (_protocolVersion.empty())
 	{
 		if (_parse_start + 1 >= _raw.size())
 			return;
@@ -75,7 +80,7 @@ void Request::parse()
 			throw std::invalid_argument("Bad whitespace after uri.");
 		parse_protocol_version();
 	}
-	if (_protocolVersion == "")
+	if (_protocolVersion.empty())
 		return;
 
 	while (!_header_section_finished && parse_headers())

@@ -43,6 +43,11 @@ s_webserv::s_webserv()
 	parse_types_file(file_formatname, "/etc/mime.types");
 }
 
+/**
+ * @brief Parse la Config globale, et initialise les ConfigContext server{} dans des VirtualHosts, stockés dans s_webserv::vhosts
+ *
+ * @param filename
+ */
 void s_webserv::init_config(const std::string& filename)
 {
 	std::ifstream file(filename.c_str(), std::ifstream::in);

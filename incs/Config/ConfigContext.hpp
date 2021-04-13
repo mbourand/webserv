@@ -44,7 +44,7 @@ class ConfigContext
 
 		int getInt(const std::string& param, size_t token) const;
 		std::string getString(const std::string& param, size_t token) const;
-		std::list<ConfigContext>& getChilds();
+		const std::list<ConfigContext>& getChilds() const;
 		std::string getErrorPage(int code) const;
 		const std::list<std::string>& getParam(const std::string& name) const;
 		std::string rootPath(const std::string& path, int& base_depth) const;
@@ -55,8 +55,6 @@ class ConfigContext
 		const std::list<std::string>& getNames() const;
 		const std::list<const IMethod*>& getAllowedMethods() const;
 		const std::map<std::string, std::string>& getCGIExtensions() const;
-		std::string toString() const;
-		std::string findFileWithRoot(const std::string& name) const;
 		const ConfigContext& getConfigPath(const std::string& path) const;
 };
 

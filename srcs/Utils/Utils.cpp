@@ -87,6 +87,12 @@ std::pair<std::string, int> ft::complete_ip(const std::string& incomplete_ip)
 	return std::make_pair(ip, port);
 }
 
+/**
+ * @brief Retourne le message correspondant au code http
+ *
+ * @param code
+ * @return Le message correspondant au code http
+ */
 std::string ft::getErrorMessage(int code)
 {
 	switch (code)
@@ -207,6 +213,14 @@ bool ft::is_executable(std::string realPath)
 	return st.st_mode & S_IXUSR;
 }
 
+/**
+ * @brief Simplifie un chemin en enlevant les '/' en trop, les '..' inutiles, etc.
+ *
+ * @param input
+ * @param safe Si safe est activé, le chemin ne peut pas accéder au parent du dossier (ex: "../" invalide, "./test/../test" valide, "./test/../.." invalide)
+ * @param base_depth Le nombre de / que safe doit ignorer en début de chaîne (ne sert à rien si safe est false)
+ * @return Le chemin simplifié
+ */
 std::string ft::simplify_path(const std::string& input, bool safe, int base_depth)
 {
 	if (input.size() == 0)

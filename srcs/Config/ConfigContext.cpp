@@ -1,18 +1,3 @@
-/*
-** server_name
-** port
-** Le 1er serveur pour host:port est celui par défaut
-** Pages d'erreurs par défaut
-** Taille max du body client
-** location
-**    liste de methods activées
-**    root
-**    directory_listing
-**    fichier par défaut si la requête est un dossier
-**    tous les trucs cgi a voir plus tard
-**    choisir le dossier où mettre les fichiers uploadés
-*/
-
 #include "ConfigContext.hpp"
 #include "Logger.hpp"
 #include "Utils.hpp"
@@ -188,7 +173,6 @@ void ConfigContext::handle_parent_and_directives(const ConfigContext* parent, co
 	add_location_directives();
 }
 
-
 void ConfigContext::parse_cgi_ext(const std::string& directive_value, const std::string& raw, const int i)
 {
 	std::list<std::string> words = ft::split(directive_value, " \t\n");
@@ -331,15 +315,13 @@ void ConfigContext::set_max_body_size_default()
 
 
 
-const std::list<const IMethod*>& ConfigContext::getAllowedMethods() const
-{
-	return _acceptedMethods;
-}
-
-bool ConfigContext::hasAutoIndex() const
-{
-	return _autoIndex;
-}
+const std::map<std::string, std::string>& ConfigContext::getCGIExtensions() const { return _cgi_exts; }
+const std::map<std::string, std::list<std::string> >& ConfigContext::getParams() const { return _params; }
+const std::map<int, std::string>& ConfigContext::getErrorPages() const { return _error_pages; }
+const std::list<std::string>& ConfigContext::getNames() const { return _names; }
+const std::list<ConfigContext>& ConfigContext::getChilds() const { return _childs; }
+const std::list<const IMethod*>& ConfigContext::getAllowedMethods() const { return _acceptedMethods; }
+bool ConfigContext::hasAutoIndex() const { return _autoIndex; }
 
 const std::list<std::string>& ConfigContext::getParam(const std::string& name) const
 {
@@ -348,6 +330,51 @@ const std::list<std::string>& ConfigContext::getParam(const std::string& name) c
 	return _params.find(name)->second;
 }
 
+/**
+ * @brief Récupère soit la page d'erreur configurée dans la config pour une erreur donnée, soit la page d'erreur par défaut si il n'y en a pas
+ *
+ * @param error_code
+ * @return Le body de la page d'erreur
+ */
+std::string ConfigContext::getErrorPage(int code) const
+{
+	if (_error_pages.find(code) != _error_pages.end())
+	{
+		try
+		{
+			std::ifstream file(_error_pages.find(code)->second.c_str(), std::ifstream::in);
+			std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+			return content;
+		}
+		catch (std::exception& e) {}
+	}
+	std::stringstream ss;
+	ss << code;
+	std::string code_str = ss.str();
+	return
+"<html>\r\n\
+	<head><title>" + code_str + " " + ft::getErrorMessage(code) + "</title></head>\r\n\
+	<body>\r\n\
+		<center><h1>" + code_str + " " + ft::getErrorMessage(code) + "</h1></center>\r\n\
+		<hr><center>Webserv 1.0.0</center>\r\n\
+	</body>\r\n\
+</html>";
+}
+
+
+
+/*
+** --------------------------------------- METHODS ---------------------------------------
+*/
+
+
+/**
+ * @brief Transforme un chemin url en chemin physique
+ *
+ * @param url_path
+ * @param base_depth
+ * @return Le chemin url transformé en chemin physique, selon le root de la config
+ */
 std::string ConfigContext::rootPath(const std::string& path, int& base_depth) const
 {
 	std::string res;
@@ -367,76 +394,21 @@ std::string ConfigContext::rootPath(const std::string& path, int& base_depth) co
 	return res;
 }
 
-std::list<ConfigContext>& ConfigContext::getChilds()
+/**
+ * @brief Récupère la config correspondant à un chemin url
+ *
+ * @param path
+ * @return Le ConfigContext de la 1re location qui match avec path, sinon retourne *this
+ */
+const ConfigContext& ConfigContext::getConfigPath(const std::string& path) const
 {
-	return _childs;
-}
-
-std::string ConfigContext::getErrorPage(int code) const
-{
-	if (_error_pages.find(code) != _error_pages.end())
+	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
 	{
-		try
-		{
-			std::ifstream file(_error_pages.find(code)->second.c_str(), std::ifstream::in);
-			std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
-			return content;
-		}
-		catch (std::exception& e)
-		{}
+		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
+			return *it;
 	}
-	std::stringstream ss;
-	ss << code;
-	std::string code_str = ss.str();
-	return
-"<html>\r\n\
-	<head><title>" + code_str + " " + ft::getErrorMessage(code) + "</title></head>\r\n\
-	<body>\r\n\
-		<center><h1>" + code_str + " " + ft::getErrorMessage(code) + "</h1></center>\r\n\
-		<hr><center>Webserv 1.0.0</center>\r\n\
-	</body>\r\n\
-</html>";
+	return *this;
 }
-
-const std::map<std::string, std::string>& ConfigContext::getCGIExtensions() const
-{
-	return _cgi_exts;
-}
-
-std::string ConfigContext::findFileWithRoot(const std::string& name) const
-{
-	const std::list<std::string>& roots = getParam("root");
-	for (std::list<std::string>::const_iterator it = roots.begin(); it != roots.end(); it++)
-	{
-		std::ifstream file((*it + "/" + name).c_str());
-		if (file.good())
-			return *it + "/" + name.c_str();
-	}
-	throw std::invalid_argument("File doesn't exist.");
-}
-
-const std::map<std::string, std::list<std::string> >& ConfigContext::getParams() const
-{
-	return _params;
-}
-
-const std::map<int, std::string>& ConfigContext::getErrorPages() const
-{
-	return _error_pages;
-}
-
-const std::list<std::string>& ConfigContext::getNames() const
-{
-	return _names;
-}
-
-
-
-/*
-** --------------------------------------- METHODS ---------------------------------------
-*/
-
-
 
 size_t ConfigContext::find_closing_bracket(const std::string& str, size_t start) const
 {
@@ -452,42 +424,4 @@ size_t ConfigContext::find_closing_bracket(const std::string& str, size_t start)
 			return i;
 	}
 	return size_t(-1);
-}
-
-std::string ConfigContext::toString() const
-{
-	std::string str;
-
-	str += "Names:\n";
-	for (std::list<std::string>::const_iterator it = _names.begin(); it != _names.end(); it++)
-		str += "  " + *it + "\n";
-
-	if (!_params.empty())
-	{
-		str += "Params:\n";
-		for (std::map<std::string, std::list<std::string> >::const_iterator it = _params.begin(); it != _params.end(); it++)
-		{
-			str += "  " + it->first + "\n";
-			for (std::list<std::string>::const_iterator it2 = it->second.begin(); it2 != it->second.end(); it2++)
-				str += "    " + *it2 + "\n";
-		}
-	}
-
-	if (!_childs.empty())
-	{
-		str += "Childs:\n";
-		for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
-			str += it->toString();
-	}
-	return str;
-}
-
-const ConfigContext& ConfigContext::getConfigPath(const std::string& path) const
-{
-	for (std::list<ConfigContext>::const_iterator it = _childs.begin(); it != _childs.end(); it++)
-	{
-		if (it->getNames().front() == path.substr(0, std::min(path.size(), it->getNames().front().size())))
-			return *it;
-	}
-	return *this;
 }

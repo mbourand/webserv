@@ -54,33 +54,13 @@ VirtualHost& VirtualHost::operator=(const VirtualHost& other)
 
 
 /*
-** ------------------------------- METHODS ------------------------------
-*/
-
-
-
-std::string VirtualHost::toString() const
-{
-	return _config.toString();
-}
-
-
-
-/*
 ** ------------------------------- ACCESSORS ------------------------------
 */
 
 
 
-const ConfigContext& VirtualHost::getConfig() const
-{
-	return _config;
-}
-
-const std::list<int>& VirtualHost::getPorts() const
-{
-	return _ports;
-}
+const ConfigContext& VirtualHost::getConfig() const { return _config; }
+const std::list<int>& VirtualHost::getPorts() const { return _ports; }
 
 
 
@@ -89,8 +69,14 @@ const std::list<int>& VirtualHost::getPorts() const
 */
 
 
-
-// D'ABORD CHECKER LES IP SOCKET POUR LISTEN, LE NOM DE DOMAINE DANS L'URI N'EST QUE LE SERVER_NAME
+/**
+ * @brief Retourne le premier VirtualHost de vhosts qui correspond au port et au server_name
+ *
+ * @param name
+ * @param port
+ * @param vhosts
+ * @return Le 1er VirtualHost qui match le port et server_name, si il n'y a aucun match, retourne le 1er VirtualHost qui match le port
+ */
 VirtualHost& VirtualHost::getServerByName(const std::string& name, int port, std::list<VirtualHost>& vhosts)
 {
 	std::list<VirtualHost*> matches;
