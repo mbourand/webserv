@@ -9,8 +9,9 @@
 #include "Headers.h"
 #include "Factory.hpp"
 #include "ConfigContext.hpp"
-
+#include "URL.hpp"
 #include <vector>
+
 
 class Request
 {
@@ -20,7 +21,7 @@ class Request
 	public:
 		std::string		_raw;
 		IMethod*		_method;
-		std::string		_path;
+		URL				_url;
 		std::string		_protocolVersion;
 		HeadersVector	_headers;
 		std::string		_query_string;
@@ -30,6 +31,7 @@ class Request
 		int				_error_code;
 		int				_port;
 		bool			_header_section_finished;
+		bool			_url_finished;
 		bool			_finished_parsing;
 		size_t			_parse_start;
 

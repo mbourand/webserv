@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 19:27:25 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/27 17:44:04 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/11 22:07:16 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,8 @@ ClientSocket::ClientSocket(std::string host, int port)
     }
 }
 
-ClientSocket::ClientSocket(const ClientSocket &src)
+ClientSocket::ClientSocket(const ClientSocket &)
 {
-	(void)src;
 }
 
 
@@ -51,13 +50,12 @@ ClientSocket::~ClientSocket()
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-ClientSocket &				ClientSocket::operator=( ClientSocket const & rhs )
+ClientSocket &				ClientSocket::operator=( ClientSocket const &)
 {
 	//if ( this != &rhs )
 	//{
 		//this->_value = rhs.getValue();
 	//}
-	(void)rhs;
 	return *this;
 }
 

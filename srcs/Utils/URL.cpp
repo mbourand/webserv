@@ -1,5 +1,7 @@
 #include "URL.hpp"
 #include <stdexcept>
+#include <iostream>
+#include "Utils.hpp"
 
 /*
 ** ------------------------------- CONSTRUCTOR -------------------------------
@@ -11,25 +13,32 @@ URL::URL()
 }
 
 URL::URL(const std::string& url)
+	: _is_directory(false)
 {
 	if (url.size() == 0)
 		throw std::invalid_argument("Empty url");
-	if (url[0] == '/')
+
+	if (url == "*")
+	{
+		_path = "*";
+		return;
+	}
+	else if (url[0] == '/')
 		parse_partial(url);
 	else
 		parse_full(url);
-	if (_port == "")
+
+	if (_port.empty())
 		_port = "80";
-	if (_path == "")
+	if (_path.empty())
 		_path = "/";
+
 	if (_path.find_first_not_of("/") != std::string::npos && _path[_path.size() - 1] == '/')
 	{
 		while (_path[_path.size() - 1] == '/')
 			_path = _path.substr(0, _path.size() - 1);
 		_is_directory = true;
 	}
-	else
-		_is_directory = false;
 }
 
 URL::URL(const URL& other)
@@ -49,7 +58,7 @@ void URL::parse_userinfo(size_t& i, const std::string& url)
 
 	if (authority.find('@') == 0)
 		throw std::invalid_argument("@ delimiter is present but no user info was given in uri");
-	if (authority.find('@') == std::string::npos)
+	if (!ft::contains(authority, '@'))
 	{
 		_userinfo = "";
 		return;
@@ -115,6 +124,7 @@ URL& URL::operator=(const URL& other)
 	_userinfo = other._userinfo;
 	_host = other._host;
 	_port = other._port;
+	_path = other._path;
 	_query = other._query;
 	_fragment = other._fragment;
 	_is_directory = other._is_directory;

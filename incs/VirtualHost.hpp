@@ -20,8 +20,6 @@ class VirtualHost
 		const ConfigContext& getConfig() const;
 		const std::list<int>& getPorts() const;
 
-		std::string toString() const;
-
 		static VirtualHost& getServerByName(const std::string& name, int port, std::list<VirtualHost>& vhosts);
 };
 

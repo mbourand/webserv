@@ -82,7 +82,7 @@ std::string GetMethod::get_file_size(const std::string& realPath)
 
 Response GetMethod::directory_listing(const Request& request, const ConfigContext& config, std::string realPath)
 {
-	URL url(request._path);
+	const URL& url = request._url;
 	std::list<std::string> list;
 	try
 	{
@@ -152,7 +152,7 @@ Response GetMethod::directory_listing(const Request& request, const ConfigContex
 
 Response GetMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
 {
-	URL url(request._path);
+	const URL& url = request._url;
 	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethods();
 	if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
 		return Response(405, url._path);
@@ -164,7 +164,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	}
 	catch (std::exception& e)
 	{
-		return Response(404, url._path);
+		return Logger::print("Path is not safe", Response(404, url._path), ERROR, VERBOSE);
 	}
 	if (realPath[0] != '/')
 		realPath = g_webserv.cwd + "/" + realPath;

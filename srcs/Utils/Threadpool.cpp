@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Threadpool.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/11 02:15:48 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/13 17:52:52 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,10 +102,12 @@ void					*Threadpool::WaitForWork(void *)
 		{
 			Client *job = m_jobs.back();
 			m_jobs.pop_back();
+			m_currentjobs.push_back(job);
 			Unlock();
 			handle_server_response(*job);
 			delete job->req;
 			delete job;
+			m_currentjobs.remove(job);
 		}
 		else
 		{
@@ -118,5 +120,9 @@ void					*Threadpool::WaitForWork(void *)
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
+
+
+const std::deque<Client*>& Threadpool::getJobs() const { return m_jobs; }
+const std::list<Client*>& Threadpool::getCurrentJobs() const { return m_currentjobs; }
 
 /* ************************************************************************** */
