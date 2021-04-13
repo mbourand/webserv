@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/13 02:15:43 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/13 12:06:04 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@ int	main(int argc, char **argv)
 	g_webserv.file_formatname = new HashTable(256);
 	g_webserv.cwd = ft::get_cwd();
 	init_factories();
-	Threadpool workers(0);//positive number to enable, todo: get number of workers from config
+	Threadpool workers(7);//positive number to enable, todo: get number of workers from config
 	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
 	try
@@ -228,8 +228,6 @@ int	main(int argc, char **argv)
 			if (its->second->GetSocket() > serverFd)
 				serverFd = its->second->GetSocket();
 			FD_SET(its->second->GetSocket(), &read_sockets_z);
-			FD_SET(its->second->GetSocket(), &write_sockets_z);
-			FD_SET(its->second->GetSocket(), &error_sockets_z);
 		}
 		while (g_webserv.run)
 		{

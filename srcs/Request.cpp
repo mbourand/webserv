@@ -287,7 +287,7 @@ size_t Request::count_concurrent_occurences(size_t index, char c) const
 std::string	Request::getHeaderValue(const std::string& name) const
 {
 	for (Request::HeadersVector::const_iterator header_it = _headers.begin(); header_it != _headers.end(); header_it++)
-		if ((*header_it)->getType() == "Host")
+		if ((*header_it)->getType() == name)
 		{
 			return (*header_it)->getValue().substr(0, std::min((*header_it)->getValue().find(':'), (*header_it)->getValue().size()));
 			break;
