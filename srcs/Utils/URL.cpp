@@ -19,7 +19,10 @@ URL::URL(const std::string& url)
 		throw std::invalid_argument("Empty url");
 
 	if (url == "*")
-		_host = "*";
+	{
+		_path = "*";
+		return;
+	}
 	else if (url[0] == '/')
 		parse_partial(url);
 	else

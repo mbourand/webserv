@@ -265,7 +265,7 @@ bool Request::is_valid_URI(const std::string& uri) const
 		return true;
 
 	if (_method->allowAsteriskURI())
-		if (uri[0] == '*' && uri[1] == ' ')
+		if (uri == "*")
 			return true;
 	return false;
 }

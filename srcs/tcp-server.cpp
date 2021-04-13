@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/13 18:17:41 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/13 18:25:16 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ bool	handle_client_request(Client &client)
 	}
 	catch(std::invalid_argument &e)
 	{
-		Logger::print(e.what(), NULL, ERROR, NORMAL);
+		Logger::print(e.what(), NULL, ERROR, SILENT);
 		try
 		{
 			Response response(400, "");
