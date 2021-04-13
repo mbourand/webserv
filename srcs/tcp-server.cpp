@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/12 19:10:58 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/13 02:15:43 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@ int	main(int argc, char **argv)
 	g_webserv.file_formatname = new HashTable(256);
 	g_webserv.cwd = ft::get_cwd();
 	init_factories();
-	Threadpool workers(7);//positive number to enable, todo: get number of workers from config
+	Threadpool workers(0);//positive number to enable, todo: get number of workers from config
 	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
 	try
@@ -215,6 +215,9 @@ int	main(int argc, char **argv)
 		std::list<Client>				clients;
 		std::list<Client>::iterator		it;
 		int								highestFd = 0;
+		int								serverFd = 0;
+		int								readyfd = 0;
+		//struct timeval 					timeout;
 
 		Logger::print("Webserv is ready, waiting for connection...", NULL, SUCCESS, SILENT);
 		FD_ZERO(&read_sockets_z);
@@ -222,8 +225,8 @@ int	main(int argc, char **argv)
 		FD_ZERO(&error_sockets_z);
 		for (std::map<int, ServerSocket*>::iterator its = g_webserv.sockets.begin(); its != g_webserv.sockets.end(); its++)
 		{
-			if (its->second->GetSocket() > highestFd)
-				highestFd = its->second->GetSocket();
+			if (its->second->GetSocket() > serverFd)
+				serverFd = its->second->GetSocket();
 			FD_SET(its->second->GetSocket(), &read_sockets_z);
 			FD_SET(its->second->GetSocket(), &write_sockets_z);
 			FD_SET(its->second->GetSocket(), &error_sockets_z);
@@ -231,29 +234,39 @@ int	main(int argc, char **argv)
 		while (g_webserv.run)
 		{
 			it = clients.begin();
-			for (; it != clients.end(); ++it)
-			{
-				FD_SET(it->sckt->GetSocket(), &read_sockets_z);
-				FD_SET(it->sckt->GetSocket(), &write_sockets_z);
-				FD_SET(it->sckt->GetSocket(), &error_sockets_z);
-				if (it->sckt->GetSocket() > highestFd)
-					highestFd = it->sckt->GetSocket();
-			}
 			read_sockets = read_sockets_z;
 			write_sockets = write_sockets_z;
 			error_sockets = error_sockets_z;
-			if (select(highestFd + 1, &read_sockets, &write_sockets, &error_sockets, NULL) < 0)
+			highestFd = serverFd;
+			for (; it != clients.end(); ++it)
 			{
+				FD_SET(it->sckt->GetSocket(), &read_sockets);
+				if (it->req->isfinished())
+					FD_SET(it->sckt->GetSocket(), &write_sockets);
+				FD_SET(it->sckt->GetSocket(), &error_sockets);
+				if (it->sckt->GetSocket() > highestFd)
+					highestFd = it->sckt->GetSocket();
+			}
+			struct timeval timeout = {30, 0};
+			readyfd = select(highestFd + 1, &read_sockets, &write_sockets, &error_sockets, &timeout);
+			switch (readyfd)
+			{
+			case -1:
 				if (g_webserv.run)
 					Logger::print("Error select(): "+std::string(strerror(errno)), NULL, ERROR, NORMAL);
-				continue;
-			}
-			else
-			{
+				break;
+			case 0:
+				break;//webserv was idling for the past 30s
+			default:
+				if (!readyfd)
+					break;
 				for (std::map<int, ServerSocket*>::iterator its = g_webserv.sockets.begin(); its != g_webserv.sockets.end(); its++)
 				{
 					if (FD_ISSET(its->second->GetSocket(), &read_sockets))
+					{
 						handle_new_connection(*its->second, clients);
+						readyfd--;
+					}
 				}
 				it = clients.begin();
 				while (it != clients.end())
@@ -265,9 +278,15 @@ int	main(int argc, char **argv)
 						Logger::print("FD Error flagged by Select", NULL, WARNING, NORMAL);
 					}
 					if (!error && FD_ISSET(it->sckt->GetSocket(), &read_sockets))
+					{
 						error = handle_client_request((*it));
-					if (!error && it->req->isfinished() && FD_ISSET(it->sckt->GetSocket(), &write_sockets))
-						workers.AddJob((*it)); //handle_server_response((*it));
+						readyfd--;
+					}
+					if (!error && FD_ISSET(it->sckt->GetSocket(), &write_sockets))
+					{
+						error = workers.AddJob((*it));
+						readyfd--;
+					}
 					if (error)
 					{
 						Logger::print("Client Disconnected", NULL, SUCCESS, VERBOSE);
@@ -283,6 +302,7 @@ int	main(int argc, char **argv)
 						++it;
 					}
 				}
+				break;
 			}
 		}
 		Logger::print("Webserv is shutting down...", NULL, INFO, SILENT);

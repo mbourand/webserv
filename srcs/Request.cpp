@@ -78,10 +78,15 @@ void Request::parse()
 					break ;
 				if (_port && !_max_body_size)
 				{
-					VirtualHost vhost = VirtualHost::getServerByName(_headers[i]->getValue(), _port, g_webserv.vhosts);;
-					std::stringstream	convert;
-					convert << vhost.getConfig().getParam("max_client_body_size").front();
-					convert >> _max_body_size;
+					try
+					{
+						VirtualHost vhost = VirtualHost::getServerByName(_headers[i]->getValue(), _port, g_webserv.vhosts);;
+						std::stringstream	convert;
+						convert << vhost.getConfig().getParam("max_client_body_size").front();
+						convert >> _max_body_size;
+					}
+					catch(const std::exception& e)
+					{}
 				}
 			}
 		}
