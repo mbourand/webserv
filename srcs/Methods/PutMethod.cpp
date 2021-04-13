@@ -34,7 +34,7 @@ bool PutMethod::isAllowedInHTMLForms() const { return false; }
 
 Response PutMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
 {
-	URL url(request._path);
+	URL url(request._url._path);
 	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethods();
 	if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
 		return Response(405, url._path);
