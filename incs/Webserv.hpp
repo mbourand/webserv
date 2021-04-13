@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 19:37:11 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/06 23:06:46 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/12 00:22:36 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,13 @@ typedef struct						s_webserv
 	Factory<IMethod*>				methods;
 	Factory<Header*>				headers;
 	std::list<VirtualHost>			vhosts;
+
+	s_webserv();
+
+	void init_config(const std::string& config_path);
+
+	private:
+		void init_factories();
 }									t_webserv;
 
 void		sighandler(void);

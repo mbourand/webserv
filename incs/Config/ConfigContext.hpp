@@ -26,11 +26,14 @@ class ConfigContext
 		void set_max_body_size_default();
 		void set_cgi_dir_default();
 		void set_uploads_default();
-		void parse_server_name(const std::string& raw, const int i);
-		void parse_error_page(const std::string& raw, const int i);
-		void parse_methods(const std::string& raw, const int i);
-		void parse_autoindex(const std::string& raw, const int i);
-		void parse_cgi_ext(const std::string& raw, const int i);
+		void parse_server_name(const std::string& directive_value, const std::string& raw, const int i);
+		void parse_error_page(const std::string& directive_value, const std::string& raw, const int i);
+		void parse_methods(const std::string& directive_value, const std::string& raw, const int i);
+		void parse_autoindex(const std::string& directive_value, const std::string& raw, const int i);
+		void parse_cgi_ext(const std::string& directive_value, const std::string& raw, const int i);
+		void add_server_directives();
+		void add_location_directives();
+		void handle_parent_and_directives(const ConfigContext* parent, const std::string& string);
 
 	public:
 		ConfigContext();
@@ -41,7 +44,7 @@ class ConfigContext
 
 		int getInt(const std::string& param, size_t token) const;
 		std::string getString(const std::string& param, size_t token) const;
-		std::list<ConfigContext>& getChilds();
+		const std::list<ConfigContext>& getChilds() const;
 		std::string getErrorPage(int code) const;
 		const std::list<std::string>& getParam(const std::string& name) const;
 		std::string rootPath(const std::string& path, int& base_depth) const;
@@ -52,8 +55,6 @@ class ConfigContext
 		const std::list<std::string>& getNames() const;
 		const std::list<const IMethod*>& getAllowedMethods() const;
 		const std::map<std::string, std::string>& getCGIExtensions() const;
-		std::string toString() const;
-		std::string findFileWithRoot(const std::string& name) const;
 		const ConfigContext& getConfigPath(const std::string& path) const;
 };
 

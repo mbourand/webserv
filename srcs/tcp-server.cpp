@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/13 12:06:04 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/13 16:30:55 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 #include "Types_parser.hpp"
 #include "VirtualHost.hpp"
 #include "Threadpool.hpp"
-#include "Config.h"
 #include "Utils.hpp"
 
 #ifndef DEBUG
@@ -70,7 +69,7 @@ void	handle_new_connection(ServerSocket &server, std::list<Client> &clients)
 	if (clients.size() >= 1000) // get max_connections from config ? choose value depending of # file descriptor available
 	{
 		Logger::print("Webserv overloaded, New Client bounced back ("+new_client.sckt->getIPAddress()+")", NULL, ERROR, NORMAL);
-		Response response(503, new_client.req->_path);
+		Response response(503, new_client.req->_url._path);
 		response.addHeader("Connection", "close");
 		response.addHeader("Retry-After", "120");
 		*new_client.sckt << response.getResponseText(g_webserv.vhosts.front().getConfig());
@@ -132,8 +131,9 @@ bool	handle_server_response(Client &client)
 	{
 		if (DEBUG)
 			std::cout << *client.req << std::endl;
+		std::cout << "handle Server Response getserverbyname : " << client.sckt->getServerPort() << std::endl;
 		VirtualHost vhost = VirtualHost::getServerByName(client.req->getHeaderValue("Host"), client.sckt->getServerPort(), g_webserv.vhosts);
-		Response response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_path), *client.sckt);
+		Response response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_url._path), *client.sckt);
 		*client.sckt << response.getResponseText(vhost.getConfig());
 		if (response.getCode() != 200)
 			return true;
@@ -151,37 +151,6 @@ bool	handle_server_response(Client &client)
 	return false;
 }
 
-void init_factories()
-{
-	g_webserv.methods.add(new ConnectMethod());
-	g_webserv.methods.add(new DeleteMethod());
-	g_webserv.methods.add(new GetMethod());
-	g_webserv.methods.add(new HeadMethod());
-	g_webserv.methods.add(new OptionsMethod());
-	g_webserv.methods.add(new PostMethod());
-	g_webserv.methods.add(new PutMethod());
-	g_webserv.methods.add(new TraceMethod());
-
-	g_webserv.headers.add(new AcceptCharsetsHeader());
-	g_webserv.headers.add(new AcceptLanguageHeader());
-	g_webserv.headers.add(new AllowHeader());
-	g_webserv.headers.add(new AuthorizationHeader());
-	g_webserv.headers.add(new ContentLanguageHeader());
-	g_webserv.headers.add(new ContentLengthHeader());
-	g_webserv.headers.add(new ContentLocationHeader());
-	g_webserv.headers.add(new ContentTypeHeader());
-	g_webserv.headers.add(new DateHeader());
-	g_webserv.headers.add(new HostHeader());
-	g_webserv.headers.add(new LastModifiedHeader());
-	g_webserv.headers.add(new LocationHeader());
-	g_webserv.headers.add(new RefererHeader());
-	g_webserv.headers.add(new RetryAfterHeader());
-	g_webserv.headers.add(new ServerHeader());
-	g_webserv.headers.add(new TransferEncodingHeader());
-	g_webserv.headers.add(new UserAgentHeader());
-	g_webserv.headers.add(new WWWAuthenticateHeader());
-}
-
 int	main(int argc, char **argv)
 {
 	Logger::setMode(SILENT);
@@ -192,25 +161,14 @@ int	main(int argc, char **argv)
 		return 1;
 	}
 
-	std::string config_path = (argc == 1 ? "./config/default.conf" : argv[1]);
+	try { g_webserv.init_config(std::string(argc == 1 ? "./config/default.conf" : argv[1])); }
+	catch (std::exception& e) { Logger::print(std::string("Invalid config file: ") + e.what(), 1, ERROR, SILENT); }
 
-	g_webserv.run = true;
-	g_webserv.file_formatname = new HashTable(256);
-	g_webserv.cwd = ft::get_cwd();
-	init_factories();
 	Threadpool workers(7);//positive number to enable, todo: get number of workers from config
-	parse_types_file(g_webserv.file_formatname, "/etc/mime.types");
 	sighandler();
+
 	try
 	{
-		try
-		{
-			init_config(config_path, g_webserv.vhosts);
-		}
-		catch(const std::exception& e)
-		{
-			return Logger::print(std::string("Invalid config file: ") + e.what(), 1, ERROR, SILENT);
-		}
 		fd_set							read_sockets, read_sockets_z, write_sockets, write_sockets_z, error_sockets, error_sockets_z;
 		std::list<Client>				clients;
 		std::list<Client>::iterator		it;

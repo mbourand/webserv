@@ -1,11 +1,17 @@
 #include "Request.hpp"
 #include "Webserv.hpp"
 #include <sstream>
+#include "Utils.hpp"
 
-Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _path(other._path),
+/*
+** --------------------------------------- CONSTRUCTOR ---------------------------------------
+*/
+
+Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()),
 	_protocolVersion(other._protocolVersion), _body(other._body), _header_section_finished(other._header_section_finished),
 	_finished_parsing(other._finished_parsing), _parse_start(other._parse_start), _max_body_size(other._max_body_size),
-	_error_code(other._error_code), _query_string(other._query_string), _content_length(other._content_length)
+	_error_code(other._error_code), _query_string(other._query_string), _content_length(other._content_length),
+	_url_finished(other._url_finished), _url(other._url)
 {
 }
 
@@ -15,14 +21,27 @@ Request::~Request()
 		delete *it;
 }
 
-Request::Request(int port) : _method(NULL), _header_section_finished(false), _finished_parsing(false), _parse_start(0), _max_body_size(0), _error_code(0), _content_length(0), _port(port)
+Request::Request(int port) : _method(NULL), _header_section_finished(false), _finished_parsing(false), _url_finished(false), _parse_start(0), _max_body_size(0), _error_code(0), _content_length(0), _port(port)
 {
 }
 
-Request::Request() : _method(NULL), _header_section_finished(false), _finished_parsing(false), _parse_start(0), _max_body_size(0), _error_code(0), _content_length(0), _port(0)
+Request::Request() : _method(NULL), _header_section_finished(false), _finished_parsing(false), _parse_start(0), _max_body_size(0), _error_code(0), _content_length(0), _port(0), _url_finished(false)
 {
 }
 
+
+
+/*
+** --------------------------------------- METHODS ---------------------------------------
+*/
+
+
+/**
+ * @brief Ajoute le paramètre à la fin du raw de la Requête, puis parse aussi loin que possible avec le nouveau raw
+ *
+ * @param str
+ * @return false si le parsing est terminé, sinon true
+ */
 bool Request::append(const std::string& raw)
 {
 	if (_finished_parsing)
@@ -41,7 +60,7 @@ void Request::parse()
 	if (_method == NULL)
 		return;
 
-	if (_path == "")
+	if (!_url_finished)
 	{
 		if (_parse_start + 1 >= _raw.size())
 			return;
@@ -50,10 +69,10 @@ void Request::parse()
 
 		parse_uri();
 	}
-	if (_path == "")
+	if (!_url_finished)
 		return;
 
-	if (_protocolVersion == "")
+	if (_protocolVersion.empty())
 	{
 		if (_parse_start + 1 >= _raw.size())
 			return;
@@ -61,7 +80,7 @@ void Request::parse()
 			throw std::invalid_argument("Bad whitespace after uri.");
 		parse_protocol_version();
 	}
-	if (_protocolVersion == "")
+	if (_protocolVersion.empty())
 		return;
 
 	while (!_header_section_finished && parse_headers())
@@ -80,7 +99,8 @@ void Request::parse()
 				{
 					try
 					{
-						VirtualHost vhost = VirtualHost::getServerByName(_headers[i]->getValue(), _port, g_webserv.vhosts);;
+						std::cout << "Request getserverbyname : " << _port << std::endl;
+						VirtualHost vhost = VirtualHost::getServerByName(_headers[i]->getValue(), _port, g_webserv.vhosts);
 						std::stringstream	convert;
 						convert << vhost.getConfig().getParam("max_client_body_size").front();
 						convert >> _max_body_size;
@@ -127,7 +147,7 @@ void Request::parse_method()
 	std::string method = _raw.substr(0, _raw.find(' '));
 	if (!g_webserv.methods.hasCandidates(method))
 		throw std::invalid_argument("Method could not be recognized.");
-	if (_raw.find(' ') != std::string::npos && g_webserv.methods.getByType(method) != NULL)
+	if (ft::contains(_raw, ' ') && g_webserv.methods.getByType(method) != NULL)
 	{
 		Logger::print("Request method is " + method + ".", true, INFO, VERBOSE);
 		_method = g_webserv.methods.getByType(method);
@@ -139,22 +159,12 @@ void Request::parse_uri()
 {
 	if (_raw.find(' ', _parse_start + 1) != std::string::npos)
 	{
-		if (!is_valid_URI(_raw.substr(_parse_start + 1, _raw.find(' ', _parse_start + 1))))
+		std::string urlRaw = _raw.substr(_parse_start + 1, _raw.find(' ', _parse_start + 1) - (_parse_start + 1));;
+		if (!is_valid_URI(urlRaw))
 			throw std::invalid_argument("Bad URI format in request.");
-		else
-		{
-			_path = _raw.substr(_parse_start + 1, _raw.find(' ', _parse_start + 1) - (_parse_start + 1));
-			if (_path.find('?') != std::string::npos)
-			{
-				_query_string = _path.substr(_path.find('?') + 1);
-				if (_query_string.find('#') != std::string::npos)
-					_query_string.resize(_query_string.find('#'));
-				_path.resize(_path.find('?'));
-				Logger::print("Query is " + _query_string + ".", true, INFO, VERBOSE);
-			}
-			_parse_start = _raw.find(' ', _parse_start + 1);
-			Logger::print("URI is " + _path + ".", true, INFO, VERBOSE);
-		}
+		_url = URL(urlRaw);
+		_parse_start = _raw.find(' ', _parse_start + 1);
+		_url_finished = true;
 	}
 }
 
@@ -189,16 +199,6 @@ size_t is_header_field_finished(std::string str)
 	return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
 }
 
-/*
-** header-field = field-name ":" OWS field-value OWS
-** field-name = token
-** field-value = *( field-content / obs-fold )
-** field-content = field-vchar [ 1*( SP / HTAB ) field-vchar ]
-** field-vchar = VCHAR / obs-text
-** obs-fold = CRLF 1*( SP / HTAB )
-** obsolete line folding
-** see Section 3.2.4
-*/
 bool Request::parse_headers()
 {
 	size_t header_len = is_header_field_finished(_raw.substr(_parse_start));
@@ -284,6 +284,14 @@ size_t Request::count_concurrent_occurences(size_t index, char c) const
 	return cnt;
 }
 
+
+
+/*
+** --------------------------------------- ACCESSOR ---------------------------------------
+*/
+
+
+
 std::string	Request::getHeaderValue(const std::string& name) const
 {
 	for (Request::HeadersVector::const_iterator header_it = _headers.begin(); header_it != _headers.end(); header_it++)
@@ -295,11 +303,19 @@ std::string	Request::getHeaderValue(const std::string& name) const
 	return ("");
 }
 
+
+
+/*
+** --------------------------------------- OPERATOR ---------------------------------------
+*/
+
+
+
 Request& Request::operator=(const Request& other)
 {
 	_raw = other._raw;
 	_method = other._method;
-	_path = other._path;
+	_url = other._url;
 	_protocolVersion = other._protocolVersion;
 	_body = other._body;
 	return *this;
@@ -318,7 +334,7 @@ bool Request::operator!=(const Request& other) const
 std::ostream& operator<<(std::ostream& out, const Request& request)
 {
 	out <<	"Method: " << request._method->getType() << '\n' <<
-			"Path: " << request._path << '\n' <<
+			"Path: " << request._url._path << '\n' <<
 			"Protocol Version: " << request._protocolVersion << '\n' <<
 			"Headers: " << std::endl;
 	for (Request::HeadersVector::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)

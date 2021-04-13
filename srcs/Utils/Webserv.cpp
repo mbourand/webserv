@@ -1,12 +1,54 @@
-#include <stdexcept>
-#include <iostream>
-#include <list>
-#include "VirtualHost.hpp"
+#include "Webserv.hpp"
+#include "Utils.hpp"
+#include "Types_parser.hpp"
 #include <fstream>
-#include "Logger.hpp"
-#include <algorithm>
 
-void init_config(const std::string& filename, std::list<VirtualHost>& vhosts)
+void s_webserv::init_factories()
+{
+	methods.add(new ConnectMethod());
+	methods.add(new DeleteMethod());
+	methods.add(new GetMethod());
+	methods.add(new HeadMethod());
+	methods.add(new OptionsMethod());
+	methods.add(new PostMethod());
+	methods.add(new PutMethod());
+	methods.add(new TraceMethod());
+
+	headers.add(new AcceptCharsetsHeader());
+	headers.add(new AcceptLanguageHeader());
+	headers.add(new AllowHeader());
+	headers.add(new AuthorizationHeader());
+	headers.add(new ContentLanguageHeader());
+	headers.add(new ContentLengthHeader());
+	headers.add(new ContentLocationHeader());
+	headers.add(new ContentTypeHeader());
+	headers.add(new DateHeader());
+	headers.add(new HostHeader());
+	headers.add(new LastModifiedHeader());
+	headers.add(new LocationHeader());
+	headers.add(new RefererHeader());
+	headers.add(new RetryAfterHeader());
+	headers.add(new ServerHeader());
+	headers.add(new TransferEncodingHeader());
+	headers.add(new UserAgentHeader());
+	headers.add(new WWWAuthenticateHeader());
+}
+
+s_webserv::s_webserv()
+{
+	run = true;
+	file_formatname = new HashTable(256);
+	cwd = ft::get_cwd();
+	init_factories();
+	parse_types_file(file_formatname, "/etc/mime.types");
+}
+
+/**
+ * @brief Parse la Config globale, et initialise les ConfigContext server{} dans des VirtualHosts, stockés dans s_webserv::vhosts
+ *
+ * @param filename
+ */
+void s_webserv::init_config(const std::string& filename)
 {
 	std::ifstream file(filename.c_str(), std::ifstream::in);
 	if (!file.good() || !file.is_open())
@@ -62,5 +104,5 @@ void init_config(const std::string& filename, std::list<VirtualHost>& vhosts)
 		else
 			throw std::invalid_argument("Bad directive in config");
 	}
-	Logger::print("Config was parsed successfully", NULL, SUCCESS, NORMAL);
+	Logger::print("Config was parsed successfully", NULL, SUCCESS, SILENT);
 }

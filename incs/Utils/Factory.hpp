@@ -41,7 +41,7 @@ class Factory
 
 		Factory& operator=(const Factory& other)
 		{
-			for (typename std::list<value_type>::iterator it = other._elements.begin(); it != other._elements.end(); it++)
+			for (typename std::list<value_type>::const_iterator it = other._elements.begin(); it != other._elements.end(); it++)
 				_elements.push_back((*it)->clone());
 			return *this;
 		}
