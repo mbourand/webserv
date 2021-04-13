@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/13 16:30:55 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/13 18:17:41 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,6 @@ bool	handle_server_response(Client &client)
 	{
 		if (DEBUG)
 			std::cout << *client.req << std::endl;
-		std::cout << "handle Server Response getserverbyname : " << client.sckt->getServerPort() << std::endl;
 		VirtualHost vhost = VirtualHost::getServerByName(client.req->getHeaderValue("Host"), client.sckt->getServerPort(), g_webserv.vhosts);
 		Response response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_url._path), *client.sckt);
 		*client.sckt << response.getResponseText(vhost.getConfig());
@@ -245,7 +244,17 @@ int	main(int argc, char **argv)
 					}
 					if (error)
 					{
-						Logger::print("Client Disconnected", NULL, SUCCESS, VERBOSE);
+						bool busy = false;
+						for (std::deque<Client*>::const_iterator jobs_it = workers.getJobs().begin(); jobs_it != workers.getJobs().end(); jobs_it++)
+							if (it->sckt == (*jobs_it)->sckt)
+								busy = true;
+						for (std::list<Client*>::const_iterator jobs_it = workers.getCurrentJobs().begin(); jobs_it != workers.getCurrentJobs().end(); jobs_it++)
+							if (it->sckt == (*jobs_it)->sckt)
+								busy = true;
+						if (busy)
+							continue;
+
+						Logger::print("Client Disconnected", NULL, SUCCESS, SILENT);
 						FD_CLR(it->sckt->GetSocket(), &read_sockets_z);
 						FD_CLR(it->sckt->GetSocket(), &write_sockets_z);
 						FD_CLR(it->sckt->GetSocket(), &error_sockets_z);

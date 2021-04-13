@@ -99,7 +99,6 @@ void Request::parse()
 				{
 					try
 					{
-						std::cout << "Request getserverbyname : " << _port << std::endl;
 						VirtualHost vhost = VirtualHost::getServerByName(_headers[i]->getValue(), _port, g_webserv.vhosts);
 						std::stringstream	convert;
 						convert << vhost.getConfig().getParam("max_client_body_size").front();

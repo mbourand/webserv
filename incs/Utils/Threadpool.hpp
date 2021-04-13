@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Threadpool.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/05 00:46:12 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/13 17:51:51 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,9 @@ class Threadpool
 
 		Threadpool &		operator=(Threadpool const &rhs);
 
+		const std::deque<Client*>& getJobs() const;
+		const std::list<Client*>& getCurrentJobs() const;
+
 	private:
 
 		void	Lock(void);
@@ -45,6 +48,7 @@ class Threadpool
 
 		std::vector<pthread_t*>	m_workers;
 		std::deque<Client*>			m_jobs;
+		std::list<Client*>			m_currentjobs;
 		unsigned int			m_numworkers;
 		pthread_mutex_t			m_jobsmutex;
 		size_t					m_maxqueuedjobs;
