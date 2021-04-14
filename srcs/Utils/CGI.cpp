@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/12 03:06:20 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/14 22:18:18 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,13 +72,6 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 		if (!m_env_Path_Info.empty())
 			m_args.push_back(document_root + m_env_Path_Info);
 	}
-	m_c_args = new char*[m_args.size() + 1];
-	for (size_t i = 0; i < m_args.size(); i++)
-	{
-		m_c_args[i] = new char[m_args[i].size() + 1];
-		ft::strncpy(m_c_args[i], m_args[i].c_str(), m_args[i].size() + 1);
-	}
-	m_c_args[m_args.size()] = NULL;
 	if (auth_type)
 		m_env.push_back("AUTH_TYPE="+auth_type->getValue());
 	if (request._method->requestHasBody() && !request._body.empty())
@@ -125,13 +118,6 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	gettimeofday(&tv, NULL);
 	convert << tv.tv_usec;
 	m_tmpfilename += convert.str() + ".tmp";
-	m_c_env = new char*[m_env.size() + 1];
-	for (size_t i = 0; i < m_env.size(); i++)
-	{
-		m_c_env[i] = new char[m_env[i].length() + 1];
-		ft::strncpy(m_c_env[i], m_env[i].c_str(), m_env[i].size() + 1);
-	}
-	m_c_env[m_env.size()] = NULL;
 	this->execute(request._body);
 }
 
@@ -142,12 +128,6 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 CGI::~CGI()
 {
 	unlink(m_tmpfilename.c_str());
-	for (size_t i = 0; i < m_env.size(); i++)
-		delete [] m_c_env[i];
-	delete [] m_c_env;
-	for (size_t i = 0; i < m_args.size(); i++)
-		delete [] m_c_args[i];
-	delete [] m_c_args;
 }
 
 /*
@@ -212,22 +192,29 @@ void				CGI::execute(const std::string & body)
 	int		status;
 	int		pipes[2];
 
-	if ((fd = open(m_tmpfilename.c_str(), O_WRONLY | O_CREAT, 0666)) == -1)
-		throw CGI::CGIException("open() failed.", 500);
 	if (pipe(pipes) < 0)
+	{
+		close(fd);
 		throw CGI::CGIException("pipe() failed.", 500);
+	}
 	pid = fork();
 	switch (pid) {
 	case -1:
 		close(pipes[0]);
 		close(pipes[1]);
-		close(fd);
+		//close(fd);
 		throw CGI::CGIException("fork() failed.", 500);
 	case 0:
+		if ((fd = open(m_tmpfilename.c_str(), O_WRONLY | O_CREAT, 0666)) == -1)
+			exit(1);
 		close(pipes[1]); //close writing end query pipe
-		dup2(pipes[0], STDIN_FILENO); //dup reading end query pipe to STDIN
-		dup2(fd, STDOUT_FILENO); //dup stdout to tmp file
-		execve(m_c_args[0], m_c_args, m_c_env);
+		if (dup2(pipes[0], STDIN_FILENO) < 0) //dup reading end query pipe to STDIN
+			exit(1);
+		if (dup2(fd, STDOUT_FILENO) < 0) //dup stdout to tmp file
+			exit(1);
+		VectorToArray();
+		if (execve(m_c_args[0], m_c_args, m_c_env) < 0)
+			exit (1);
 	default:
 		close(pipes[0]); // close reading end query pipe
 		if (!body.empty())
@@ -238,13 +225,32 @@ void				CGI::execute(const std::string & body)
 			}
 		close(pipes[1]);
 		waitpid(pid, &status, 0);
-		close(fd);
+		//close(fd);
 		if (WIFEXITED(status))
 			Logger::print("CGI execution was successful.", NULL, SUCCESS, NORMAL);
 		else
 			throw CGI::CGIException("CGI execution failed.", 500);
 	}
 }
+
+void	CGI::VectorToArray(void)
+{
+	m_c_env = new char*[m_env.size() + 1];
+	for (size_t i = 0; i < m_env.size(); i++)
+	{
+		m_c_env[i] = new char[m_env[i].length() + 1];
+		ft::strncpy(m_c_env[i], m_env[i].c_str(), m_env[i].size() + 1);
+	}
+	m_c_env[m_env.size()] = NULL;
+	m_c_args = new char*[m_args.size() + 1];
+	for (size_t i = 0; i < m_args.size(); i++)
+	{
+		m_c_args[i] = new char[m_args[i].size() + 1];
+		ft::strncpy(m_c_args[i], m_args[i].c_str(), m_args[i].size() + 1);
+	}
+	m_c_args[m_args.size()] = NULL;
+}
+
 
 void	CGI::process(Response& response)
 {
