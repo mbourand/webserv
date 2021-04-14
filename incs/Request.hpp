@@ -24,7 +24,6 @@ class Request
 		URL				_url;
 		std::string		_protocolVersion;
 		HeadersVector	_headers;
-		std::string		_query_string;
 		std::string		_body;
 		size_t 			_content_length;
 		size_t			_max_body_size; //default size 1000000(1M), parse config for custom size

@@ -32,7 +32,7 @@ bool PutMethod::isIdempotent() const { return true; }
 bool PutMethod::isCacheable() const { return false; }
 bool PutMethod::isAllowedInHTMLForms() const { return false; }
 
-Response PutMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
+Response PutMethod::process(const Request& request, const ConfigContext& config, const ServerSocket&)
 {
 	URL url(request._url._path);
 	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethods();
@@ -60,7 +60,7 @@ Response PutMethod::process(const Request& request, const ConfigContext& config,
 	std::string file_path = config.getParam("uploads").front() + realPath.substr(realPath.find("/"));
 	std::fstream file;
 	struct stat	file_stats;
-	if (lstat(file_path.c_str(), &file_stats) < 0 || file_stats.st_size != request._body.size())
+	if (lstat(file_path.c_str(), &file_stats) < 0 || static_cast<unsigned int>(file_stats.st_size) != request._body.size())
 	{
 		file.open(file_path.c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
 		if (!S_ISREG(file_stats.st_mode))

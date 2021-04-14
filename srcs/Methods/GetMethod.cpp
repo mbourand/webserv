@@ -65,7 +65,7 @@ std::string GetMethod::get_last_modified_format(const std::string& realPath, con
 	convert << st.st_mtime;
 	strptime(std::string(convert.str()).c_str(), "%s", &time);
 	char		buffer[1024];
-	strftime(buffer, sizeof(buffer), "%d-%b-%Y %H:%M", &time);
+	strftime(buffer, sizeof(buffer), format.c_str(), &time);
 	convert.str("");
 	return buffer;
 }
@@ -80,7 +80,7 @@ std::string GetMethod::get_file_size(const std::string& realPath)
 	return convert.str();
 }
 
-Response GetMethod::directory_listing(const Request& request, const ConfigContext& config, std::string realPath)
+Response GetMethod::directory_listing(const Request& request, const ConfigContext&, std::string realPath)
 {
 	const URL& url = request._url;
 	std::list<std::string> list;

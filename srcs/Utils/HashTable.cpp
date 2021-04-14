@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HashTable.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/15 17:14:00 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/16 03:39:08 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/14 22:17:52 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ HashTable::~HashTable()
 uint32_t				HashTable::Hash(std::string const &str) const
 {
 	uint32_t					hash = 0;
-	unsigned int				i = 0;
 	unsigned int				j = this->m_hashdepth;
 	std::string::const_iterator	it = str.begin();
 

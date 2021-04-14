@@ -104,15 +104,15 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 			continue;
 		}
 		else if (directive_name == "server_name")
-			parse_server_name(directive_value, raw, i);
+			parse_server_name(directive_value);
 		else if (directive_name == "error_page")
-			parse_error_page(directive_value, raw, i);
+			parse_error_page(directive_value);
 		else if (directive_name == "autoindex")
-			parse_autoindex(directive_value, raw, i);
+			parse_autoindex(directive_value);
 		else if (directive_name == "disable_methods")
-			parse_methods(directive_value, raw, i);
+			parse_methods(directive_value);
 		else if (directive_name == "cgi-ext")
-			parse_cgi_ext(directive_value, raw, i);
+			parse_cgi_ext(directive_value);
 		else
 		{
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
@@ -173,7 +173,7 @@ void ConfigContext::handle_parent_and_directives(const ConfigContext* parent, co
 	add_location_directives();
 }
 
-void ConfigContext::parse_cgi_ext(const std::string& directive_value, const std::string& raw, const int i)
+void ConfigContext::parse_cgi_ext(const std::string& directive_value)
 {
 	std::list<std::string> words = ft::split(directive_value, " \t\n");
 	if (words.size() & 1)
@@ -230,7 +230,7 @@ void ConfigContext::set_cgi_dir_default()
 	}
 }
 
-void ConfigContext::parse_methods(const std::string& directive_value, const std::string& raw, const int i)
+void ConfigContext::parse_methods(const std::string& directive_value)
 {
 	std::list<std::string> words = ft::split(directive_value, " \t\n");
 	_acceptedMethods.assign(g_webserv.methods.getRegistered().begin(), g_webserv.methods.getRegistered().end());
@@ -244,7 +244,7 @@ void ConfigContext::parse_methods(const std::string& directive_value, const std:
 	}
 }
 
-void ConfigContext::parse_autoindex(const std::string& directive_value, const std::string& raw, const int i)
+void ConfigContext::parse_autoindex(const std::string& directive_value)
 {
 	std::list<std::string> words = ft::split(directive_value, " \t\n");
 	std::string val = words.front();
@@ -254,7 +254,7 @@ void ConfigContext::parse_autoindex(const std::string& directive_value, const st
 	_autoIndex = (val == "on" ? true : false);
 }
 
-void ConfigContext::parse_error_page(const std::string& directive_value, const std::string& raw, const int i)
+void ConfigContext::parse_error_page(const std::string& directive_value)
 {
 	std::list<std::string> words = ft::split(directive_value, " \t\n");
 	std::string page = words.back();
@@ -263,7 +263,7 @@ void ConfigContext::parse_error_page(const std::string& directive_value, const s
 		_error_pages.insert(std::make_pair(ft::toInt(*it), page));
 }
 
-void ConfigContext::parse_server_name(const std::string& directive_value, const std::string& raw, const int i)
+void ConfigContext::parse_server_name(const std::string& directive_value)
 {
 	for (size_t j = 0; j < directive_value.size();)
 	{

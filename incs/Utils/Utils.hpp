@@ -34,7 +34,8 @@ namespace ft
 			if (!std::isdigit(str[i]))
 				return false;
 			res = res * 10 + (str[i] - '0');
-			if ((str[0] != '-' && res > std::numeric_limits<IntegralType>::max()) || (str[0] == '-' && res > std::numeric_limits<IntegralType>::min() * -1))
+			if ((str[0] != '-' && res > static_cast<unsigned int>(std::numeric_limits<IntegralType>::max())) ||
+				(str[0] == '-' && res > static_cast<unsigned int>(std::numeric_limits<IntegralType>::min() * -1)))
 				return false;
 		}
 		return true;

@@ -35,10 +35,8 @@ void s_webserv::init_factories()
 }
 
 s_webserv::s_webserv()
+	: run(true), file_formatname(new HashTable(256)), cwd(ft::get_cwd()), workers_amount(0)
 {
-	run = true;
-	file_formatname = new HashTable(256);
-	cwd = ft::get_cwd();
 	init_factories();
 	parse_types_file(file_formatname, "/etc/mime.types");
 }
@@ -56,8 +54,10 @@ void s_webserv::init_config(const std::string& filename)
 
 	std::string raw((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
 
+
 	if (std::count(raw.begin(), raw.end(), '{') != std::count(raw.begin(), raw.end(), '}'))
 		throw std::invalid_argument("Bad braces in config.");
+
 
 	for (size_t i = 0; i < raw.size();)
 	{
@@ -70,7 +70,26 @@ void s_webserv::init_config(const std::string& filename)
 			i = raw.find('\n', i) + 1;
 			continue;
 		}
-		if (raw.find("server", i) == i)
+		std::string directive_name = raw.substr(i, raw.find_first_of(" \t", i) - i);
+		if (directive_name == "workers")
+		{
+			i += directive_name.size();
+			while (raw[i] == ' ' || raw[i] == '\t')
+				i++;
+
+			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+			if (directive_value.empty())
+				throw std::invalid_argument("Empty directive value in config");
+
+			std::list<std::string> words = ft::split(directive_value, " \t\n");
+			std::string amount_str = words.front();
+			if (!ft::is_integer<int>(amount_str))
+				throw std::invalid_argument("Bad integer value in config");
+
+			workers_amount = ft::toInt(amount_str);
+			i += directive_value.size();
+		}
+		else if (directive_name == "server")
 		{
 			i += 6;
 			while (raw[i] == ' ' || raw[i] == '\t')
@@ -97,12 +116,12 @@ void s_webserv::init_config(const std::string& filename)
 			if (raw[i + 1] != '\n')
 				throw std::invalid_argument("Expected newline after } in config");
 			vhosts.push_back(VirtualHost(ConfigContext(raw.substr(start_i, i - start_i))));
-			if (raw.find('\n', i) == std::string::npos)
-				break;
-			i = raw.find('\n', i) + 1;
 		}
 		else
-			throw std::invalid_argument("Bad directive in config");
+			throw std::invalid_argument("Bad directive name in config");
+		if (raw.find('\n', i) == std::string::npos)
+			break;
+		i = raw.find('\n', i) + 1;
 	}
 	Logger::print("Config was parsed successfully", NULL, SUCCESS, SILENT);
 }

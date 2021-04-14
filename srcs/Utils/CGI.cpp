@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/12 03:06:20 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/14 22:38:18 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,8 @@
 CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket& socket, const std::string& realPath)
 	: m_realPath(realPath)
 {
-	Header				*header_found;
 	std::ostringstream	convert;
 	int					code;
-	char				*buffer;
 	Header				*auth_type = NULL;
 	Header				*content_type = NULL;
 	std::string			extension;
@@ -104,8 +102,8 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	if (document_root[document_root.size() - 1] == '/')
 		document_root.erase(document_root.size() - 1);
 	m_env.push_back("PATH_TRANSLATED=" + document_root + m_env_Script_Name);
-	if (!request._query_string.empty())
-		m_env.push_back("QUERY_STRING="+request._query_string);
+	if (!request._url._query.empty())
+		m_env.push_back("QUERY_STRING="+request._url._query);
 	m_env.push_back("REMOTE_ADDR="+socket.getIPAddress());
 	//m_env.push_back("REMOTE_IDENT=something"); //REMOTE_IDENT This variable stores the user ID running the CGI script. The user ID is stored only if the ident process is running since ident returns a response containing not only user ID information, but also the name of the OS running the script.
 	//if ((header_found = request._headerFactory.getByType(WWWAuthenticateHeader().getType())) != NULL)
@@ -154,7 +152,7 @@ CGI::~CGI()
 ** --------------------------------- METHODS ----------------------------------
 */
 
-std::string		CGI::find_first_file(const std::string &path, const ConfigContext& config)
+std::string		CGI::find_first_file(const std::string &, const ConfigContext& config)
 {
 	struct stat	file_stats;
 	size_t		start = 0;
@@ -190,8 +188,6 @@ std::string		CGI::find_first_file(const std::string &path, const ConfigContext& 
 
 int	CGI::ParseURI(const Request& req, const ConfigContext& config)
 {
-	size_t	start = 0;
-	size_t	end = 0;
 	std::string	cgi_path = config.getParam("cgi-dir").front(); //replace with config->getparam
 
 	m_env_Script_Name = find_first_file(req._url._path, config);
@@ -251,9 +247,6 @@ void	CGI::process(Response& response)
 	std::ifstream		inputFileStream(m_tmpfilename.c_str());
 	std::stringstream	convert;
 	std::string			content;
-	struct timeval 		tv;
-	struct tm			time;
-	char				buffer[1024];
 	int					status;
 
 	if (!inputFileStream.is_open())

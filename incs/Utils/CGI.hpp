@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/08 20:14:11 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/14 22:19:54 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class CGI
 				CGIException(const char *str, const int code) : m_message(str), m_code(code) {}
 				virtual ~CGIException() throw() {return ;}
 				virtual const char* what() const throw() {return m_message.c_str();}
-				virtual const int code() const throw() {return m_code;}
+				virtual int code() const throw() {return m_code;}
 
 			private:
 				std::string const	m_message;

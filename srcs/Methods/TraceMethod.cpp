@@ -27,7 +27,7 @@ bool TraceMethod::isIdempotent() const { return true; }
 bool TraceMethod::isCacheable() const { return false; }
 bool TraceMethod::isAllowedInHTMLForms() const { return false; }
 
-Response TraceMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
+Response TraceMethod::process(const Request& request, const ConfigContext& config, const ServerSocket&)
 {
 	const URL& url = request._url;
 	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethods();

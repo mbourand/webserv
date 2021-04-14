@@ -26,7 +26,7 @@ bool OptionsMethod::isIdempotent() const { return true; }
 bool OptionsMethod::isCacheable() const { return false; }
 bool OptionsMethod::isAllowedInHTMLForms() const { return false; }
 
-Response OptionsMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
+Response OptionsMethod::process(const Request& request, const ConfigContext& config, const ServerSocket&)
 {
 	std::string	allowed_header;
 	if (request._url._path == "*")

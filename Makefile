@@ -25,7 +25,7 @@ ifeq ($(DB),1)
 else ifeq ($(DB),2)
 	CFLAGS	+= -g3 -fsanitize=address -D DEBUG=1
 else ifeq ($(DB),3)
-	CFLAGS	= -g3 -std=c++98
+	CFLAGS	= -g3 -std=c++98 -Wall -Wextra -Werror
 else ifeq ($(DB),4)
 	CFLAGS	+= -g3 -fsanitize=address
 endif

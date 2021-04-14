@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/13 21:43:44 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/14 18:55:36 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,9 +161,9 @@ int	main(int argc, char **argv)
 	}
 
 	try { g_webserv.init_config(std::string(argc == 1 ? "./config/default.conf" : argv[1])); }
-	catch (std::exception& e) { Logger::print(std::string("Invalid config file: ") + e.what(), 1, ERROR, SILENT); }
+	catch (std::exception& e) { return Logger::print(std::string("Invalid config file: ") + e.what(), 1, ERROR, SILENT); }
 
-	Threadpool workers(7);//positive number to enable, todo: get number of workers from config
+	Threadpool workers(g_webserv.workers_amount);
 	sighandler();
 
 	try
