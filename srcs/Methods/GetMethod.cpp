@@ -98,6 +98,7 @@ Response GetMethod::directory_listing(const Request& request, const ConfigContex
 			return Logger::print("Unknown error while trying to open directory", Response(500, url._path), ERROR, NORMAL);
 	}
 
+
 	std::string body =
 "<html>\r\n\
 	<head>\r\n\
@@ -120,6 +121,7 @@ Response GetMethod::directory_listing(const Request& request, const ConfigContex
 		<table>\r\n\
 			<tbody>\r\n";
 
+
 	for (std::list<std::string>::iterator it = ++list.begin(); it != list.end(); it++)
 	{
 		std::string path = realPath + "/" + *it;
@@ -135,6 +137,7 @@ Response GetMethod::directory_listing(const Request& request, const ConfigContex
 		</table>\r\n\
 	</body>\r\n\
 </html>";
+
 
 	Response response(200, url._path.substr(0, url._path.size() - 1));
 	std::ostringstream convert;
@@ -156,6 +159,8 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethods();
 	if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
 		return Response(405, url._path);
+
+
 	int base_depth = 0;
 	std::string realPath = config.rootPath(url._path, base_depth);
 	try
@@ -166,10 +171,12 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	{
 		return Logger::print("Path is not safe", Response(404, url._path), ERROR, VERBOSE);
 	}
+
 	if (realPath[0] != '/')
 		realPath = g_webserv.cwd + "/" + realPath;
 	if (!realPath.empty() && realPath != "/")
 		realPath.erase(--realPath.end());
+
 
 	if (ft::is_directory(realPath))
 	{
@@ -192,6 +199,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		return Logger::print("File not found", Response(404, url._path), ERROR, VERBOSE);
 	}
 
+
 	std::list<std::string> splitted = ft::split(realPath, "/");
 	if (splitted.back().rfind(".") != std::string::npos)
 	{
@@ -200,8 +208,8 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 			return process_cgi(realPath, url, config, socket, request);
 	}
 
-	std::fstream file(realPath.c_str());
 
+	std::fstream file(realPath.c_str());
 	if (!file.good() || !file.is_open())
 	{
 		if (errno == ENOENT)
@@ -210,6 +218,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 			return Logger::print("Permission denied", Response(403, url._path), ERROR, VERBOSE);
 		return Logger::print("Unexpected error while trying to open file", Response(500, url._path));
 	}
+
 
 	std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
 	Response response(200, url._path);
@@ -220,6 +229,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	convert << file_stats.st_size;
 	response.addHeader("Content-Length", convert.str());
 	convert.str("");
+
 
 	convert << file_stats.st_mtime;
 	struct tm	time;
@@ -237,11 +247,13 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	response.addHeader("Last-Modified", buffer);
 	convert.str("");
 
+
 	response.addDateHeader();
 	response.addHeader("Server", "Webserv");
 	t_hnode	*hnode = g_webserv.file_formatname->GetNode(realPath.substr(realPath.find_last_of('.') + 1));
 	if (hnode != NULL)
 		response.addHeader("Content-Type", hnode->value);
+
 
 	response.setBody(content);
 

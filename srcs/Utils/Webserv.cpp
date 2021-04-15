@@ -35,7 +35,7 @@ void s_webserv::init_factories()
 }
 
 s_webserv::s_webserv()
-	: run(true), file_formatname(new HashTable(256)), cwd(ft::get_cwd()), workers_amount(0)
+	: run(true), file_formatname(new HashTable(256)), cwd(ft::get_cwd()), workers_amount(0), max_connections(0)
 {
 	init_factories();
 	parse_types_file(file_formatname, "/etc/mime.types");
@@ -87,6 +87,24 @@ void s_webserv::init_config(const std::string& filename)
 				throw std::invalid_argument("Bad integer value in config");
 
 			workers_amount = ft::toInt(amount_str);
+			i += directive_value.size();
+		}
+		else if (directive_name == "max_connections")
+		{
+			i += directive_name.size();
+			while (raw[i] == ' ' || raw[i] == '\t')
+				i++;
+
+			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+			if (directive_value.empty())
+				throw std::invalid_argument("Empty directive value in config");
+
+			std::list<std::string> words = ft::split(directive_value, " \t\n");
+			std::string amount_str = words.front();
+			if (!ft::is_integer<int>(amount_str))
+				throw std::invalid_argument("Bad integer value in config");
+
+			max_connections = ft::toInt(amount_str);
 			i += directive_value.size();
 		}
 		else if (directive_name == "server")

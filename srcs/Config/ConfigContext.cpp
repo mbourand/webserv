@@ -260,7 +260,19 @@ void ConfigContext::parse_error_page(const std::string& directive_value)
 	std::string page = words.back();
 
 	for (std::list<std::string>::const_iterator it = words.begin(); it != --words.end(); it++)
-		_error_pages.insert(std::make_pair(ft::toInt(*it), page));
+	{
+		if (!ft::is_integer<int>(*it))
+			throw std::invalid_argument("Bad integer for error_page in config");
+		int nb = ft::toInt(*it);
+
+		if (page == "none")
+		{
+			if (_error_pages.find(nb) != _error_pages.end())
+				_error_pages.erase(_error_pages.find(nb));
+		}
+		else
+			_error_pages.insert(std::make_pair(ft::toInt(*it), page));
+	}
 }
 
 void ConfigContext::parse_server_name(const std::string& directive_value)

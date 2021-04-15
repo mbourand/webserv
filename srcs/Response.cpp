@@ -2,6 +2,7 @@
 #include <sstream>
 #include <sys/time.h>
 #include "Utils.hpp"
+#include <iostream>
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -64,11 +65,12 @@ std::string	Response::Chunk(const std::string& str)
 	std::string result;
 	size_t		start = 0;
 
-	while (str.size() > 4 && start < (str.size() - 4))
+	while (str.size() > 2 && start < (str.size() - 2))
 	{
-		std::string line = str.substr(start, (str.find("\r\n", start) + 2 - start));
+		std::string line = str.substr(start, str.find("\n", start) + 1 - start);
 		start += line.size();
 		result += ft::toHex(line.size()) + "\r\n" + line;
+		std::cout << line << std::endl;
 	}
 	result += "0\r\n\r\n";
 	return (result);

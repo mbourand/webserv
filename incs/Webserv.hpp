@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 19:37:11 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/14 15:57:49 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/15 15:27:54 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct						s_webserv
 	Factory<Header*>				headers;
 	std::list<VirtualHost>			vhosts;
 	unsigned int					workers_amount;
+	unsigned int					max_connections;
 
 	s_webserv();
 
