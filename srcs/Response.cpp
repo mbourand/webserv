@@ -60,16 +60,24 @@ std::string	Response::Chunk(const std::string& str)
 {
 	std::string result;
 	size_t		start = 0;
+	int			notfound;
 	std::string line;
 	
 	while (str.size() > 2 && start < (str.size() - 2))
 	{
 		if (str.find("\n", start) != std::string::npos)
+		{
 			line = str.substr(start, (str.find("\n", start) + 1 - start));
+			notfound = 0;
+		}
 		else
+		{
 			line = str.substr(start, (str.size() - start));
-		start += line.size();
-		result += ft::toHex(line.size()) + "\r\n" + line;
+			notfound = 1;
+			line += "\r\n";
+		}
+		start += line.size() - notfound;
+		result += ft::toHex(line.size() - notfound) + "\r\n" + line;
 	}
 	result += "0\r\n\r\n";
 	
