@@ -165,7 +165,7 @@ std::string Response::getResponseText(const ConfigContext& config)
 {
 	if (_code >= 300)
 	{
-		if (_caninflate || _cangzip)
+		if ((_caninflate || _cangzip) && true) //replace boolean with config value
 		{
 			this->addHeader("Transfer-Encoding", "chunked");
 			this->compressBody(config.getErrorPage(_code));
@@ -181,7 +181,7 @@ std::string Response::getResponseText(const ConfigContext& config)
 	}
 	else
 	{
-		if (_body.size() > 100)
+		if ((_body.size() > 100) && true) //replace boolean with config value
 			compressBody(_body);
 		this->removeHeader("Content-Length");
 		this->addHeader("Content-Length", ft::toString(_body.size()));
