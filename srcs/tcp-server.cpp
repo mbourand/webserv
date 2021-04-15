@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/14 21:56:45 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/15 22:39:10 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ bool	handle_server_response(Client &client)
 		*client.sckt << response.getResponseText(vhost.getConfig());
 		if (response.getCode() != 200)
 			return true;
-		Logger::print("Success", NULL, SUCCESS, NORMAL);
+		Logger::print("Success", NULL, SUCCESS, VERBOSE);
 	}
 	catch(ServerSocket::ServerSocketException &e)
 	{
@@ -152,7 +152,7 @@ bool	handle_server_response(Client &client)
 
 int	main(int argc, char **argv)
 {
-	Logger::setMode(SILENT);
+	Logger::setMode(NORMAL);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	if (argc > 2)
 	{
@@ -163,7 +163,7 @@ int	main(int argc, char **argv)
 	try { g_webserv.init_config(std::string(argc == 1 ? "./config/default.conf" : argv[1])); }
 	catch (std::exception& e) { Logger::print(std::string("Invalid config file: ") + e.what(), 1, ERROR, SILENT); }
 
-	Threadpool *workers = new Threadpool(7);//positive number to enable, todo: get number of workers from config
+	Threadpool *workers = new Threadpool(3);//positive number to enable, todo: get number of workers from config
 	sighandler();
 
 	try
@@ -211,7 +211,7 @@ int	main(int argc, char **argv)
 					Logger::print("Error select(): "+std::string(strerror(errno)), NULL, ERROR, NORMAL);
 				break;
 			case 0:
-				Logger::print(std::string("Idle.. Active Connections: ")+ft::toString(clients.size()), NULL, INFO, SILENT);
+				Logger::print(std::string("Idle.. Active Connections: ")+ft::toString(clients.size()), NULL, INFO, NORMAL);
 				break;//webserv was idling for the past 30s
 			default:
 				if (!readyfd)
@@ -257,7 +257,7 @@ int	main(int argc, char **argv)
 						if (busy)
 							continue;
 
-						Logger::print("Client Disconnected", NULL, SUCCESS, SILENT);
+						Logger::print("Client Disconnected", NULL, SUCCESS, NORMAL);
 						FD_CLR(it->sckt->GetSocket(), &read_sockets_z);
 						FD_CLR(it->sckt->GetSocket(), &write_sockets_z);
 						FD_CLR(it->sckt->GetSocket(), &error_sockets_z);

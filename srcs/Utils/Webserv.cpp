@@ -15,6 +15,7 @@ void s_webserv::init_factories()
 	methods.add(new TraceMethod());
 
 	headers.add(new AcceptCharsetsHeader());
+	headers.add(new AcceptEncodingHeader());
 	headers.add(new AcceptLanguageHeader());
 	headers.add(new AllowHeader());
 	headers.add(new AuthorizationHeader());

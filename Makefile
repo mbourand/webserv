@@ -36,7 +36,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@echo "$(RED)[$(NAME)] : $(DEF)Compiling..."
-	@$(CC) $(CFLAGS) -lpthread $(INC) -o $(NAME) $(OBJ)
+	@$(CC) $(CFLAGS) -lpthread -lz $(INC) -o $(NAME) $(OBJ)
 	@echo "$(RED)[$(NAME)] : $(DEF)Compilation $(GRN)[OK]$(DEF)"
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.cpp

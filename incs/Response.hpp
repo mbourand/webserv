@@ -10,6 +10,8 @@ class Response
 {
 	private:
 		int _code;
+		bool		_caninflate;
+		bool		_cangzip;
 		std::string _message;
 		std::map<std::string, std::string> _headers;
 		std::string _body;
@@ -22,14 +24,16 @@ class Response
 		virtual ~Response();
 		Response& operator=(const Response& other);
 
-		void setCode(int code);
-		void setMessage(const std::string& message);
+		Response&	setCode(int code);
+		void		setMessage(const std::string& message);
 
-		void addHeader(const std::string& header_name, const std::string& header_value);
-		void addDateHeader(void);
-		void removeHeader(const std::string& header_name);
+		void		addHeader(const std::string& header_name, const std::string& header_value);
+		void		addDateHeader(void);
+		void		removeHeader(const std::string& header_name);
 
-		void setBody(const std::string& body);
+		void		setBody(const std::string& body);
+		void		setCompression(const std::string& str);
+		void		compressBody(const std::string &str);
 		std::string	Chunk(const std::string& str);
 
 		std::string getResponseText(const ConfigContext& config);

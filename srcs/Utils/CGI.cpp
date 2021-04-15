@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/14 22:18:18 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/14 23:41:59 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,7 +227,7 @@ void				CGI::execute(const std::string & body)
 		waitpid(pid, &status, 0);
 		//close(fd);
 		if (WIFEXITED(status))
-			Logger::print("CGI execution was successful.", NULL, SUCCESS, NORMAL);
+			Logger::print("CGI execution was successful.", NULL, SUCCESS, VERBOSE);
 		else
 			throw CGI::CGIException("CGI execution failed.", 500);
 	}

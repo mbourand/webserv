@@ -299,3 +299,16 @@ char	*ft::strncpy(char *dest, const char *src, size_t n)
 		dest[i] = '\0';
 	return (dest);
 }
+
+void	*ft::memset(void *s, int c, size_t n)
+{
+	unsigned char	*start;
+
+	start = (unsigned char*)s;
+	while (n > 0)
+	{
+		*start++ = c;
+		n--;
+	}
+	return (s);
+}
