@@ -70,7 +70,6 @@ std::string	Response::Chunk(const std::string& str)
 		std::string line = str.substr(start, str.find("\n", start) + 1 - start);
 		start += line.size();
 		result += ft::toHex(line.size()) + "\r\n" + line;
-		std::cout << line << std::endl;
 	}
 	result += "0\r\n\r\n";
 	return (result);
