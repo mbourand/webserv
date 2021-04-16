@@ -6,6 +6,9 @@
 #include "Compress.hpp"
 #include "Logger.hpp"
 
+#define MIN_COMPRESS_SIZE 100
+#define CHUNK_SIZE 100ul
+
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
@@ -62,9 +65,9 @@ std::string	Response::Chunk(const std::string& str)
 {
 	std::string result;
 
-	for (size_t start = 0; start < str.size(); start += 100)
+	for (size_t start = 0; start < str.size(); start += CHUNK_SIZE)
 	{
-		std::string line = str.substr(start, std::min(100ul, str.size() - start));
+		std::string line = str.substr(start, std::min(CHUNK_SIZE, str.size() - start));
 		result += ft::toHex(line.size()) + "\r\n" + line + "\r\n";
 	}
 	result += "0\r\n\r\n";
@@ -157,7 +160,13 @@ std::string Response::getResponseText(const ConfigContext& config)
 		if ((_caninflate || _cangzip) && true) //replace boolean with config value
 		{
 			this->addHeader("Transfer-Encoding", "chunked");
-			this->compressBody(config.getErrorPage(_code));
+
+			std::string errorPage = config.getErrorPage(_code);
+			if (errorPage.size() > MIN_COMPRESS_SIZE)
+				this->compressBody(errorPage);
+			else
+				_body = errorPage;
+
 			if (!_body.empty())
 				_body = Chunk(_body);
 		}
@@ -170,7 +179,7 @@ std::string Response::getResponseText(const ConfigContext& config)
 	}
 	else
 	{
-		if ((_body.size() > 100) && true) //replace boolean with config value
+		if (_body.size() > MIN_COMPRESS_SIZE && true) //replace boolean with config value
 			compressBody(_body);
 		this->removeHeader("Content-Length");
 		this->addHeader("Content-Length", ft::toString(_body.size()));
@@ -185,11 +194,12 @@ std::string Response::getResponseText(const ConfigContext& config)
 		str += it->first + ": " + it->second + "\r\n";
 	}
 	str += "\r\n";
-	if (_body != "")
+
+
+	if (!_body.empty())
 		str += _body;
-	if (_body == "" && _code >= 300)
-	{
+	if (_body.empty() && _code >= 300)
 		str += config.getErrorPage(_code);
-	}
+
 	return str;
 }
