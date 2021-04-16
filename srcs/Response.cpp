@@ -3,13 +3,15 @@
 #include <sys/time.h>
 #include "Utils.hpp"
 #include <iostream>
+#include "Compress.hpp"
+#include "Logger.hpp"
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
 
 Response::Response()
-	: _code(0)
+	: _code(0), _caninflate(false), _cangzip(false)
 {}
 
 Response::~Response()
@@ -21,15 +23,9 @@ Response::Response(const Response& other)
 }
 
 Response::Response(int code, const std::string& path)
-	: _code(code), _path(path)
+	: _code(code), _path(path), _caninflate(false), _cangzip(false)
 {
-	if (this->_code >= 300)
-	{
-		this->addHeader("Content-Type", "text/html");
-		this->addDateHeader();
-		this->addHeader("Server", "Webserv");
-		this->addHeader("Transfer-Encoding", "chunked");
-	}
+
 }
 
 Response& Response::operator=(const Response& other)
@@ -39,6 +35,8 @@ Response& Response::operator=(const Response& other)
 	_headers = other._headers;
 	_body = other._body;
 	_path = other._path;
+	_cangzip = other._cangzip;
+	_caninflate = other._caninflate;
 	return *this;
 }
 
@@ -63,15 +61,15 @@ void Response::removeHeader(const std::string& header_name)
 std::string	Response::Chunk(const std::string& str)
 {
 	std::string result;
-	size_t		start = 0;
 
-	while (str.size() > 2 && start < (str.size() - 2))
+	for (size_t start = 0; start < str.size(); start += 100)
 	{
-		std::string line = str.substr(start, str.find("\n", start) + 1 - start);
-		start += line.size();
-		result += ft::toHex(line.size()) + "\r\n" + line;
+		std::string line = str.substr(start, std::min(100ul, str.size() - start));
+		result += ft::toHex(line.size()) + "\r\n" + line + "\r\n";
 	}
 	result += "0\r\n\r\n";
+	std::cout << result << std::endl;
+
 	return (result);
 }
 
@@ -90,24 +88,61 @@ void Response::addDateHeader(void)
 	this->addHeader("Date", buffer);
 }
 
-
+void	Response::compressBody(const std::string &str)
+{
+	try
+	{
+		_body = str;
+		if (_caninflate)
+		{
+			_body = compress_inflate(_body);
+			this->addHeader("Content-Encoding", "deflate");
+		}
+		if (_cangzip)
+		{
+			_body = compress_gzip(_body);
+			this->removeHeader("Content-Encoding");
+			if (_caninflate)
+				this->addHeader("Content-Encoding", "deflate, gzip");
+			else
+				this->addHeader("Content-Encoding", "gzip");
+		}
+	}
+	catch(const std::runtime_error& e)
+	{
+		Logger::print(e.what(), NULL, WARNING, NORMAL);
+		removeHeader("Content-Encoding");
+		removeHeader("Transfer-Encoding");
+		_body = "";
+		this->addHeader("Content-Length", ft::toString(str.size()));
+	}
+}
 
 /*
 ** ------------------------------- ACCESSORS --------------------------------
 */
 
-void Response::setCode(int code)
+Response& Response::setCode(int code)
 {
-	if (code >= 300 and _code < 300)
-		this->addHeader("Transfer-Encoding", "chunked");
-	else if (code < 300 and _code >= 300)
-		this->removeHeader("Transfer-Encoding");
 	_code = code;
+	return (*this);
 }
 
 int	Response::getCode() const { return _code; }
 void Response::setMessage(const std::string& message) { _message = message; }
 void Response::setBody(const std::string& body) { _body = body; }
+
+void	Response::setCompression(const std::string& str)
+{
+	if (str == "gzip, deflate")
+		_caninflate = _cangzip = true;
+	else if (str.find("deflate") != std::string::npos)
+		_caninflate = true;
+	else if (str.find("gzip") != std::string::npos)
+		_cangzip = true;
+	else
+		_caninflate = _cangzip = false;
+}
 
 /**
  * @brief Génère le texte de la réponse
@@ -117,12 +152,33 @@ void Response::setBody(const std::string& body) { _body = body; }
  */
 std::string Response::getResponseText(const ConfigContext& config)
 {
+	if (_code >= 300)
+	{
+		if ((_caninflate || _cangzip) && true) //replace boolean with config value
+		{
+			this->addHeader("Transfer-Encoding", "chunked");
+			this->compressBody(config.getErrorPage(_code));
+			if (!_body.empty())
+				_body = Chunk(_body);
+		}
+		else
+			this->addHeader("Content-Length", ft::toString(config.getErrorPage(_code).size()));
+		this->addHeader("Content-Type", "text/html");
+		this->addHeader("Connection", "keep-alive");
+		this->addDateHeader();
+		this->addHeader("Server", "Webserv");
+	}
+	else
+	{
+		if ((_body.size() > 100) && true) //replace boolean with config value
+			compressBody(_body);
+		this->removeHeader("Content-Length");
+		this->addHeader("Content-Length", ft::toString(_body.size()));
+	}
 	std::stringstream ss;
 	ss << _code;
-
 	std::string code_str = ss.str();
-
-	std::string str = "HTTP/1.1 " + code_str + " " + _message + "\r\n";
+	std::string str = "HTTP/1.1 " + code_str + " " + ft::getErrorMessage(_code) + "\r\n";
 
 	for (std::map<std::string, std::string>::iterator it = _headers.begin(); it != _headers.end(); it++)
 	{
@@ -133,7 +189,7 @@ std::string Response::getResponseText(const ConfigContext& config)
 		str += _body;
 	if (_body == "" && _code >= 300)
 	{
-		str += Chunk(config.getErrorPage(_code));
+		str += config.getErrorPage(_code);
 	}
 	return str;
 }

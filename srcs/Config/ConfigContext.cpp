@@ -370,7 +370,7 @@ std::string ConfigContext::getErrorPage(int code) const
 		<center><h1>" + code_str + " " + ft::getErrorMessage(code) + "</h1></center>\r\n\
 		<hr><center>Webserv 1.0.0</center>\r\n\
 	</body>\r\n\
-</html>";
+</html>\r\n";
 }
 
 

@@ -6,9 +6,10 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/14 04:15:26 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/16 15:09:30 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "Threadpool.hpp"
 #include <unistd.h>
@@ -49,8 +50,17 @@ Threadpool::~Threadpool()
 {
 	if (!m_numworkers)
 		return;
+	while (m_currentjobs.size())
+		usleep(1);
 	for (unsigned int it = 0; it < m_numworkers; it++)
 		delete m_workers[it];
+	Client *job;
+	while (m_jobs.size() && (job = m_jobs.back()))
+	{
+		delete job->req;
+		delete job;
+		m_jobs.pop_back();
+	}
 	pthread_mutex_destroy(&m_jobsmutex);
 }
 
@@ -85,11 +95,15 @@ Threadpool &				Threadpool::operator=(Threadpool const &rhs)
 
 void					Threadpool::Lock(void)
 {
+	if (!m_numworkers)
+		return;
 	pthread_mutex_lock(&m_jobsmutex);
 }
 
 void					Threadpool::Unlock(void)
 {
+	if (!m_numworkers)
+		return;
 	pthread_mutex_unlock(&m_jobsmutex);
 }
 
@@ -99,9 +113,9 @@ bool					Threadpool::AddJob(Client &client)
 		return(handle_server_response(client));
 	Client *threaded_client = new Client;
 	threaded_client->sckt = client.sckt;
+	Lock();
 	threaded_client->req = client.req;
 	client.req = new Request(client.sckt->getServerPort());
-	Lock();
 	m_jobs.push_front(threaded_client);
 	Unlock();
 	return (false);
@@ -109,7 +123,7 @@ bool					Threadpool::AddJob(Client &client)
 
 void					*Threadpool::WaitForWork(void *)
 {
-	while (42)
+	while (g_webserv.run)
 	{
 		Lock();
 		if (!g_webserv.run)
@@ -121,9 +135,11 @@ void					*Threadpool::WaitForWork(void *)
 			m_currentjobs.push_back(job);
 			Unlock();
 			handle_server_response(*job);
+			Lock();
 			m_currentjobs.remove(job);
 			delete job->req;
 			delete job;
+			Unlock();
 		}
 		else
 		{
@@ -131,6 +147,7 @@ void					*Threadpool::WaitForWork(void *)
 			usleep(1);
 		}
 	}
+	return (NULL);
 }
 
 

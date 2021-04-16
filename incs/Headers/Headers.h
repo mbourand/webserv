@@ -3,6 +3,7 @@
 
 #include "Header.hpp"
 #include "AcceptCharsetsHeader.hpp"
+#include "AcceptEncodingHeader.hpp"
 #include "AcceptLanguageHeader.hpp"
 #include "AllowHeader.hpp"
 #include "AuthorizationHeader.hpp"

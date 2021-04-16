@@ -157,10 +157,10 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 {
 	const URL& url = request._url;
 	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethods();
+	Response response(200, url._path);
+	response.setCompression(request.getHeaderValue("Accept-Encoding"));
 	if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
-		return Response(405, url._path);
-
-
+		return (response.setCode(405));
 	int base_depth = 0;
 	std::string realPath = config.rootPath(url._path, base_depth);
 	try
@@ -169,7 +169,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	}
 	catch (std::exception& e)
 	{
-		return Logger::print("Path is not safe", Response(404, url._path), ERROR, VERBOSE);
+		return Logger::print("Path is not safe", response.setCode(404), ERROR, VERBOSE);
 	}
 
 	if (realPath[0] != '/')
@@ -196,7 +196,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	}
 	else if (url._is_directory)
 	{
-		return Logger::print("File not found", Response(404, url._path), ERROR, VERBOSE);
+		return Logger::print("File not found", response.setCode(404), ERROR, VERBOSE);
 	}
 
 
@@ -213,15 +213,14 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	if (!file.good() || !file.is_open())
 	{
 		if (errno == ENOENT)
-			return Logger::print("File not found", Response(404, url._path), ERROR, VERBOSE);
+			return Logger::print("File not found", response.setCode(404), ERROR, VERBOSE);
 		if (errno == EACCES || errno == EISDIR)
-			return Logger::print("Permission denied", Response(403, url._path), ERROR, VERBOSE);
-		return Logger::print("Unexpected error while trying to open file", Response(500, url._path));
+			return Logger::print("Permission denied", response.setCode(403), ERROR, VERBOSE);
+		return Logger::print("Unexpected error while trying to open file", response.setCode(500));
 	}
 
 
 	std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
-	Response response(200, url._path);
 	std::ostringstream convert;
 	struct stat file_stats;
 
@@ -257,12 +256,14 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 
 	response.setBody(content);
 
-	return response;
+	return (response);
 }
 
 Response GetMethod::process_cgi(const std::string& realPath, const URL& url, const ConfigContext& config, const ServerSocket& socket, const Request& request)
 {
 	Response response(200, url._path);
+	if (!request.getHeaderValue("Accept-Encoding").empty())
+		response.setCompression(request.getHeaderValue("Accept-Encoding"));
 	try
 	{
 		CGI	cgi(request, config, socket, realPath);
@@ -273,5 +274,5 @@ Response GetMethod::process_cgi(const std::string& realPath, const URL& url, con
 		Logger::print(e.what(), NULL, ERROR, NORMAL);
 		response.setCode(e.code());
 	}
-	return response;
+	return (response);
 }

@@ -6,7 +6,7 @@
 /*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/14 18:55:36 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/16 15:42:06 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,10 +133,10 @@ bool	handle_server_response(Client &client)
 			std::cout << *client.req << std::endl;
 		VirtualHost vhost = VirtualHost::getServerByName(client.req->getHeaderValue("Host"), client.sckt->getServerPort(), g_webserv.vhosts);
 		Response response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_url._path), *client.sckt);
-		*client.sckt << response.getResponseText(vhost.getConfig());
+		*client.sckt << response.getResponseText(vhost.getConfig().getConfigPath(client.req->_url._path));
 		if (response.getCode() != 200)
 			return true;
-		Logger::print("Success", NULL, SUCCESS, NORMAL);
+		Logger::print("Success", NULL, SUCCESS, VERBOSE);
 	}
 	catch(ServerSocket::ServerSocketException &e)
 	{
@@ -152,7 +152,7 @@ bool	handle_server_response(Client &client)
 
 int	main(int argc, char **argv)
 {
-	Logger::setMode(SILENT);
+	Logger::setMode(NORMAL);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	if (argc > 2)
 	{
@@ -163,7 +163,7 @@ int	main(int argc, char **argv)
 	try { g_webserv.init_config(std::string(argc == 1 ? "./config/default.conf" : argv[1])); }
 	catch (std::exception& e) { return Logger::print(std::string("Invalid config file: ") + e.what(), 1, ERROR, SILENT); }
 
-	Threadpool workers(g_webserv.workers_amount);
+	Threadpool* workers = new Threadpool(g_webserv.workers_amount);
 	sighandler();
 
 	try
@@ -211,6 +211,7 @@ int	main(int argc, char **argv)
 					Logger::print("Error select(): "+std::string(strerror(errno)), NULL, ERROR, NORMAL);
 				break;
 			case 0:
+				Logger::print(std::string("Idle.. Active Connections: ")+ft::toString(clients.size()), NULL, INFO, NORMAL);
 				break;//webserv was idling for the past 30s
 			default:
 				if (!readyfd)
@@ -239,24 +240,24 @@ int	main(int argc, char **argv)
 					}
 					if (!error && FD_ISSET(it->sckt->GetSocket(), &write_sockets))
 					{
-						error = workers.AddJob((*it));
+						error = workers->AddJob((*it));
 						readyfd--;
 					}
 					if (error)
 					{
 						bool busy = false;
-						if (!workers.getJobs().empty())
-							for (std::deque<Client*>::const_iterator jobs_it = workers.getJobs().begin(); jobs_it != workers.getJobs().end(); jobs_it++)
+						if (!workers->getJobs().empty())
+							for (std::deque<Client*>::const_iterator jobs_it = workers->getJobs().begin(); jobs_it != workers->getJobs().end(); jobs_it++)
 								if (it->sckt == (*jobs_it)->sckt)
 									busy = true;
-						if (!workers.getCurrentJobs().empty())
-							for (std::list<Client*>::const_iterator jobs_it = workers.getCurrentJobs().begin(); jobs_it != workers.getCurrentJobs().end(); jobs_it++)
+						if (!workers->getCurrentJobs().empty())
+							for (std::list<Client*>::const_iterator jobs_it = workers->getCurrentJobs().begin(); jobs_it != workers->getCurrentJobs().end(); jobs_it++)
 								if (it->sckt == (*jobs_it)->sckt)
 									busy = true;
 						if (busy)
 							continue;
 
-						Logger::print("Client Disconnected", NULL, SUCCESS, SILENT);
+						Logger::print("Client Disconnected", NULL, SUCCESS, NORMAL);
 						FD_CLR(it->sckt->GetSocket(), &read_sockets_z);
 						FD_CLR(it->sckt->GetSocket(), &write_sockets_z);
 						FD_CLR(it->sckt->GetSocket(), &error_sockets_z);
@@ -273,6 +274,7 @@ int	main(int argc, char **argv)
 			}
 		}
 		Logger::print("Webserv is shutting down...", NULL, INFO, SILENT);
+		delete workers;
 		it = clients.begin();
 		while (it != clients.end())
 		{
@@ -284,7 +286,8 @@ int	main(int argc, char **argv)
 	}
 	catch(ServerSocket::ServerSocketException& e)
 	{
-		Logger::print(e.what(), NULL, ERROR, NORMAL);
+		g_webserv.run = false;
+		Logger::print(e.what(), NULL, ERROR, SILENT);
 	}
 
 	for (std::map<int, ServerSocket*>::iterator its = g_webserv.sockets.begin(); its != g_webserv.sockets.end(); its++)
