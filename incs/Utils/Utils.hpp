@@ -5,6 +5,9 @@
 #include <list>
 #include <limits>
 #include <algorithm>
+#include <map>
+
+class ConfigContext;
 
 namespace ft
 {
@@ -22,6 +25,7 @@ namespace ft
 	std::string simplify_path(const std::string& input, bool safe = false, int base_depth = 0);
 	char		*strncpy(char *dest, const char *src, size_t n);
 	void		*memset(void *s, int c, size_t n);
+	//std::pair<std::string, std::string>		find_first_file(const std::string &, const ConfigContext& );
 
 	template<class IntegralType>
 	bool is_integer(const std::string& str)

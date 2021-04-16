@@ -14,7 +14,7 @@
 */
 
 Response::Response()
-	: _code(0), _caninflate(false), _cangzip(false)
+	: _code(0), _candeflate(false), _cangzip(false)
 {}
 
 Response::~Response()
@@ -26,7 +26,7 @@ Response::Response(const Response& other)
 }
 
 Response::Response(int code, const std::string& path)
-	: _code(code), _path(path), _caninflate(false), _cangzip(false)
+	: _code(code), _path(path), _candeflate(false), _cangzip(false)
 {
 
 }
@@ -39,7 +39,7 @@ Response& Response::operator=(const Response& other)
 	_body = other._body;
 	_path = other._path;
 	_cangzip = other._cangzip;
-	_caninflate = other._caninflate;
+	_candeflate = other._candeflate;
 	return *this;
 }
 
@@ -95,16 +95,16 @@ void	Response::compressBody(const std::string &str)
 	try
 	{
 		_body = str;
-		if (_caninflate)
+		if (_candeflate)
 		{
-			_body = compress_inflate(_body);
+			_body = compress_deflate(_body);
 			this->addHeader("Content-Encoding", "deflate");
 		}
 		if (_cangzip)
 		{
 			_body = compress_gzip(_body);
 			this->removeHeader("Content-Encoding");
-			if (_caninflate)
+			if (_candeflate)
 				this->addHeader("Content-Encoding", "deflate, gzip");
 			else
 				this->addHeader("Content-Encoding", "gzip");
@@ -137,13 +137,13 @@ void Response::setBody(const std::string& body) { _body = body; }
 void	Response::setCompression(const std::string& str)
 {
 	if (str == "gzip, deflate")
-		_caninflate = _cangzip = true;
+		_candeflate = _cangzip = true;
 	else if (str.find("deflate") != std::string::npos)
-		_caninflate = true;
+		_candeflate = true;
 	else if (str.find("gzip") != std::string::npos)
 		_cangzip = true;
 	else
-		_caninflate = _cangzip = false;
+		_candeflate = _cangzip = false;
 }
 
 /**
@@ -156,7 +156,7 @@ std::string Response::getResponseText(const ConfigContext& config)
 {
 	if (_code >= 300)
 	{
-		if ((_caninflate || _cangzip) && true) //replace boolean with config value
+		if ((_candeflate || _cangzip) && true) //replace boolean with config value
 		{
 			this->addHeader("Transfer-Encoding", "chunked");
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/16 15:42:06 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/16 17:14:01 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	handle_new_connection(ServerSocket &server, std::list<Client> &clients)
 	new_client.req = new Request(server.getServerPort());
 	new_client.sckt->setServerPort(server.getServerPort());
 	server.Accept(*new_client.sckt);
-	if (clients.size() >= 1000) // get max_connections from config ? choose value depending of # file descriptor available
+	if (clients.size() >= g_webserv.max_connections)
 	{
 		Logger::print("Webserv overloaded, New Client bounced back ("+new_client.sckt->getIPAddress()+")", NULL, ERROR, NORMAL);
 		Response response(503, new_client.req->_url._path);

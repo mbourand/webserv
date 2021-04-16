@@ -201,22 +201,36 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 
 
 	std::list<std::string> splitted = ft::split(realPath, "/");
-	if (splitted.back().rfind(".") != std::string::npos)
+	std::string current_path;
+	current_path.reserve(realPath.size());
+	if (realPath[0] == '/')
+		current_path.push_back('/');
+	for (std::list<std::string>::iterator it = splitted.begin();it != splitted.end(); it++, current_path.push_back('/'))
 	{
-		std::string extension = splitted.back().substr(splitted.back().rfind('.'));
-		if (config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() || (realPath.find(config.getParam("cgi-dir").front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
-			return process_cgi(realPath, url, config, socket, request);
+		current_path += *it;
+		if (!ft::is_regular_file(current_path))
+			continue;
+		std::string file_name;
+		if (ft::contains(current_path, '/'))
+			file_name = current_path.substr(current_path.rfind("/"));
+		else
+			file_name = current_path;
+		if (file_name.rfind(".") != std::string::npos)
+		{
+			std::string extension = file_name.substr(file_name.rfind('.'));
+			if (config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() || (realPath.find(config.getParam("cgi-dir").front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+				return process_cgi(realPath, url, config, socket, request);
+		}
 	}
-
 
 	std::fstream file(realPath.c_str());
 	if (!file.good() || !file.is_open())
 	{
-		if (errno == ENOENT)
+		if (errno == ENOENT || errno == ENOTDIR)
 			return Logger::print("File not found", response.setCode(404), ERROR, VERBOSE);
 		if (errno == EACCES || errno == EISDIR)
 			return Logger::print("Permission denied", response.setCode(403), ERROR, VERBOSE);
-		return Logger::print("Unexpected error while trying to open file", response.setCode(500));
+		return Logger::print("Unexpected error while trying to open file: " + std::string(strerror(errno)), response.setCode(500), ERROR, VERBOSE);
 	}
 
 

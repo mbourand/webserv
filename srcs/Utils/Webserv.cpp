@@ -36,7 +36,7 @@ void s_webserv::init_factories()
 }
 
 s_webserv::s_webserv()
-	: run(true), file_formatname(new HashTable(256)), cwd(ft::get_cwd()), workers_amount(0), max_connections(0)
+	: run(true), file_formatname(new HashTable(256)), cwd(ft::get_cwd()), workers_amount(0), max_connections(100)
 {
 	init_factories();
 	parse_types_file(file_formatname, "/etc/mime.types");

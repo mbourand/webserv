@@ -10,7 +10,7 @@ class Response
 {
 	private:
 		int _code;
-		bool		_caninflate;
+		bool		_candeflate;
 		bool		_cangzip;
 		std::string _message;
 		std::map<std::string, std::string> _headers;

@@ -312,3 +312,37 @@ void	*ft::memset(void *s, int c, size_t n)
 	}
 	return (s);
 }
+
+/*std::pair<std::string, std::string>		ft::find_first_file(const std::string &path, const ConfigContext& config)
+{
+	struct stat	file_stats;
+	size_t		start = 0;
+	size_t		end = 0;
+
+	std::string config_root = config.getParam("root").front();
+	std::string url_after_root = path.substr(path.rfind(config_root) + config_root.size());
+	std::string url_until_root = path.substr(0, path.rfind(config_root) + config_root.size());
+	std::string extension;
+	if (url_until_root.empty())
+		url_until_root = "/";
+
+	end = url_after_root.find("/", end);
+
+	while (end != std::string::npos)
+	{
+		if (lstat((url_until_root + url_after_root.substr(start, end)).c_str(), &file_stats) < 0)
+			break;
+		if (url_after_root.rfind(".") != std::string::npos)
+			extension = url_after_root.substr(url_after_root.find('.'));
+		if ((!extension.empty() && config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() && S_ISREG(file_stats.st_mode)) || S_ISREG(file_stats.st_mode))
+			return (url_after_root.substr(start, end));
+		else if (S_ISDIR(file_stats.st_mode))
+		{
+			if ((end = url_after_root.find("/", end + 1)) == std::string::npos)
+				end = url_after_root.length();
+		}
+		else
+			break;
+	}
+	return ("");
+}*/
