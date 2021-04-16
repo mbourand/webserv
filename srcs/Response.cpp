@@ -71,7 +71,6 @@ std::string	Response::Chunk(const std::string& str)
 		result += ft::toHex(line.size()) + "\r\n" + line + "\r\n";
 	}
 	result += "0\r\n\r\n";
-	std::cout << result << std::endl;
 
 	return (result);
 }
