@@ -10,7 +10,7 @@
 Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _url(other._url),
 	_protocolVersion(other._protocolVersion), _body(other._body), _content_length(other._content_length), _max_body_size(other._max_body_size),
 	_error_code(other._error_code), _port(other._port), _header_section_finished(other._header_section_finished), _url_finished(other._url_finished),
-	_finished_parsing(other._finished_parsing), _parse_start(other._parse_start)
+	_finished_parsing(other._finished_parsing), _parse_start(other._parse_start), _chunked(other._chunked)
 {
 	for (HeadersVector::const_iterator it = other._headers.begin(); it != other._headers.end(); it++)
 		_headers.push_back((*it)->clone());
@@ -23,12 +23,12 @@ Request::~Request()
 }
 
 Request::Request(int port) : _method(NULL), _content_length(0), _max_body_size(0), _error_code(0),
-	_port(port), _header_section_finished(false), _url_finished(false), _finished_parsing(false), _parse_start(0)
+	_port(port), _header_section_finished(false), _url_finished(false), _finished_parsing(false), _parse_start(0), _chunked(false)
 {
 }
 
 Request::Request() : _method(NULL), _content_length(0), _max_body_size(0), _error_code(0), _port(0),
-	_header_section_finished(false), _url_finished(false), _finished_parsing(false), _parse_start(0)
+	_header_section_finished(false), _url_finished(false), _finished_parsing(false), _parse_start(0), _chunked(false)
 {
 }
 
@@ -130,9 +130,9 @@ void Request::parse()
 				throw std::invalid_argument("Request Entity too large.");
 			}
 			if ((_raw.size() - _parse_start) == _content_length)
-				_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size());
+				_body = dechunk(_raw.substr(_parse_start, _raw.substr(_parse_start).size()));
 			else
-				_body = _raw.substr(_parse_start, _raw.substr(_parse_start).size() - 2);
+				_body = dechunk(_raw.substr(_parse_start, _raw.substr(_parse_start).size() - 2));
 			Logger::print("Request body is " + _body, NULL, INFO, VERBOSE);
 		}
 		_finished_parsing = true;
@@ -142,6 +142,48 @@ void Request::parse()
 		_error_code = 413;
 		throw std::invalid_argument("Request Entity too large.");
 	}
+}
+
+std::string		Request::dechunk(const std::string& str)
+{
+	if (!_chunked)
+		return (str);
+	int			start = 0;
+	int			end = 0;
+	int			len;
+	int			total_len = 0;
+	std::string	output;
+
+	while ((end = str.find("\r\n", start)) != std::string::npos)
+	{
+		len = ft::hexToInt(str.substr(start, (end - start)));
+		end += 2;
+		if (!len)
+		{
+			for (Request::HeadersVector::iterator it = _headers.begin(); it != _headers.end(); it++)
+				if ((*it)->getType() == TransferEncodingHeader().getType())
+				{
+					Header* header = (*it);
+					delete (*it);
+					_headers.erase(it);
+					header = g_webserv.headers.createByType_ignore_case(ContentLengthHeader().getType());
+					header->parse(ft::toString(total_len)+"\r\n");
+					_headers.push_back(header);
+					return (output);
+				}
+			return (output);
+		}
+		else if (str.find("\r\n", (end + len)) != (end + len))
+		{
+			_error_code = 400;
+			return ("");
+		}
+		total_len += len;
+		output += str.substr(end, len);
+		start = end + len + 2;
+	}
+	_error_code = 400;
+	return ("");
 }
 
 void Request::parse_method()
@@ -193,7 +235,10 @@ size_t is_header_field_finished(std::string str)
 	while (str.find("\r\n", i) != std::string::npos)
 	{
 		if (!str[str.find("\r\n", i) + 2])
+		{
+			std::cout << "found: |" << str[str.find("\r\n", i) + 2] << "|" << std::endl;
 			return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
+		}
 		if (str[str.find("\r\n", i) + 2] != ' ' && str[str.find("\r\n", i) + 2] != '\t')
 			return Logger::print("Header field is finished", str.find("\r\n", i) + 2, INFO, VERBOSE);
 		i = str.find("\r\n", i) + 2;
@@ -222,11 +267,9 @@ bool Request::parse_headers()
 			Logger::print("Request header : " + header->getType() + " -> " + header->getValue(), true, INFO, VERBOSE);
 			_headers.push_back(header);
 			if (header->getType() == ContentLengthHeader().getType())
-			{
-				std::stringstream ss;
-				ss << header->getValue();
-				ss >> _content_length;
-			}
+				_content_length = ft::toInt(header->getValue());
+			if (header->getType() == TransferEncodingHeader().getType() && header->getValue() == "chunked")
+				_chunked = true;
 		}
 		catch(const std::exception& e)
 		{

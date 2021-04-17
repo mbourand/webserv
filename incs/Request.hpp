@@ -32,14 +32,16 @@ class Request
 		bool			_header_section_finished;
 		bool			_url_finished;
 		bool			_finished_parsing;
+		bool			_chunked;
 		size_t			_parse_start;
 
 	private:
 
-		bool header_line_valid(const std::string& line) const;
-		bool is_next_paragraph(size_t i) const;
-		size_t count_concurrent_occurences(size_t index, char c) const;
-		bool is_valid_URI(const std::string& uri) const;
+		bool		header_line_valid(const std::string& line) const;
+		bool		is_next_paragraph(size_t i) const;
+		size_t		count_concurrent_occurences(size_t index, char c) const;
+		bool		is_valid_URI(const std::string& uri) const;
+		std::string	dechunk(const std::string& str);
 
 		void parse_method();
 		void parse_uri();
