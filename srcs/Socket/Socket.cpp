@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/11 22:07:50 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/18 16:37:27 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
 #include "Logger.hpp"
+#include "Utils.hpp"
 #include <sstream>
 
 /*
@@ -20,7 +21,7 @@
 
 Socket::Socket() : m_sockfd(-1)
 {
-	bzero(&this->m_addr_in, sizeof(this->m_addr_in));
+	ft::bzero(&this->m_addr_in, sizeof(this->m_addr_in));
 }
 
 Socket::Socket(const Socket &src) : m_sockfd(src.m_sockfd), m_addr_in(src.m_addr_in)
@@ -41,12 +42,13 @@ Socket::~Socket()
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-Socket &				Socket::operator=(Socket const &)
+Socket &				Socket::operator=(Socket const &rhs)
 {
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
+	if (this != &rhs)
+	{
+		m_sockfd = rhs.GetSocket();
+		m_addr_in = rhs.m_addr_in;
+	}
 	return *this;
 }
 
@@ -131,7 +133,7 @@ int						Socket::Recieve(std::string &str) const
 	char	buff[MAX_RECIEVE + 1];
 
 	str = "";
-	bzero(buff, MAX_RECIEVE + 1);
+	ft::bzero(buff, MAX_RECIEVE + 1);
 	int ret = recv(this->m_sockfd, buff, MAX_RECIEVE, 0);
 	if (ret == -1)
 		return Logger::print("Error in Socket::Recieve", 0, ERROR, NORMAL);

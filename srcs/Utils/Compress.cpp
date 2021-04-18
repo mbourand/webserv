@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 18:14:13 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/16 17:16:44 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/18 17:30:49 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "Compress.hpp"
 #include "Utils.hpp"
 
-std::string compress_gzip(const std::string &str, int compressionlevel)
+std::string compress_gzip(const std::string &str, unsigned int compressionlevel)
 {
 	z_stream zs;
 	ft::memset(&zs, 0, sizeof(zs));
@@ -43,7 +43,7 @@ std::string compress_gzip(const std::string &str, int compressionlevel)
 	return (outstring);
 }
 
-std::string compress_deflate(const std::string &str, int compressionlevel)
+std::string compress_deflate(const std::string &str, unsigned int compressionlevel)
 {
 	z_stream zs;
 	ft::memset(&zs, 0, sizeof(zs));

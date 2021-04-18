@@ -26,6 +26,7 @@ namespace ft
 	std::string simplify_path(const std::string& input, bool safe = false, int base_depth = 0);
 	char		*strncpy(char *dest, const char *src, size_t n);
 	void		*memset(void *s, int c, size_t n);
+	void		bzero(void *str, size_t len);
 	//std::pair<std::string, std::string>		find_first_file(const std::string &, const ConfigContext& );
 
 	template<class IntegralType>

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 19:37:11 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/15 15:27:54 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/18 17:30:07 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,9 @@ typedef struct						s_webserv
 	std::list<VirtualHost>			vhosts;
 	unsigned int					workers_amount;
 	unsigned int					max_connections;
+	bool							compression_deflate;
+	bool							compression_gzip;
+	unsigned int					compression_level;
 
 	s_webserv();
 

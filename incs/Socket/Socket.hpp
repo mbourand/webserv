@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/30 03:50:59 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/18 16:35:01 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <arpa/inet.h>
-# include <strings.h> //bzero, remplacer par libft.
 
 const int MAX_HOSTNAME = 200;
 const int MAX_CONNECTIONS = 600;

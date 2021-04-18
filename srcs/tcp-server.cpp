@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/18 04:33:28 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/18 17:50:44 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,23 @@ bool	handle_server_response(Client &client)
 	return false;
 }
 
+static void		handle_terminal_input(const std::string& input)
+{
+	//commands ideas: help, info, uptime
+	if (input == "stop")
+		g_webserv.run = false;
+	else if (input == "gzip")
+	{
+		g_webserv.compression_gzip = !g_webserv.compression_gzip;
+		Logger::print("Plugin gzip is now "+std::string(g_webserv.compression_gzip ? "enabled" : "disabled"), NULL, SUCCESS, SILENT);
+	}
+	else if (input == "deflate")
+	{
+		g_webserv.compression_deflate = !g_webserv.compression_deflate;
+		Logger::print("Plugin deflate is now "+std::string(g_webserv.compression_deflate ? "enabled" : "disabled"), NULL, SUCCESS, SILENT);
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	Logger::setMode(NORMAL);
@@ -221,7 +238,7 @@ int	main(int argc, char **argv)
 				{
 					std::string line;
 					std::getline(std::cin, line);
-					std::cout << "COMMAND: |" << line << "|" << std::endl; //TODO "gzip" & "deflate" commands to toggle compression
+					handle_terminal_input(line);
 				}
 				for (std::map<int, ServerSocket*>::iterator its = g_webserv.sockets.begin(); its != g_webserv.sockets.end(); its++)
 				{
