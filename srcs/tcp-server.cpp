@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/16 17:14:01 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/18 04:33:28 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,7 @@ int	main(int argc, char **argv)
 				serverFd = its->second->GetSocket();
 			FD_SET(its->second->GetSocket(), &read_sockets_z);
 		}
+		FD_SET(STDIN_FILENO, &read_sockets_z);
 		while (g_webserv.run)
 		{
 			it = clients.begin();
@@ -216,6 +217,12 @@ int	main(int argc, char **argv)
 			default:
 				if (!readyfd)
 					break;
+				if (FD_ISSET(STDIN_FILENO, &read_sockets))
+				{
+					std::string line;
+					std::getline(std::cin, line);
+					std::cout << "COMMAND: |" << line << "|" << std::endl; //TODO "gzip" & "deflate" commands to toggle compression
+				}
 				for (std::map<int, ServerSocket*>::iterator its = g_webserv.sockets.begin(); its != g_webserv.sockets.end(); its++)
 				{
 					if (FD_ISSET(its->second->GetSocket(), &read_sockets))
