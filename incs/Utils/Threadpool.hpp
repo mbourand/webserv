@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Threadpool.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/16 15:08:51 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/21 19:01:57 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ class Threadpool
 
 		const std::deque<Client*>&	getJobs() const;
 		const std::list<Client*>&	getCurrentJobs() const;
+		void	Lock(void);
+		void	Unlock(void);
 
 
 	private:
-		void	Lock(void);
-		void	Unlock(void);
 
 		std::vector<pthread_t*>	m_workers;
 		std::deque<Client*>		m_jobs;
