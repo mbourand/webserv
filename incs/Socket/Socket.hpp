@@ -6,14 +6,13 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/30 03:50:59 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/24 19:24:31 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SOCKET_HPP
 # define SOCKET_HPP
 
-# include <iostream>
 # include <string>
 # include <sys/types.h>
 # include <sys/socket.h>
@@ -22,11 +21,10 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <arpa/inet.h>
-# include <strings.h> //bzero, remplacer par libft.
+# include "Utils.hpp"
 
-const int MAX_HOSTNAME = 200;
-const int MAX_CONNECTIONS = 600;
-const int MAX_RECIEVE = 2048;
+const int MAX_CONNECTIONS = 10;
+const int MAX_RECIEVE = 4096;
 
 class Socket
 {

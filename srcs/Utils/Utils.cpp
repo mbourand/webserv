@@ -320,3 +320,8 @@ void	*ft::memset(void *s, int c, size_t n)
 	}
 	return (s);
 }
+
+void	ft::bzero(void *str, size_t len)
+{
+	ft::memset(str, 0, len);
+}
