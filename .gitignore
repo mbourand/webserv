@@ -4,3 +4,7 @@ build
 objs/
 webserv
 client
+*.bin
+www/uploads/
+vegeta/
+
