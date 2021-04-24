@@ -6,12 +6,13 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/24 19:32:54 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/24 19:46:20 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
 #include "Logger.hpp"
+#include "Utils.hpp"
 #include <sstream>
 
 /*

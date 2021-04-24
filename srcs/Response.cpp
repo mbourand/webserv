@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Compress.hpp"
 #include "Logger.hpp"
+#include "Webserv.hpp"
 
 #define MIN_COMPRESS_SIZE 100
 #define CHUNK_SIZE 100ul
@@ -95,16 +96,16 @@ void	Response::compressBody(const std::string &str)
 	try
 	{
 		_body = str;
-		if (_candeflate)
+		if (_candeflate && g_webserv.compression_deflate)
 		{
-			_body = compress_deflate(_body);
+			_body = compress_deflate(_body, g_webserv.compression_level);
 			this->addHeader("Content-Encoding", "deflate");
 		}
-		if (_cangzip)
+		if (_cangzip && g_webserv.compression_gzip)
 		{
-			_body = compress_gzip(_body);
+			_body = compress_gzip(_body, g_webserv.compression_level);
 			this->removeHeader("Content-Encoding");
-			if (_candeflate)
+			if (_candeflate  && g_webserv.compression_deflate)
 				this->addHeader("Content-Encoding", "deflate, gzip");
 			else
 				this->addHeader("Content-Encoding", "gzip");
@@ -115,7 +116,7 @@ void	Response::compressBody(const std::string &str)
 		Logger::print(e.what(), NULL, WARNING, NORMAL);
 		removeHeader("Content-Encoding");
 		removeHeader("Transfer-Encoding");
-		_body = "";
+		_body = str;
 		this->addHeader("Content-Length", ft::toString(str.size()));
 	}
 }
@@ -156,7 +157,7 @@ std::string Response::getResponseText(const ConfigContext& config)
 {
 	if (_code >= 300)
 	{
-		if ((_candeflate || _cangzip) && true) //replace boolean with config value
+		if ((_candeflate || _cangzip) && (g_webserv.compression_deflate || g_webserv.compression_gzip))
 		{
 			this->addHeader("Transfer-Encoding", "chunked");
 
@@ -178,7 +179,7 @@ std::string Response::getResponseText(const ConfigContext& config)
 	}
 	else
 	{
-		if (_body.size() > MIN_COMPRESS_SIZE && true) //replace boolean with config value
+		if (_body.size() > MIN_COMPRESS_SIZE && (g_webserv.compression_deflate || g_webserv.compression_gzip))
 			compressBody(_body);
 		this->removeHeader("Content-Length");
 		this->addHeader("Content-Length", ft::toString(_body.size()));

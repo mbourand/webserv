@@ -12,7 +12,7 @@
 int ft::toInt(const std::string& str)
 {
 	for (size_t i = 0; i < str.size(); ++i)
-		if (!std::isdigit(str[i]))
+		if (!std::isdigit(str[i])) 
 			throw std::invalid_argument("String is not an integer");
 
 	std::istringstream iss(str);

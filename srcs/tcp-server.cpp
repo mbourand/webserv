@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/16 17:14:01 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/23 21:46:06 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ bool	handle_client_request(Client &client)
 		*client.sckt >> data;
 		client.req->append(data);
 		if (DEBUG)
-			hexdump_str(data, 32);
+			hexdump_str(data, 24);
 	}
 	catch(ServerSocket::ServerSocketException &e)
 	{
@@ -150,8 +150,88 @@ bool	handle_server_response(Client &client)
 	return false;
 }
 
+int	mainb(void);
+
+static void		handle_terminal_input(const std::string& input, const std::list<Client> &clients, struct timeval *start, Threadpool* workers)
+{
+	if (input == "stop")
+		g_webserv.run = false;
+	else if (input == "help")
+		std::cout << "\e[34m" << "Available commands are: help|stop|gzip|deflate|info|workers|uptime" << "\e[39m" << std::endl;
+	else if (input == "gzip")
+	{
+		g_webserv.compression_gzip = !g_webserv.compression_gzip;
+		std::cout << "\e[34m" << "Plugin gzip is now "+std::string(g_webserv.compression_gzip ? "enabled" : "disabled") << "\e[39m" << std::endl;
+	}
+	else if (input == "deflate")
+	{
+		g_webserv.compression_deflate = !g_webserv.compression_deflate;
+		std::cout << "\e[34m" << "Plugin deflate is now "+std::string(g_webserv.compression_deflate ? "enabled" : "disabled") << "\e[39m" << std::endl;
+	}
+	else if (input == "workers")
+	{
+		std::string	details("Workers Job Queue:\n");
+		if (!workers->getJobs().empty())
+		{
+			workers->Lock();
+			for (std::deque<Client*>::const_iterator jobs_it = workers->getJobs().begin(); jobs_it != workers->getJobs().end(); jobs_it++)
+				details += "\t"+(*jobs_it)->req->_method->getType()+" "+(*jobs_it)->req->_url._path+" -> "+(*jobs_it)->sckt->getIPAddress()+"\n";
+			workers->Unlock();
+		}
+		else
+			details += "empty";
+		std::cout << "\e[34m" << details << "\e[39m" << std::endl;
+	}
+	else if (input == "info")
+	{
+		std::cout << "\e[34m" << "Webserv is serving "+ft::toString(clients.size())+" clients (max: "+ft::toString(g_webserv.max_connections)+")" << "\e[39m" << std::endl;
+		for (std::list<Client>::const_iterator it = clients.begin(); it != clients.end(); it++)
+		{
+			std::string	details("Client information:\n");
+			details += "\tIP: "+it->sckt->getIPAddress()+"\n";
+			details += "\tEntry Port: "+it->sckt->getServerPort_Str()+"\n";
+			details += "\tSocket FD: "+ft::toString(it->sckt->GetSocket())+"\n";
+			workers->Lock();
+			if (!workers->getJobs().empty())
+				for (std::deque<Client*>::const_iterator jobs_it = workers->getJobs().begin(); jobs_it != workers->getJobs().end(); jobs_it++)
+					if (it->sckt == (*jobs_it)->sckt)
+						details += "\tQueued Job: "+(*jobs_it)->req->_method->getType()+" "+(*jobs_it)->req->_url._path+"\n";
+			if (!workers->getCurrentJobs().empty())
+				for (std::list<Client*>::const_iterator jobs_it = workers->getCurrentJobs().begin(); jobs_it != workers->getCurrentJobs().end(); jobs_it++)
+					if (it->sckt == (*jobs_it)->sckt)
+						details += "\tWorker Assigned: "+(*jobs_it)->req->_method->getType()+" "+(*jobs_it)->req->_url._path+"\n";
+			workers->Unlock();
+			std::cout << "\e[34m" << details << "\e[39m" << std::endl;
+		}
+	}
+	else if (input == "uptime")
+	{
+		struct timeval 		now;
+		int					hours, mins, secs;
+
+		hours = mins = secs = 0;
+		gettimeofday(&now, NULL);
+		secs = now.tv_sec - start->tv_sec;
+		while (secs >= 60)
+		{
+			mins++;
+			secs -= 60;
+		}
+		while (mins >= 60)
+		{
+			hours++;
+			mins -= 60;
+		}
+		std::cout << "\e[34m" << "Webserv uptime is "+ft::toString(hours)+" hour(s) "+ft::toString(mins)+" minute(s) and "+ft::toString(secs)+" second(s)." << "\e[39m" << std::endl;
+	}
+	else
+		std::cout << "\e[34m" << "Unknown Command" << (input.empty() ? "." : ": \""+input+"\"") << "\e[39m" << std::endl;
+}
+
 int	main(int argc, char **argv)
 {
+	std::cout << "\e[34m" << " __      __      ___.                              \n/  \\    /  \\ ____\\_ |__   ______ ______________  __\n\\   \\/\\/   // __ \\| __ \\ /  ___// __ \\_  __ \\  \\/ /\n \\        /\\  ___/| \\_\\ \\\\___ \\\\  ___/|  | \\/\\   / \n  \\__/\\  /  \\___  >___  /____  >\\___  >__|    \\_/  \n       \\/       \\/    \\/     \\/     \\/         V1.0.0\e[39m" << std::endl;
+	std::cout << "\e[34m" << "Available commands are: help|stop|gzip|deflate|info|workers|uptime" << "\e[39m" << std::endl;
 	Logger::setMode(NORMAL);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	if (argc > 2)
@@ -174,8 +254,9 @@ int	main(int argc, char **argv)
 		int								highestFd = 0;
 		int								serverFd = 0;
 		int								readyfd = 0;
-		//struct timeval 					timeout;
+		struct timeval 					start_time;
 
+		gettimeofday(&start_time, NULL);
 		Logger::print("Webserv is ready, waiting for connection...", NULL, SUCCESS, SILENT);
 		FD_ZERO(&read_sockets_z);
 		FD_ZERO(&write_sockets_z);
@@ -186,6 +267,7 @@ int	main(int argc, char **argv)
 				serverFd = its->second->GetSocket();
 			FD_SET(its->second->GetSocket(), &read_sockets_z);
 		}
+		FD_SET(STDIN_FILENO, &read_sockets_z);
 		while (g_webserv.run)
 		{
 			it = clients.begin();
@@ -216,6 +298,12 @@ int	main(int argc, char **argv)
 			default:
 				if (!readyfd)
 					break;
+				if (FD_ISSET(STDIN_FILENO, &read_sockets))
+				{
+					std::string line;
+					std::getline(std::cin, line);
+					handle_terminal_input(line, clients, &start_time, workers);
+				}
 				for (std::map<int, ServerSocket*>::iterator its = g_webserv.sockets.begin(); its != g_webserv.sockets.end(); its++)
 				{
 					if (FD_ISSET(its->second->GetSocket(), &read_sockets))
@@ -256,7 +344,6 @@ int	main(int argc, char **argv)
 									busy = true;
 						if (busy)
 							continue;
-
 						Logger::print("Client Disconnected", NULL, SUCCESS, NORMAL);
 						FD_CLR(it->sckt->GetSocket(), &read_sockets_z);
 						FD_CLR(it->sckt->GetSocket(), &write_sockets_z);
