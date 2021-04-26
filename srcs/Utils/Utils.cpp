@@ -325,3 +325,27 @@ void	ft::bzero(void *str, size_t len)
 {
 	ft::memset(str, 0, len);
 }
+
+std::string ft::get_extension(std::string path)
+{
+	if (path[path.size() - 1] == '/')
+		path.erase(--path.end());
+
+	if (!ft::contains(path, '.'))
+		return "";
+
+	if (!ft::contains(path, '/'))
+	{
+		if (path.rfind('.') == 0)
+			return "";
+		return path.substr(path.rfind('.'));
+	}
+
+	if (!ft::contains(path.substr(path.rfind('/') + 1), '.'))
+		return "";
+
+	if (path.substr(path.rfind('/') + 1).rfind('.') == 0)
+		return "";
+
+	return path.substr(path.rfind('/') + 1 + (path.rfind('.') - path.rfind('/') - 1));
+}

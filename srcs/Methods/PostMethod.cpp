@@ -48,11 +48,9 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 	Response response(200, url._path); //change code on failure
 
 	std::list<std::string> splitted = ft::split(realPath, "/");
-	std::string extension;
-	if (splitted.back().rfind(".") != std::string::npos)
-		extension = realPath.substr(realPath.rfind("."));
+	std::string extension = ft::get_extension(splitted.back());
 
-	if ((!extension.empty() && config.getCGIExtensions().find(extension) != config.getCGIExtensions().end()) || (realPath.find(config.getParam("cgi-dir").front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+	if ((!extension.empty() && config.getCGIExtensions().find(extension) != config.getCGIExtensions().end()) || (realPath.find(config.getParam("cgi_dir").front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
 	{
 		try
 		{

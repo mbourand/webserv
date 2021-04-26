@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/26 17:37:16 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/26 18:08:31 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ bool	handle_server_response(Client &client)
 		VirtualHost vhost = VirtualHost::getServerByName(client.req->getHeaderValue("Host"), client.sckt->getServerPort(), g_webserv.vhosts);
 		Response response;
 		// Uncomment to enable HTTP Authentication
-		/*
+
 		if (!vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic").front().empty())
 		{
 			std::string	credentials = client.req->getHeaderValue(AuthorizationHeader().getType());
@@ -146,7 +146,7 @@ bool	handle_server_response(Client &client)
 			else if (credentials != "Basic bG9naW46cGFzc3dvcmQ=") //TODO: comparer credentials avec ceux dans le fichier	login:password -> bG9naW46cGFzc3dvcmQ=
 				response.setCode(403); //forbidden (wrong credentials)
 		}
-		*/
+
 		if (!response.getCode())
 			response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_url._path), *client.sckt);
 		*client.sckt << response.getResponseText(vhost.getConfig().getConfigPath(client.req->_url._path));
@@ -258,6 +258,7 @@ int	main(int argc, char **argv)
 
 	try { g_webserv.init_config(std::string(argc == 1 ? "./config/default.conf" : argv[1])); }
 	catch (std::exception& e) { return Logger::print(std::string("Invalid config file: ") + e.what(), 1, ERROR, SILENT); }
+
 
 	Threadpool* workers = new Threadpool(g_webserv.workers_amount);
 	sighandler();

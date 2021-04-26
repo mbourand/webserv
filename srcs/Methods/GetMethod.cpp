@@ -185,7 +185,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 			std::string index = "/" + config.getParam("index").front();
 			realPath += index;
 			std::string extension = index.substr(index.rfind('.')); // Vérifier que ça va pas throw est inutile, vu qu'on est dans un try catch
-			if (config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() || (realPath.find(config.getParam("cgi-dir").front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+			if (config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() || (realPath.find(config.getParam("cgi_dir").front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
 				return process_cgi(realPath, url, config, socket, request);
 		}
 		catch (std::exception& e)
@@ -218,7 +218,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		if (file_name.rfind(".") != std::string::npos)
 		{
 			std::string extension = file_name.substr(file_name.rfind('.'));
-			if (config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() || (realPath.find(config.getParam("cgi-dir").front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+			if (config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() || (realPath.find(config.getParam("cgi_dir").front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
 				return process_cgi(realPath, url, config, socket, request);
 		}
 	}

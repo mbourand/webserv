@@ -22,13 +22,19 @@ ConfigContext::ConfigContext()
 	: _autoIndex(false)
 {}
 
+
+
 ConfigContext::~ConfigContext()
 {}
+
+
 
 ConfigContext::ConfigContext(const ConfigContext& other)
 {
 	*this = other;
 }
+
+
 
 ConfigContext& ConfigContext::operator=(const ConfigContext& other)
 {
@@ -40,8 +46,11 @@ ConfigContext& ConfigContext::operator=(const ConfigContext& other)
 	_names = other._names;
 	_acceptedMethods = other._acceptedMethods;
 	_cgi_exts = other._cgi_exts;
+	_uploads_exts = other._uploads_exts;
 	return *this;
 }
+
+
 
 ConfigContext::ConfigContext(const std::string& raw, const std::string& name, const ConfigContext* parent)
 	: _autoIndex(false)
@@ -111,8 +120,12 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 			parse_autoindex(directive_value);
 		else if (directive_name == "disable_methods")
 			parse_methods(directive_value);
-		else if (directive_name == "cgi-ext")
+		else if (directive_name == "cgi_ext")
 			parse_cgi_ext(directive_value);
+		else if (directive_name == "uploads_exts")
+			parse_uploads_exts(directive_value);
+		else if (directive_name == "auth_basic")
+			parse_auth_basic(directive_value);
 		else
 		{
 			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
@@ -130,7 +143,25 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 	set_root_default();
 	set_max_body_size_default();
 	set_cgi_dir_default();
+	set_auth_basic_default();
+	if (_params["auth_basic"].front() != "")
+		set_auth_basic_user_file_default();
 }
+
+
+
+void ConfigContext::parse_auth_basic(const std::string& directive_value)
+{
+	std::list<std::string> words = ft::split(directive_value, " \t\n");
+	if (words.size() == 1 && words.front() == "off")
+	{
+		_params["auth_basic"].assign(1, "");
+		return;
+	}
+	_params["auth_basic"].assign(1, directive_value);
+}
+
+
 
 void ConfigContext::add_server_directives()
 {
@@ -138,6 +169,8 @@ void ConfigContext::add_server_directives()
 	_directive_names.push_back("listen");
 	_directive_names.push_back("location");
 }
+
+
 
 void ConfigContext::add_location_directives()
 {
@@ -147,10 +180,15 @@ void ConfigContext::add_location_directives()
 	_directive_names.push_back("autoindex");
 	_directive_names.push_back("max_client_body_size");
 	_directive_names.push_back("disable_methods");
-	_directive_names.push_back("cgi-dir");
-	_directive_names.push_back("cgi-ext");
+	_directive_names.push_back("cgi_dir");
+	_directive_names.push_back("cgi_ext");
 	_directive_names.push_back("uploads");
+	_directive_names.push_back("uploads_exts");
+	_directive_names.push_back("auth_basic");
+	_directive_names.push_back("auth_basic_user_file");
 }
+
+
 
 void ConfigContext::handle_parent_and_directives(const ConfigContext* parent, const std::string& name)
 {
@@ -161,6 +199,7 @@ void ConfigContext::handle_parent_and_directives(const ConfigContext* parent, co
 		_autoIndex = parent->_autoIndex;
 		_acceptedMethods = parent->_acceptedMethods;
 		_cgi_exts = parent->_cgi_exts;
+		_uploads_exts = parent->_uploads_exts;
 		_names.push_back(name);
 	}
 	else
@@ -173,11 +212,37 @@ void ConfigContext::handle_parent_and_directives(const ConfigContext* parent, co
 	add_location_directives();
 }
 
+
+
+void ConfigContext::parse_uploads_exts(const std::string& directive_value)
+{
+	std::list<std::string> words = ft::split(directive_value, " \t\n");
+	for (std::list<std::string>::iterator it = words.begin(); it != words.end(); it++)
+	{
+		if ((*it)[0] != '.')
+		{
+			if (*it == "all")
+			{
+				_uploads_exts.clear();
+				_uploads_exts.push_back("all");
+			}
+			else if (*it == "none")
+				_uploads_exts.clear();
+			else
+				throw std::invalid_argument("Extension doesn't start with '.' for uploads_exts in config");
+			return;
+		}
+		_uploads_exts.push_back(*it);
+	}
+}
+
+
+
 void ConfigContext::parse_cgi_ext(const std::string& directive_value)
 {
 	std::list<std::string> words = ft::split(directive_value, " \t\n");
 	if (words.size() & 1)
-		throw std::invalid_argument("No cgi path was provided for cgi-ext in config");
+		throw std::invalid_argument("No cgi path was provided for cgi_ext in config");
 	bool extension_arg = true;
 	std::string extension;
 	for (std::list<std::string>::iterator it = words.begin(); it != words.end(); it++)
@@ -185,7 +250,7 @@ void ConfigContext::parse_cgi_ext(const std::string& directive_value)
 		if (extension_arg)
 		{
 			if ((*it)[0] != '.')
-				throw std::invalid_argument("Extension doesn't start with a dot for cgi-ext in config");
+				throw std::invalid_argument("Extension doesn't start with a dot for cgi_ext in config");
 			extension = *it;
 		}
 		else
@@ -198,9 +263,25 @@ void ConfigContext::parse_cgi_ext(const std::string& directive_value)
 		if (it->second != "/" && it->second != "")
 			it->second.erase(--(it->second.end()));
 		if (!ft::is_executable(it->second.c_str()))
-			throw std::invalid_argument("cgi-ext parameter is not an executable in config");
+			throw std::invalid_argument("cg_ext parameter is not an executable in config");
 	}
 }
+
+
+
+void ConfigContext::set_auth_basic_user_file_default()
+{
+	if (_params.find("auth_basic_user_file") == _params.end())
+		return;
+
+	_params["auth_basic_user_file"].front() = ft::simplify_path(_params["auth_basic_user_file"].front());
+	if (_params["auth_basic_user_file"].front() != "/" && _params["auth_basic_user_file"].front() != "")
+		_params["auth_basic_user_file"].front().erase(--_params["auth_basic_user_file"].front().end());
+	if (!ft::is_regular_file(_params["auth_basic_user_file"].front().c_str()))
+		throw std::invalid_argument("Auth Basic User File parameter is not a regular file");
+}
+
+
 
 void ConfigContext::set_root_default()
 {
@@ -216,19 +297,23 @@ void ConfigContext::set_root_default()
 	}
 }
 
+
+
 void ConfigContext::set_cgi_dir_default()
 {
-	if (_params.find("cgi-dir") == _params.end())
-		_params["cgi-dir"].push_back("/cgi-bin/");
+	if (_params.find("cgi_dir") == _params.end())
+		_params["cgi_dir"].push_back("/cgi-bin/");
 	else
 	{
-		_params["cgi-dir"].front() = ft::simplify_path(_params["cgi-dir"].front());
-		if (_params["cgi-dir"].front() != "/" && !_params["cgi-dir"].front().empty())
-			_params["cgi-dir"].front().erase(--_params["cgi-dir"].front().end());
-		if (!ft::is_directory(_params["cgi-dir"].front().c_str()))
-			throw std::invalid_argument("cgi-dir parameter is not a folder in config");
+		_params["cgi_dir"].front() = ft::simplify_path(_params["cgi_dir"].front());
+		if (_params["cgi_dir"].front() != "/" && !_params["cgi_dir"].front().empty())
+			_params["cgi_dir"].front().erase(--_params["cgi_dir"].front().end());
+		if (!ft::is_directory(_params["cgi_dir"].front().c_str()))
+			throw std::invalid_argument("cgi_dir parameter is not a folder in config");
 	}
 }
+
+
 
 void ConfigContext::parse_methods(const std::string& directive_value)
 {
@@ -244,6 +329,8 @@ void ConfigContext::parse_methods(const std::string& directive_value)
 	}
 }
 
+
+
 void ConfigContext::parse_autoindex(const std::string& directive_value)
 {
 	std::list<std::string> words = ft::split(directive_value, " \t\n");
@@ -253,6 +340,8 @@ void ConfigContext::parse_autoindex(const std::string& directive_value)
 		throw std::invalid_argument("Bad value for autoindex in config");
 	_autoIndex = (val == "on" ? true : false);
 }
+
+
 
 void ConfigContext::parse_error_page(const std::string& directive_value)
 {
@@ -275,6 +364,8 @@ void ConfigContext::parse_error_page(const std::string& directive_value)
 	}
 }
 
+
+
 void ConfigContext::parse_server_name(const std::string& directive_value)
 {
 	for (size_t j = 0; j < directive_value.size();)
@@ -292,6 +383,8 @@ void ConfigContext::parse_server_name(const std::string& directive_value)
 	}
 }
 
+
+
 void ConfigContext::set_uploads_default()
 {
 	if (_params.find("uploads") == _params.end())
@@ -305,6 +398,16 @@ void ConfigContext::set_uploads_default()
 			throw std::invalid_argument("Uploads parameter is not a folder in config");
 	}
 }
+
+
+
+void ConfigContext::set_auth_basic_default()
+{
+	if (_params.find("auth_basic") == _params.end())
+		_params["auth_basic"].push_back("");
+}
+
+
 
 void ConfigContext::set_max_body_size_default()
 {
@@ -335,12 +438,16 @@ const std::list<ConfigContext>& ConfigContext::getChilds() const { return _child
 const std::list<const IMethod*>& ConfigContext::getAllowedMethods() const { return _acceptedMethods; }
 bool ConfigContext::hasAutoIndex() const { return _autoIndex; }
 
+
+
 const std::list<std::string>& ConfigContext::getParam(const std::string& name) const
 {
 	if (_params.find(name) == _params.end())
 		throw std::invalid_argument("Parameter not found in config");
 	return _params.find(name)->second;
 }
+
+
 
 /**
  * @brief Récupère soit la page d'erreur configurée dans la config pour une erreur donnée, soit la page d'erreur par défaut si il n'y en a pas
@@ -380,6 +487,7 @@ std::string ConfigContext::getErrorPage(int code) const
 */
 
 
+
 /**
  * @brief Transforme un chemin url en chemin physique
  *
@@ -406,6 +514,8 @@ std::string ConfigContext::rootPath(const std::string& path, int& base_depth) co
 	return res;
 }
 
+
+
 /**
  * @brief Récupère la config correspondant à un chemin url
  *
@@ -421,6 +531,21 @@ const ConfigContext& ConfigContext::getConfigPath(const std::string& path) const
 	}
 	return *this;
 }
+
+
+
+bool	ConfigContext::can_be_uploaded(const std::string& extension) const
+{
+	if (_uploads_exts.empty())
+		return false;
+	if (_uploads_exts.front() == "all")
+		return true;
+	if (ft::contains(_uploads_exts, extension))
+		return true;
+	return false;
+}
+
+
 
 size_t ConfigContext::find_closing_bracket(const std::string& str, size_t start) const
 {

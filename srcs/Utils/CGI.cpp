@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/16 16:59:17 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/26 14:07:33 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ std::string		CGI::find_first_file(const std::string &, const ConfigContext& conf
 
 int	CGI::ParseURI(const Request& req, const ConfigContext& config)
 {
-	std::string	cgi_path = config.getParam("cgi-dir").front(); //replace with config->getparam
+	std::string	cgi_path = config.getParam("cgi_dir").front(); //replace with config->getparam
 
 	m_env_Script_Name = find_first_file(req._url._path, config);
 	if (m_env_Script_Name.empty())

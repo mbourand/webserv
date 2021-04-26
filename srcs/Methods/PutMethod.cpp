@@ -59,10 +59,10 @@ Response PutMethod::process(const Request& request, const ConfigContext& config,
 		return Response(415, url._path);
 
 
-	std::string extension = realPath.substr(realPath.rfind('.') + 1); //TODO: config "uploads_ext html" only allow certains files types to be uploaded
-	if (extension != "html" || !g_webserv.file_formatname->GetNode(extension)
+	std::string extension = ft::get_extension(realPath);
+	if (!config.can_be_uploaded(extension) || !g_webserv.file_formatname->GetNode(extension)
 	|| request.getHeaderValue("Content-Type") != g_webserv.file_formatname->Lookup(extension))// si l'extension n'est pas autoritée ou que le content-type déclaré ne correspond pas au content-type connu
-		return Response(415, url._path); //TODO: lookup extension in uploads_ext withelist
+		return Response(415, url._path);
 
 
 	std::string file_path = config.getParam("uploads").front() + realPath.substr(realPath.find("/"));
