@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Threadpool.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/16 15:09:30 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/26 17:43:42 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ void					*Threadpool::WaitForWork(void *)
 		else
 		{
 			Unlock();
-			usleep(1);
+			usleep(100 * m_numworkers);
 		}
 	}
 	return (NULL);

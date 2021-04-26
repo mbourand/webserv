@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/23 21:46:06 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/26 17:37:16 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,23 @@ bool	handle_server_response(Client &client)
 		if (DEBUG)
 			std::cout << *client.req << std::endl;
 		VirtualHost vhost = VirtualHost::getServerByName(client.req->getHeaderValue("Host"), client.sckt->getServerPort(), g_webserv.vhosts);
-		Response response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_url._path), *client.sckt);
+		Response response;
+		// Uncomment to enable HTTP Authentication
+		/*
+		if (!vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic").front().empty())
+		{
+			std::string	credentials = client.req->getHeaderValue(AuthorizationHeader().getType());
+			if (credentials.empty())
+			{
+				response.setCode(401); //Unauthorized (force sign-in)
+				response.addHeader(WWWAuthenticateHeader().getType(), "Basic realm=\""+vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic").front()+"\"");
+			}
+			else if (credentials != "Basic bG9naW46cGFzc3dvcmQ=") //TODO: comparer credentials avec ceux dans le fichier	login:password -> bG9naW46cGFzc3dvcmQ=
+				response.setCode(403); //forbidden (wrong credentials)
+		}
+		*/
+		if (!response.getCode())
+			response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_url._path), *client.sckt);
 		*client.sckt << response.getResponseText(vhost.getConfig().getConfigPath(client.req->_url._path));
 		if (response.getCode() != 200)
 			return true;
@@ -296,13 +312,12 @@ int	main(int argc, char **argv)
 				Logger::print(std::string("Idle.. Active Connections: ")+ft::toString(clients.size()), NULL, INFO, NORMAL);
 				break;//webserv was idling for the past 30s
 			default:
-				if (!readyfd)
-					break;
 				if (FD_ISSET(STDIN_FILENO, &read_sockets))
 				{
 					std::string line;
 					std::getline(std::cin, line);
 					handle_terminal_input(line, clients, &start_time, workers);
+					readyfd--;
 				}
 				for (std::map<int, ServerSocket*>::iterator its = g_webserv.sockets.begin(); its != g_webserv.sockets.end(); its++)
 				{
@@ -313,7 +328,7 @@ int	main(int argc, char **argv)
 					}
 				}
 				it = clients.begin();
-				while (it != clients.end())
+				while (readyfd && it != clients.end())
 				{
 					bool	error = false;
 					if (FD_ISSET(it->sckt->GetSocket(), &error_sockets))
