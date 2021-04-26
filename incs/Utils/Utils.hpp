@@ -11,22 +11,23 @@ class ConfigContext;
 
 namespace ft
 {
-	int toInt(const std::string& str);
-	std::string toString(int i);
-	std::string toHex(int i);
-	int			hexToInt(const std::string& str);
+	int							toInt(const std::string& str);
+	std::string 				toString(int i);
+	std::string 				toHex(int i);
+	int							hexToInt(const std::string& str);
 
-	std::list<std::string> split(const std::string& str, const std::string& charset);
+	std::list<std::string>		split(const std::string& str, const std::string& charset);
 	std::pair<std::string, int> complete_ip(const std::string& incomplete_ip);
-	std::string getErrorMessage(int code);
-	bool is_directory(std::string realPath);
-	bool is_regular_file(std::string realPath);
-	bool is_executable(std::string realPath);
-	std::string get_cwd();
-	std::string simplify_path(const std::string& input, bool safe = false, int base_depth = 0);
-	char		*strncpy(char *dest, const char *src, size_t n);
-	void		*memset(void *s, int c, size_t n);
-	void		bzero(void *str, size_t len);
+	std::string 				getErrorMessage(int code);
+	bool						is_directory(std::string realPath);
+	bool						is_regular_file(std::string realPath);
+	bool						is_executable(std::string realPath);
+	std::string 				get_cwd();
+	std::string 				simplify_path(const std::string& input, bool safe = false, int base_depth = 0);
+	char						*strncpy(char *dest, const char *src, size_t n);
+	void						*memset(void *s, int c, size_t n);
+	void						bzero(void *str, size_t len);
+	std::string 				get_extension(std::string path);
 
 	template<class IntegralType>
 	bool is_integer(const std::string& str)

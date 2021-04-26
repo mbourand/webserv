@@ -18,6 +18,7 @@ class ConfigContext
 		std::list<std::string> _names;
 		std::list<const IMethod*> _acceptedMethods;
 		std::map<std::string, std::string> _cgi_exts;
+		std::list<std::string> _uploads_exts;
 		bool _autoIndex;
 
 	private:
@@ -26,6 +27,8 @@ class ConfigContext
 		void set_max_body_size_default();
 		void set_cgi_dir_default();
 		void set_uploads_default();
+		void set_auth_basic_default();
+		void set_auth_basic_user_file_default();
 		void parse_server_name(const std::string& directive_value);
 		void parse_error_page(const std::string& directive_value);
 		void parse_methods(const std::string& directive_value);
@@ -34,6 +37,8 @@ class ConfigContext
 		void add_server_directives();
 		void add_location_directives();
 		void handle_parent_and_directives(const ConfigContext* parent, const std::string& string);
+		void parse_uploads_exts(const std::string& directive_value);
+		void parse_auth_basic(const std::string& directive_value);
 
 	public:
 		ConfigContext();
@@ -48,6 +53,7 @@ class ConfigContext
 		std::string getErrorPage(int code) const;
 		const std::list<std::string>& getParam(const std::string& name) const;
 		std::string rootPath(const std::string& path, int& base_depth) const;
+		bool can_be_uploaded(const std::string& extension) const;
 
 		bool hasAutoIndex() const;
 		const std::map<std::string, std::list<std::string> >& getParams() const;
