@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/27 01:39:22 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/27 03:16:26 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/27 03:19:19 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ Credentials::Credentials()
 
 Credentials::Credentials(const Credentials &src)
 {
+	this->m_credentials = src.m_credentials;
 }
 
 /*
