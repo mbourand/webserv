@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/24 19:48:05 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/27 19:45:41 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ class Socket
 
 		bool	Listen(void) const;
 		bool	Accept(Socket &connection);
-		bool	Send(std::string const msg) const;
+		bool	Send(const std::string &msg) const;
 		int		Recieve(std::string &str) const;
 		bool	Success(void) const;
 		int		GetSocket(void) const;

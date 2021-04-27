@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/03/27 02:26:49 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/27 19:47:19 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ ServerSocket::~ServerSocket()
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-const ServerSocket &	ServerSocket::operator<<(const std::string& s) const
+const ServerSocket &	ServerSocket::operator<<(const std::string &s) const
 {
 	if (!Socket::Send(s))
 		throw ServerSocketException("Couldn't write to socket.");

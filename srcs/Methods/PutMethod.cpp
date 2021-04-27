@@ -53,9 +53,9 @@ Response PutMethod::process(const Request& request, const ConfigContext& config,
 
 
 	Response response(200, url._path);
-	if (realPath.rfind("/") == realPath.size() - 1)
+	if (realPath.rfind('/') == realPath.size() - 1)
 		realPath = realPath.erase(realPath.size() - 1);
-	if (realPath.rfind('.') >= (realPath.size() - 1) || realPath.rfind("/") != config.getParam("root").front().size()) // if no ext or target is subfoler inside uploads
+	if (realPath.rfind('.') >= (realPath.size() - 1) || realPath.rfind('/') != config.getParam("root").front().size()) // if no ext or target is subfoler inside uploads
 		return Response(415, url._path);
 
 
@@ -65,7 +65,7 @@ Response PutMethod::process(const Request& request, const ConfigContext& config,
 		return Response(415, url._path);
 
 
-	std::string file_path = config.getParam("uploads").front() + realPath.substr(realPath.find("/"));
+	std::string file_path = config.getParam("uploads").front() + realPath.substr(realPath.find('/'));
 	std::fstream file;
 	struct stat	file_stats;
 	if (lstat(file_path.c_str(), &file_stats) < 0 || static_cast<unsigned int>(file_stats.st_size) != request._body.size())
@@ -81,7 +81,7 @@ Response PutMethod::process(const Request& request, const ConfigContext& config,
 	if (!file.good() || !file.is_open())
 		return Response(500, url._path);
 
-	response.addHeader("Content-Location", realPath.substr(realPath.find("/")));
+	response.addHeader("Content-Location", realPath.substr(realPath.find('/')));
 
 
 	std::stringstream ss;

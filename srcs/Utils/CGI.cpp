@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/26 14:07:33 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/27 19:46:33 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	Header				*content_type = NULL;
 	std::string			extension;
 
-	if ((code = ParseURI(request, config)))
+	if ((code = ParseURI(request, config)) != 0)
 		throw CGI::CGIException("ParseURI failed.", code);
 	for (Request::HeadersVector::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
 	{
@@ -88,7 +88,7 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 		m_env.push_back("PATH_INFO="+m_env_Script_Name);
 	if (document_root.find("..") != std::string::npos)
 	{
-		chdir(document_root.substr(0, document_root.find_last_of("/")).c_str());
+		chdir(document_root.substr(0, document_root.find_last_of('/')).c_str());
 		document_root = ft::get_cwd();
 		chdir(g_webserv.cwd.c_str());
 	}
@@ -145,19 +145,19 @@ std::string		CGI::find_first_file(const std::string &, const ConfigContext& conf
 	if (url_until_root.empty())
 		url_until_root = "/";
 
-	end = url_after_root.find("/", end);
+	end = url_after_root.find('/', end);
 
 	while (end != std::string::npos)
 	{
 		if (lstat((url_until_root + url_after_root.substr(start, end)).c_str(), &file_stats) < 0)
 			break;
-		if (url_after_root.rfind(".") != std::string::npos)
+		if (url_after_root.rfind('.') != std::string::npos)
 			extension = url_after_root.substr(url_after_root.find('.'));
 		if ((!extension.empty() && config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() && S_ISREG(file_stats.st_mode)) || S_ISREG(file_stats.st_mode))
 			return (url_after_root.substr(start, end));
 		else if (S_ISDIR(file_stats.st_mode))
 		{
-			if ((end = url_after_root.find("/", end + 1)) == std::string::npos)
+			if ((end = url_after_root.find('/', end + 1)) == std::string::npos)
 				end = url_after_root.length();
 		}
 		else
@@ -189,16 +189,12 @@ void				CGI::execute(const std::string & body)
 	int		pipes[2];
 
 	if (pipe(pipes) < 0)
-	{
-		close(fd);
 		throw CGI::CGIException("pipe() failed.", 500);
-	}
 	pid = fork();
 	switch (pid) {
 	case -1:
 		close(pipes[0]);
 		close(pipes[1]);
-		//close(fd);
 		throw CGI::CGIException("fork() failed.", 500);
 	case 0:
 		if ((fd = open(m_tmpfilename.c_str(), O_WRONLY | O_CREAT, 0666)) == -1)
@@ -226,6 +222,7 @@ void				CGI::execute(const std::string & body)
 			Logger::print("CGI execution was successful.", NULL, SUCCESS, VERBOSE);
 		else
 			throw CGI::CGIException("CGI execution failed.", 500);
+		break;
 	}
 }
 
@@ -265,7 +262,7 @@ void	CGI::process(Response& response)
 		convert.str("");
 		if (content.find("Status: ") != std::string::npos)
 		{
-			convert << content.substr(8, content.find(" ", 8) - 8);
+			convert << content.substr(8, content.find(' ', 8) - 8);
 			convert >> status;
 			if (status != 200)
 			{

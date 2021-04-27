@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientSocket.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 19:27:25 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/11 22:07:16 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/27 19:45:08 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ ClientSocket::ClientSocket()
 {
 }
 
-ClientSocket::ClientSocket(std::string host, int port)
+ClientSocket::ClientSocket(const std::string &host, int port)
 {
 	if (!Socket::Create())
     {

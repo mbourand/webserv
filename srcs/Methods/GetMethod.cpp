@@ -80,7 +80,7 @@ std::string GetMethod::get_file_size(const std::string& realPath)
 	return convert.str();
 }
 
-Response GetMethod::directory_listing(const Request& request, const ConfigContext&, std::string realPath)
+Response GetMethod::directory_listing(const Request& request, const ConfigContext&, const std::string &realPath)
 {
 	const URL& url = request._url;
 	std::list<std::string> list;
@@ -212,10 +212,10 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 			continue;
 		std::string file_name;
 		if (ft::contains(current_path, '/'))
-			file_name = current_path.substr(current_path.rfind("/"));
+			file_name = current_path.substr(current_path.rfind('/'));
 		else
 			file_name = current_path;
-		if (file_name.rfind(".") != std::string::npos)
+		if (file_name.rfind('.') != std::string::npos)
 		{
 			std::string extension = file_name.substr(file_name.rfind('.'));
 			if (config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() || (realPath.find(config.getParam("cgi_dir").front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path

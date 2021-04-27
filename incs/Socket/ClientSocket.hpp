@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 19:27:25 by nforay            #+#    #+#             */
-/*   Updated: 2021/02/23 19:44:08 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/27 19:45:15 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ class ClientSocket : public Socket
 
 	public:
 
-		ClientSocket(std::string host, int port);
+		ClientSocket(const std::string &host, int port);
 		ClientSocket(ClientSocket const &src);
 		virtual ~ClientSocket();
 

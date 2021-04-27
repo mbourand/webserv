@@ -33,7 +33,7 @@ URL::URL(const std::string& url)
 	if (_path.empty())
 		_path = "/";
 
-	if (_path.find_first_not_of("/") != std::string::npos && _path[_path.size() - 1] == '/')
+	if (_path.find_first_not_of('/') != std::string::npos && _path[_path.size() - 1] == '/')
 	{
 		while (_path[_path.size() - 1] == '/')
 			_path = _path.substr(0, _path.size() - 1);
@@ -54,7 +54,7 @@ URL::~URL() {}
 
 void URL::parse_userinfo(size_t& i, const std::string& url)
 {
-	std::string authority = url.substr(i, std::min(url.find("/", i), url.size()) - i);
+	std::string authority = url.substr(i, std::min(url.find('/', i), url.size()) - i);
 
 	if (authority.find('@') == 0)
 		throw std::invalid_argument("@ delimiter is present but no user info was given in uri");
@@ -82,7 +82,7 @@ void URL::parse_full(const std::string& url)
 	if (url[i] == ':')
 	{
 		i++;
-		_port = url.substr(i, url.find_first_of("/", i) - i);
+		_port = url.substr(i, url.find_first_of('/', i) - i);
 		if (_port.size() == 0)
 			throw std::invalid_argument("Empty port in uri");
 		i += _port.size();
@@ -100,7 +100,7 @@ void URL::parse_partial(const std::string& url)
 	if (url[i] == '?')
 	{
 		i++;
-		_query = url.substr(i, std::min(url.find_first_of("#", i), url.size()) - i);
+		_query = url.substr(i, std::min(url.find_first_of('#', i), url.size()) - i);
 		if (_query.size() == 0)
 			throw std::invalid_argument("Empty query in url");
 		i += _query.size();

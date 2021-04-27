@@ -34,7 +34,7 @@ class GetMethod : public IMethod
 
 	private:
 		Response process_cgi(const std::string& realPath, const URL& url, const ConfigContext& config, const ServerSocket& socket, const Request& request);
-		Response directory_listing(const Request& request, const ConfigContext& config, std::string realPath);
+		Response directory_listing(const Request& request, const ConfigContext&, const std::string &realPath);
 		std::string get_file_size(const std::string& realPath);
 		std::string get_last_modified_format(const std::string& realPath, const std::string& format);
 		std::list<std::string> list_directory(const std::string& realPath);

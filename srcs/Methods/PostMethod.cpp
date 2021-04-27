@@ -71,9 +71,11 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 	}
 	else
 	{
+		std::cout << "open: " << realPath.c_str() << std::endl;
 		std::fstream file(realPath.c_str());
 		if (!file.good() || !file.is_open())
 		{
+			std::cout << "error" << std::endl;
 			if (errno == ENOENT || errno == ENOTDIR)
 				return Logger::print("File not found", response.setCode(404), ERROR, VERBOSE);
 			if (errno == EACCES || errno == EISDIR)

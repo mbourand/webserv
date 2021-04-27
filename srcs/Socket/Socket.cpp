@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/24 19:46:20 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/27 19:45:33 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ bool					Socket::Accept(Socket &connection)
 	return (true);
 }
 
-bool					Socket::Send(std::string const msg) const
+bool					Socket::Send(const std::string &msg) const
 {
 	if (send(this->m_sockfd, msg.c_str(), msg.size(), MSG_NOSIGNAL) == -1)
 		return (false);

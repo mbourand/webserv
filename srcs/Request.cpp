@@ -163,10 +163,9 @@ std::string		Request::dechunk(const std::string& str)
 			for (Request::HeadersVector::iterator it = _headers.begin(); it != _headers.end(); it++)
 				if ((*it)->getType() == TransferEncodingHeader().getType())
 				{
-					Header* header = (*it);
 					delete (*it);
 					_headers.erase(it);
-					header = g_webserv.headers.createByType_ignore_case(ContentLengthHeader().getType());
+					Header* header = g_webserv.headers.createByType_ignore_case(ContentLengthHeader().getType());
 					header->parse(ft::toString(total_len)+"\r\n");
 					_headers.push_back(header);
 					return (output);
@@ -215,7 +214,7 @@ void Request::parse_uri()
 void Request::parse_protocol_version()
 {
 	// _parse_start + 1 is the first character of the protocol version
-	if (_raw.find("\r", _parse_start + 1) != std::string::npos && _raw.find("\r\n", _parse_start + 1) == std::string::npos)
+	if (_raw.find('\r', _parse_start + 1) != std::string::npos && _raw.find("\r\n", _parse_start + 1) == std::string::npos)
 		return;
 	std::string version = _raw.substr(_parse_start + 1, _raw.find("\r\n", _parse_start + 1) - (_parse_start + 1));
 	if (std::string("HTTP/1.1").substr(0, version.size()) != version)
