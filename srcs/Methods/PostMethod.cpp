@@ -39,7 +39,6 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 	if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
 		return Response(405, url._path);
 
-
 	int base_depth = 0;
 	std::string realPath = config.rootPath(url._path, base_depth);
 	try
@@ -51,12 +50,12 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 		return Response(404, url._path);
 	}
 
-
 	Response response(200, url._path); //change code on failure
 
 	std::list<std::string> splitted = ft::split(realPath, "/");
 	std::string extension = ft::get_extension(splitted.back());
-
+	if (realPath[realPath.size() - 1] == '/')
+		realPath.erase(realPath.size() - 1);
 	if ((!extension.empty() && config.getCGIExtensions().find(extension) != config.getCGIExtensions().end()) || (realPath.find(config.getParam("cgi_dir").front()) == 0))
 	{
 		try
