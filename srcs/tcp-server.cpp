@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/27 19:03:53 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/27 19:52:22 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,7 +243,7 @@ int	main(int argc, char **argv)
 {
 	std::cout << "\e[34m" << " __      __      ___.                              \n/  \\    /  \\ ____\\_ |__   ______ ______________  __\n\\   \\/\\/   // __ \\| __ \\ /  ___// __ \\_  __ \\  \\/ /\n \\        /\\  ___/| \\_\\ \\\\___ \\\\  ___/|  | \\/\\   / \n  \\__/\\  /  \\___  >___  /____  >\\___  >__|    \\_/  \n       \\/       \\/    \\/     \\/     \\/         V1.0.0\e[39m" << std::endl;
 	std::cout << "\e[34m" << "Available commands are: help|stop|gzip|deflate|info|workers|uptime" << "\e[39m" << std::endl;
-	Logger::setMode(VERBOSE);
+	Logger::setMode(SILENT);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	if (argc > 2)
 	{
