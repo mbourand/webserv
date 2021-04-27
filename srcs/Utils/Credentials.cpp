@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/27 01:39:22 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/27 03:19:19 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/27 19:58:53 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,8 @@ Credentials::~Credentials()
 ** --------------------------------- OVERLOAD ---------------------------------
 */
 
-Credentials &				Credentials::operator=(Credentials const &rhs)
+Credentials &				Credentials::operator=(Credentials const &)
 {
-	//if ( this != &rhs )
-	//{
-		//this->_value = rhs.getValue();
-	//}
 	return *this;
 }
 

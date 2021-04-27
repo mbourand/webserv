@@ -27,7 +27,7 @@ Response::Response(const Response& other)
 }
 
 Response::Response(int code, const std::string& path)
-	: _code(code), _path(path), _candeflate(false), _cangzip(false)
+	: _code(code), _candeflate(false), _cangzip(false), _path(path)
 {
 
 }

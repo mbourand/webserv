@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/27 19:45:33 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/27 19:56:11 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ Socket::Socket() : m_sockfd(-1)
 	ft::bzero(&this->m_addr_in, sizeof(this->m_addr_in));
 }
 
-Socket::Socket(const Socket &src) : m_sockfd(src.m_sockfd), m_addr_in(src.m_addr_in), m_ipaddr(src.m_ipaddr)
+Socket::Socket(const Socket &src) : m_ipaddr(src.m_ipaddr), m_sockfd(src.m_sockfd), m_addr_in(src.m_addr_in)
 {
 }
 

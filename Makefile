@@ -1,6 +1,6 @@
 NAME	= webserv
 CC		= clang++
-CFLAGS	= -std=c++98# -Wall -Werror -Wextra
+CFLAGS	= -Wall -Werror -Wextra -std=c++98
 SRC_PATH= srcs/
 OBJ_PATH= objs/
 INC_PATH= incs/

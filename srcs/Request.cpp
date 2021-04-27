@@ -10,7 +10,7 @@
 Request::Request(const Request& other) : _raw(other._raw), _method(other._method->clone()), _url(other._url),
 	_protocolVersion(other._protocolVersion), _body(other._body), _content_length(other._content_length), _max_body_size(other._max_body_size),
 	_error_code(other._error_code), _port(other._port), _header_section_finished(other._header_section_finished), _url_finished(other._url_finished),
-	_finished_parsing(other._finished_parsing), _parse_start(other._parse_start), _chunked(other._chunked)
+	_finished_parsing(other._finished_parsing), _chunked(other._chunked), _parse_start(other._parse_start)
 {
 	for (HeadersVector::const_iterator it = other._headers.begin(); it != other._headers.end(); it++)
 		_headers.push_back((*it)->clone());
@@ -23,12 +23,12 @@ Request::~Request()
 }
 
 Request::Request(int port) : _method(NULL), _content_length(0), _max_body_size(0), _error_code(0),
-	_port(port), _header_section_finished(false), _url_finished(false), _finished_parsing(false), _parse_start(0), _chunked(false)
+	_port(port), _header_section_finished(false), _url_finished(false), _finished_parsing(false), _chunked(false), _parse_start(0)
 {
 }
 
 Request::Request() : _method(NULL), _content_length(0), _max_body_size(0), _error_code(0), _port(0),
-	_header_section_finished(false), _url_finished(false), _finished_parsing(false), _parse_start(0), _chunked(false)
+	_header_section_finished(false), _url_finished(false), _finished_parsing(false), _chunked(false), _parse_start(0)
 {
 }
 
@@ -148,8 +148,8 @@ std::string		Request::dechunk(const std::string& str)
 {
 	if (!_chunked)
 		return (str);
-	int			start = 0;
-	int			end = 0;
+	size_t		start = 0;
+	size_t		end = 0;
 	int			len;
 	int			total_len = 0;
 	std::string	output;

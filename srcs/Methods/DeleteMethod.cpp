@@ -31,7 +31,7 @@ bool DeleteMethod::isAllowedInHTMLForms() const { return false; }
 #include <string.h>
 #include <iostream>
 #include <errno.h>
-Response DeleteMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
+Response DeleteMethod::process(const Request& request, const ConfigContext& config, const ServerSocket&)
 {
 	URL url(request._url._path);
 	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethods();
