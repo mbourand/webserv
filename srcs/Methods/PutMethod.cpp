@@ -1,6 +1,5 @@
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -60,8 +59,8 @@ Response PutMethod::process(const Request& request, const ConfigContext& config,
 
 
 	std::string extension = ft::get_extension(realPath);
-	if (!config.can_be_uploaded(extension) || !g_webserv.file_formatname->GetNode(extension)
-	|| request.getHeaderValue("Content-Type") != g_webserv.file_formatname->Lookup(extension))// si l'extension n'est pas autoritée ou que le content-type déclaré ne correspond pas au content-type connu
+	if (!config.can_be_uploaded(extension) || !g_webserv.file_formatname->GetNode(extension.substr(1))
+	|| request.getHeaderValue("Content-Type") != g_webserv.file_formatname->Lookup(extension.substr(1)))
 		return Response(415, url._path);
 
 
@@ -71,32 +70,17 @@ Response PutMethod::process(const Request& request, const ConfigContext& config,
 	if (lstat(file_path.c_str(), &file_stats) < 0 || static_cast<unsigned int>(file_stats.st_size) != request._body.size())
 	{
 		file.open(file_path.c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
-		if (!S_ISREG(file_stats.st_mode))
-			response.setCode(201);
+		response.setCode(201);
+		response.addHeader("Location", realPath.substr(realPath.find('/')));
 	}
 	else if (!S_ISREG(file_stats.st_mode))
 		return Response(500, url._path);
 	else
-		file.open(file_path.c_str());
+		file.open(file_path.c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
 	if (!file.good() || !file.is_open())
 		return Response(500, url._path);
-
 	response.addHeader("Content-Location", realPath.substr(realPath.find('/')));
-
-
-	std::stringstream ss;
-	ss << file.rdbuf();
-	if (request._body.size() == ss.str().size() && ss.str() == request._body)
-	{
-		response.setCode(204);
-	}
-	else
-	{
-		file.seekg(std::fstream::beg);
-		file << request._body;
-	}
-
-
+	file << request._body;
 	file.close();
 	return (response);
 }
