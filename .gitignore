@@ -1,10 +1,11 @@
-a.out
+*.out
 Request
 build
 objs/
 webserv
 client
 *.bin
+.vscode/
 www/uploads/
 vegeta/
 

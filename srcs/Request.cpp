@@ -235,10 +235,7 @@ size_t is_header_field_finished(std::string str)
 	while (str.find("\r\n", i) != std::string::npos)
 	{
 		if (!str[str.find("\r\n", i) + 2])
-		{
-			std::cout << "found: |" << str[str.find("\r\n", i) + 2] << "|" << std::endl;
 			return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
-		}
 		if (str[str.find("\r\n", i) + 2] != ' ' && str[str.find("\r\n", i) + 2] != '\t')
 			return Logger::print("Header field is finished", str.find("\r\n", i) + 2, INFO, VERBOSE);
 		i = str.find("\r\n", i) + 2;

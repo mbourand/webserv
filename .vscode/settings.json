@@ -59,7 +59,10 @@
 		"variant": "cpp",
 		"thread": "cpp",
 		"condition_variable": "cpp",
-		"mutex": "cpp"
+		"mutex": "cpp",
+		"bit": "cpp",
+		"bitset": "cpp",
+		"shared_mutex": "cpp"
 	},
 	"cmake.configureOnOpen": true
 }

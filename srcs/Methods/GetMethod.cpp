@@ -226,7 +226,6 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	std::fstream file(realPath.c_str());
 	if (!file.good() || !file.is_open())
 	{
-		std::cout << realPath.c_str() << std::endl;
 		if (errno == ENOENT || errno == ENOTDIR)
 			return Logger::print("File not found", response.setCode(404), ERROR, VERBOSE);
 		if (errno == EACCES || errno == EISDIR)
