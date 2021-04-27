@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 19:37:11 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/18 17:30:07 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/27 03:13:36 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,14 @@
 # include "Request.hpp"
 # include "HashTable.hpp"
 # include "Headers.h"
+# include "Credentials.hpp"
 
 struct Client {
 	ServerSocket	*sckt;
 	Request			*req;
 };
+
+class Credentials;
 
 typedef struct						s_webserv
 {
@@ -40,6 +43,7 @@ typedef struct						s_webserv
 	bool							compression_deflate;
 	bool							compression_gzip;
 	unsigned int					compression_level;
+	Credentials						*creds;
 
 	s_webserv();
 

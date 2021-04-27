@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/26 18:08:31 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/04/27 03:16:07 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,8 +133,6 @@ bool	handle_server_response(Client &client)
 			std::cout << *client.req << std::endl;
 		VirtualHost vhost = VirtualHost::getServerByName(client.req->getHeaderValue("Host"), client.sckt->getServerPort(), g_webserv.vhosts);
 		Response response;
-		// Uncomment to enable HTTP Authentication
-
 		if (!vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic").front().empty())
 		{
 			std::string	credentials = client.req->getHeaderValue(AuthorizationHeader().getType());
@@ -143,10 +141,9 @@ bool	handle_server_response(Client &client)
 				response.setCode(401); //Unauthorized (force sign-in)
 				response.addHeader(WWWAuthenticateHeader().getType(), "Basic realm=\""+vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic").front()+"\"");
 			}
-			else if (credentials != "Basic bG9naW46cGFzc3dvcmQ=") //TODO: comparer credentials avec ceux dans le fichier	login:password -> bG9naW46cGFzc3dvcmQ=
+			else if (!g_webserv.creds->Check_Credentials(vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic_user_file").front(), credentials.substr(6))) //TODO: comparer credentials avec ceux dans le fichier	login:password -> bG9naW46cGFzc3dvcmQ=
 				response.setCode(403); //forbidden (wrong credentials)
 		}
-
 		if (!response.getCode())
 			response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_url._path), *client.sckt);
 		*client.sckt << response.getResponseText(vhost.getConfig().getConfigPath(client.req->_url._path));
@@ -248,7 +245,7 @@ int	main(int argc, char **argv)
 {
 	std::cout << "\e[34m" << " __      __      ___.                              \n/  \\    /  \\ ____\\_ |__   ______ ______________  __\n\\   \\/\\/   // __ \\| __ \\ /  ___// __ \\_  __ \\  \\/ /\n \\        /\\  ___/| \\_\\ \\\\___ \\\\  ___/|  | \\/\\   / \n  \\__/\\  /  \\___  >___  /____  >\\___  >__|    \\_/  \n       \\/       \\/    \\/     \\/     \\/         V1.0.0\e[39m" << std::endl;
 	std::cout << "\e[34m" << "Available commands are: help|stop|gzip|deflate|info|workers|uptime" << "\e[39m" << std::endl;
-	Logger::setMode(NORMAL);
+	Logger::setMode(SILENT);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	if (argc > 2)
 	{
@@ -259,7 +256,7 @@ int	main(int argc, char **argv)
 	try { g_webserv.init_config(std::string(argc == 1 ? "./config/default.conf" : argv[1])); }
 	catch (std::exception& e) { return Logger::print(std::string("Invalid config file: ") + e.what(), 1, ERROR, SILENT); }
 
-
+	g_webserv.creds = new Credentials();
 	Threadpool* workers = new Threadpool(g_webserv.workers_amount);
 	sighandler();
 
@@ -396,6 +393,7 @@ int	main(int argc, char **argv)
 	for (std::map<int, ServerSocket*>::iterator its = g_webserv.sockets.begin(); its != g_webserv.sockets.end(); its++)
 		delete its->second;
 	delete g_webserv.file_formatname;
+	delete g_webserv.creds;
 	Logger::print("Webserv Shutdown complete", NULL, SUCCESS, SILENT);
 	std::cout << std::flush;
 	return (0);
