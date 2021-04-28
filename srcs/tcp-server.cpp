@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/28 03:08:05 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/28 16:22:16 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ bool	handle_server_response(Client &client)
 		}
 		if (!response.getCode())
 		{
-			if (ft::contains(vhost.getConfig().getConfigPath(client.req->_url._path).getAllowedMethods(), client.req->_method))
+			if (!ft::contains(vhost.getConfig().getConfigPath(client.req->_url._path).getAllowedMethods(), client.req->_method))
 				response.setCode(405);
 		}
 		if (!response.getCode())
