@@ -10,6 +10,7 @@
 #include "URL.hpp"
 #include "Utils.hpp"
 #include "Webserv.hpp"
+#include <errno.h>
 
 PostMethod::PostMethod() {}
 PostMethod::PostMethod(const PostMethod&) {}
