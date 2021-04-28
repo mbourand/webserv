@@ -156,11 +156,8 @@ Response GetMethod::directory_listing(const Request& request, const ConfigContex
 Response GetMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
 {
 	const URL& url = request._url;
-	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethods();
 	Response response(200, url._path);
 	response.setCompression(request.getHeaderValue("Accept-Encoding"));
-	if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
-		return (response.setCode(405));
 	int base_depth = 0;
 	std::string realPath = config.rootPath(url._path, base_depth);
 	try

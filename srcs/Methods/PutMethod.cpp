@@ -33,13 +33,9 @@ bool PutMethod::isAllowedInHTMLForms() const { return false; }
 
 Response PutMethod::process(const Request& request, const ConfigContext& config, const ServerSocket&)
 {
-	URL url(request._url._path);
-	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethods();
-	if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
-		return Response(405, url._path);
+	URL		url(request._url._path);
+	int		base_depth = 0;
 
-
-	int base_depth = 0;
 	std::string realPath = config.rootPath(url._path, base_depth);
 	try
 	{
@@ -50,19 +46,16 @@ Response PutMethod::process(const Request& request, const ConfigContext& config,
 		return Response(404, url._path);
 	}
 
-
 	Response response(200, url._path);
 	if (realPath.rfind('/') == realPath.size() - 1)
 		realPath = realPath.erase(realPath.size() - 1);
 	if (realPath.rfind('.') >= (realPath.size() - 1) || realPath.rfind('/') != config.getParam("root").front().size()) // if no ext or target is subfoler inside uploads
 		return Response(415, url._path);
 
-
 	std::string extension = ft::get_extension(realPath);
 	if (!config.can_be_uploaded(extension) || !g_webserv.file_formatname->GetNode(extension.substr(1))
 	|| request.getHeaderValue("Content-Type") != g_webserv.file_formatname->Lookup(extension.substr(1)))
 		return Response(415, url._path);
-
 
 	std::string file_path = config.getParam("uploads").front() + realPath.substr(realPath.find('/'));
 	std::fstream file;

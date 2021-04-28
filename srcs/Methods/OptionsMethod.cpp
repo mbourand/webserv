@@ -29,16 +29,13 @@ bool OptionsMethod::isAllowedInHTMLForms() const { return false; }
 Response OptionsMethod::process(const Request& request, const ConfigContext& config, const ServerSocket&)
 {
 	std::string	allowed_header;
-
+	Response response(200, request._url._path);
 
 	if (request._url._path == "*")
 		allowed_header = "CONNECT, DELETE, GET, HEAD, OPTIONS, POST, PUT, TRACE";
 	else
 	{
 		const std::list<const IMethod*>& allowedMethods = config.getAllowedMethods();
-		if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
-			return Response(405, request._url._path);
-
 		for (std::list<const IMethod*>::const_iterator it = allowedMethods.begin(); it != allowedMethods.end(); it++)
 		{
 			if (it != allowedMethods.begin())
@@ -46,9 +43,6 @@ Response OptionsMethod::process(const Request& request, const ConfigContext& con
 			allowed_header += (*it)->getType();
 		}
 	}
-
-
-	Response response(200, request._url._path);
 	response.addHeader("Allow", allowed_header);
 	response.addDateHeader();
 	response.addHeader("Server", "Webserv");

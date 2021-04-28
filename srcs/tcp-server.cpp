@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/27 19:52:22 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/28 02:19:06 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,12 @@ bool	handle_server_response(Client &client)
 			}
 			else if (!g_webserv.creds->Check_Credentials(vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic_user_file").front(), credentials.substr(6))) //TODO: comparer credentials avec ceux dans le fichier	login:password -> bG9naW46cGFzc3dvcmQ=
 				response.setCode(403); //forbidden (wrong credentials)
+		}
+		if (!response.getCode())
+		{
+			const std::list<const IMethod*>& allowedMethods = vhost.getConfig().getConfigPath(client.req->_url._path).getAllowedMethods();
+			if (std::find(allowedMethods.begin(), allowedMethods.end(), *client.req->_method) == allowedMethods.end())
+				response.setCode(405);
 		}
 		if (!response.getCode())
 			response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_url._path), *client.sckt);

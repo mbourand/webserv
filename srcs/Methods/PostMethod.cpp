@@ -35,11 +35,8 @@ bool PostMethod::isAllowedInHTMLForms() const { return true; }
 Response PostMethod::process(const Request& request, const ConfigContext& config, const ServerSocket& socket)
 {
 	const URL& url = request._url;
-	const std::list<const IMethod*>& allowedMethods = config.getAllowedMethods();
-	if (std::find(allowedMethods.begin(), allowedMethods.end(), request._method) == allowedMethods.end())
-		return Response(405, url._path);
-
 	int base_depth = 0;
+	Response response(200, url._path); //change code on failure
 	std::string realPath = config.rootPath(url._path, base_depth);
 	try
 	{
@@ -47,10 +44,8 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 	}
 	catch (std::exception& e)
 	{
-		return Response(404, url._path);
+		return (response.setCode(404));
 	}
-
-	Response response(200, url._path); //change code on failure
 
 	std::list<std::string> splitted = ft::split(realPath, "/");
 	std::string extension = ft::get_extension(splitted.back());
