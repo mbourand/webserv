@@ -12,11 +12,37 @@
 int ft::toInt(const std::string& str)
 {
 	for (size_t i = 0; i < str.size(); ++i)
-		if (!std::isdigit(str[i])) 
+		if (!std::isdigit(str[i]))
 			throw std::invalid_argument("String is not an integer");
 
 	std::istringstream iss(str);
 	int ret = 0;
+	iss >> ret;
+	return ret;
+}
+
+float	ft::toFloat(const std::string& str)
+{
+	if (str.empty())
+		return 0;
+
+
+	if (str.find_first_not_of("0123456789.-+") != std::string::npos)
+		throw std::invalid_argument("String is not a float");
+
+	if (std::count(str.begin(), str.end(), '-') == 1)
+		if (str[0] != '-')
+			throw std::invalid_argument("String is not a float");
+
+	if (std::count(str.begin(), str.end(), '+') == 1)
+		if (str[0] != '+')
+			throw std::invalid_argument("String is not a float");
+
+	if (std::count(str.begin(), str.end(), '.') > 1)
+		throw std::invalid_argument("String is not a float");
+
+	std::istringstream iss(str);
+	float ret = 0;
 	iss >> ret;
 	return ret;
 }
@@ -37,7 +63,7 @@ std::string ft::toHex(int i)
 
 int			ft::hexToInt(const std::string& str)
 {
-	unsigned int out;   
+	unsigned int out;
     std::stringstream ss;
     ss << std::hex << str;
     ss >> out;
