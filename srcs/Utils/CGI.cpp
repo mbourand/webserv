@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/27 19:46:33 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/28 21:05:38 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,10 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 			m_env.push_back("CONTENT_TYPE=US-ASCII");
 	}
 	m_env.push_back("GATEWAY_INTERFACE=CGI/1.1");
-	if (!m_env_Path_Info.empty())
+	if (m_args[0].find("ubuntu_cgi_tester") != std::string::npos)
+		m_env.push_back("PATH_INFO="+request._url._path);
+	else if (!m_env_Path_Info.empty())
 		m_env.push_back("PATH_INFO="+m_env_Path_Info);
-	else if (m_env_Script_Name.find("ubuntu_cgi_tester") != std::string::npos)
-		m_env.push_back("PATH_INFO="+m_env_Script_Name);
 	if (document_root.find("..") != std::string::npos)
 	{
 		chdir(document_root.substr(0, document_root.find_last_of('/')).c_str());

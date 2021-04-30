@@ -49,14 +49,16 @@ Response PutMethod::process(const Request& request, const ConfigContext& config,
 	Response response(200, url._path);
 	if (realPath.rfind('/') == realPath.size() - 1)
 		realPath = realPath.erase(realPath.size() - 1);
-	if (realPath.rfind('.') >= (realPath.size() - 1) || realPath.rfind('/') != config.getParam("root").front().size()) // if no ext or target is subfoler inside uploads
+	if (realPath.rfind('/') != config.getParam("root").front().size()) // if no ext or target is subfoler inside uploads
 		return Response(415, url._path);
 
-	std::string extension = ft::get_extension(realPath);
-	if (!config.can_be_uploaded(extension) || !g_webserv.file_formatname->GetNode(extension.substr(1))
-	|| request.getHeaderValue("Content-Type") != g_webserv.file_formatname->Lookup(extension.substr(1)))
-		return Response(415, url._path);
-
+	if (realPath.rfind('.') != std::string::npos)
+	{
+		std::string extension = ft::get_extension(realPath);
+		if (!config.can_be_uploaded(extension) || !g_webserv.file_formatname->GetNode(extension.substr(1))
+		|| request.getHeaderValue("Content-Type") != g_webserv.file_formatname->Lookup(extension.substr(1)))
+			return Response(415, url._path);
+	}
 	std::string file_path = config.getParam("uploads").front() + realPath.substr(realPath.find('/'));
 	std::fstream file;
 	struct stat	file_stats;

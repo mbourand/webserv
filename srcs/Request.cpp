@@ -127,19 +127,24 @@ void Request::parse()
 			if ((_raw.size() - _parse_start) > _max_body_size)
 			{
 				_error_code = 413;
+				std::cout << _raw.size() << std::endl;
 				throw std::invalid_argument("Request Entity too large.");
 			}
 			if ((_raw.size() - _parse_start) == _content_length)
 				_body = dechunk(_raw.substr(_parse_start, _raw.substr(_parse_start).size()));
 			else
 				_body = dechunk(_raw.substr(_parse_start, _raw.substr(_parse_start).size() - 2));
-			Logger::print("Request body is " + _body, NULL, INFO, VERBOSE);
+			if (_body.size() < 100)
+				Logger::print("Request body is " + _body, NULL, INFO, VERBOSE);
+			else
+				Logger::print("Request body is <<<BODY TOO LONG>>>", NULL, INFO, VERBOSE);
 		}
 		_finished_parsing = true;
 	}
 	else if (_header_section_finished && _method->requestHasBody() && (_raw.size() - _parse_start) > _max_body_size)
 	{
 		_error_code = 413;
+		std::cout << "OTHER " << _raw.size() << std::endl;
 		throw std::invalid_argument("Request Entity too large.");
 	}
 }
@@ -231,15 +236,19 @@ size_t is_header_field_finished(std::string str)
 {
 	size_t i = 0;
 
-	while (str.find("\r\n", i) != std::string::npos)
-	{
-		if (!str[str.find("\r\n", i) + 2])
-			return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
-		if (str[str.find("\r\n", i) + 2] != ' ' && str[str.find("\r\n", i) + 2] != '\t')
-			return Logger::print("Header field is finished", str.find("\r\n", i) + 2, INFO, VERBOSE);
-		i = str.find("\r\n", i) + 2;
-	}
-	return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
+	if (str.find("\r\n", 0) == std::string::npos)
+		return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
+	else if (str.find("\r\n", 0) == 0)
+		return Logger::print("Header field is finished", 0, INFO, VERBOSE);
+	//while (str.find("\r\n", i) != std::string::npos)
+	//{
+	if (!str[str.find("\r\n", i) + 2])
+		return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
+	//if (str[str.find("\r\n", i) + 2] != ' ' && str[str.find("\r\n", i) + 2] != '\t')
+	return Logger::print("Header field is finished", str.find("\r\n", i) + 2, INFO, VERBOSE);
+		//i = str.find("\r\n", i) + 2;
+	//}
+	//return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
 }
 
 bool Request::parse_headers()
@@ -248,6 +257,15 @@ bool Request::parse_headers()
 
 	if (header_len == size_t(-1))
 		return false;
+	else if (header_len == 0)
+	{
+		if (_method->requestHasBody())
+			_parse_start += 2;
+		else
+			_parse_start -= 2;
+		Logger::print("Header section is finished", false, INFO, VERBOSE);
+		return (_header_section_finished = true);
+	}
 	if (_raw.find(':', _parse_start) == std::string::npos)
 		throw std::invalid_argument("Invalid header field in request");
 	std::string header_name = _raw.substr(_parse_start, _raw.find(':', _parse_start) - _parse_start);
@@ -380,6 +398,9 @@ std::ostream& operator<<(std::ostream& out, const Request& request)
 			"Headers: " << std::endl;
 	for (Request::HeadersVector::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
 		out << "  \"" << (*it)->getType() << "\" -> \"" << (*it)->getValue() << '"' << std::endl;
-	out << "Body:\n\"" << request._body << "\"" << std::endl;
+	if (request._body.size() < 100)
+		out << "Body:\n\"" << request._body << "\"" << std::endl;
+	else
+		out << "Body:\n\"" << "<<<BODY TOO LONG>>>" << "\"" << std::endl;
 	return out;
 }

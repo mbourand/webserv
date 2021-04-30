@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/27 19:45:41 by nforay           ###   ########.fr       */
+/*   Updated: 2021/04/30 23:00:29 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include "Utils.hpp"
 
 const int MAX_CONNECTIONS = 10;
-const int MAX_RECIEVE = 4096;
+const int MAX_RECIEVE = 65534;
 
 class Socket
 {
