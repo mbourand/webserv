@@ -28,9 +28,10 @@ namespace ft
 	void						*memset(void *s, int c, size_t n);
 	void						bzero(void *str, size_t len);
 	std::string 				get_extension(std::string path);
+	float						toFloat(const std::string& str);
 
 	template<class IntegralType>
-	bool is_integer(const std::string& str)
+	bool						is_integer(const std::string& str)
 	{
 		if (str.size() == 0)
 			return false;
@@ -49,7 +50,7 @@ namespace ft
 	}
 
 	template<class ContainerType, class ValueType>
-	inline bool contains(const ContainerType& container, const ValueType& val)
+	inline bool					contains(const ContainerType& container, const ValueType& val)
 	{
 		return std::find(container.begin(), container.end(), val) != container.end();
 	}

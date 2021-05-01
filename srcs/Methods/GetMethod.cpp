@@ -15,6 +15,7 @@
 #include "Utils.hpp"
 #include <dirent.h>
 #include <algorithm>
+#include <functional>
 
 GetMethod::GetMethod() {}
 GetMethod::GetMethod(const GetMethod&) {}
@@ -220,14 +221,43 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		}
 	}
 
-	std::fstream file(realPath.c_str());
+	std::fstream file;
+	if (!request.getHeaderValue("Accept-Language").empty())
+	{
+		std::string filename = realPath.substr((realPath.rfind('/') == std::string::npos ? 0 : realPath.rfind('/')));
+		std::string folder = (realPath.size() == filename.size() ? "" : realPath.substr(0, realPath.rfind(filename)));
+
+		AcceptLanguageHeader* ach;
+		for (Request::HeadersVector::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
+			if (!(ach = dynamic_cast<AcceptLanguageHeader*>(*it)))
+				continue;
+
+		std::multimap<float, std::string, std::greater<float> > language_preferences = ach->getLanguages();
+		for (std::map<float, std::string, std::greater<float> >::const_iterator it = language_preferences.begin(); it != language_preferences.end(); it++)
+		{
+			if (g_webserv.languages->GetNode(it->second) == NULL)
+				continue;
+
+			file.open((folder + "/.langs/" + it->second + "/" + filename).c_str());
+			if (file.good() && file.is_open())
+			{
+				response.addHeader("Content-Language", it->second);
+				break;
+			}
+		}
+	}
+
 	if (!file.good() || !file.is_open())
 	{
-		if (errno == ENOENT || errno == ENOTDIR)
-			return Logger::print("File not found", response.setCode(404), ERROR, VERBOSE);
-		if (errno == EACCES || errno == EISDIR)
-			return Logger::print("Permission denied", response.setCode(403), ERROR, VERBOSE);
-		return Logger::print("Unexpected error while trying to open file: " + std::string(strerror(errno)), response.setCode(500), ERROR, VERBOSE);
+		file.open(realPath.c_str());
+		if (!file.good() || !file.is_open())
+		{
+			if (errno == ENOENT || errno == ENOTDIR)
+				return Logger::print("File not found", response.setCode(404), ERROR, VERBOSE);
+			if (errno == EACCES || errno == EISDIR)
+				return Logger::print("Permission denied", response.setCode(403), ERROR, VERBOSE);
+			return Logger::print("Unexpected error while trying to open file: " + std::string(strerror(errno)), response.setCode(500), ERROR, VERBOSE);
+		}
 	}
 
 
