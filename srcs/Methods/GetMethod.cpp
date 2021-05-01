@@ -235,11 +235,16 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		std::multimap<float, std::string, std::greater<float> > language_preferences = ach->getLanguages();
 		for (std::map<float, std::string, std::greater<float> >::const_iterator it = language_preferences.begin(); it != language_preferences.end(); it++)
 		{
+			if (g_webserv.languages->GetNode(it->second) == NULL)
+				continue;
+
 			file.open((folder + "/.langs/" + it->second + "/" + filename).c_str());
 			if (file.good() && file.is_open())
+			{
+				response.addHeader("Content-Language", it->second);
 				break;
+			}
 		}
-
 	}
 
 	if (!file.good() || !file.is_open())
