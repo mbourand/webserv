@@ -47,8 +47,6 @@ Response PutMethod::process(const Request& request, const ConfigContext& config,
 	}
 
 	Response response(200, url._path);
-	if (realPath.rfind('/') == realPath.size() - 1)
-		realPath = realPath.erase(realPath.size() - 1);
 	if (realPath.rfind('/') != config.getParam("root").front().size()) // if no ext or target is subfoler inside uploads
 		return Response(415, url._path);
 

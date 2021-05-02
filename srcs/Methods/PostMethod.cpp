@@ -50,8 +50,6 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 
 	std::list<std::string> splitted = ft::split(realPath, "/");
 	std::string extension = ft::get_extension(splitted.back());
-	if (realPath[realPath.size() - 1] == '/')
-		realPath.erase(realPath.size() - 1);
 	if ((!extension.empty() && config.getCGIExtensions().find(extension) != config.getCGIExtensions().end()) || (realPath.find(config.getParam("cgi_dir").front()) == 0))
 	{
 		try
@@ -71,7 +69,7 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 		if (!file.good() || !file.is_open())
 		{
 			if (errno == ENOENT || errno == ENOTDIR)
-				return Logger::print("File not found", response.setCode(404), ERROR, VERBOSE);
+				return Logger::print("File not found", response.setCode(400), ERROR, VERBOSE);
 			if (errno == EACCES || errno == EISDIR)
 				return Logger::print("Permission denied", response.setCode(403), ERROR, VERBOSE);
 			return Logger::print("Unexpected error while trying to open file: " + std::string(strerror(errno)), response.setCode(500), ERROR, VERBOSE);

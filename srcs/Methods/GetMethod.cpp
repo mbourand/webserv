@@ -171,9 +171,6 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 
 	if (realPath[0] != '/')
 		realPath = g_webserv.cwd + "/" + realPath;
-	if (!realPath.empty() && realPath != "/")
-		realPath.erase(--realPath.end());
-
 
 	if (ft::is_directory(realPath))
 	{

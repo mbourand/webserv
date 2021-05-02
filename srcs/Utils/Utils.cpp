@@ -281,7 +281,12 @@ std::string ft::simplify_path(const std::string& input, bool safe, int base_dept
 			it++;
 		}
 		else
-			ret += *it + "/";
+		{
+			if (it == --splitted.end())
+				ret += *it;
+			else
+				ret += *it + "/";
+		}
 	}
 	return ret;
 }

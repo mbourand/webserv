@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/28 21:05:38 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/02 19:11:01 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,6 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 		document_root = ft::get_cwd();
 		chdir(g_webserv.cwd.c_str());
 	}
-	if (document_root[document_root.size() - 1] == '/')
-		document_root.erase(document_root.size() - 1);
 	m_env.push_back("PATH_TRANSLATED=" + document_root + m_env_Script_Name);
 	if (!request._url._query.empty())
 		m_env.push_back("QUERY_STRING="+request._url._query);
