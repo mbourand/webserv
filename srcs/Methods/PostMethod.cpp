@@ -47,7 +47,16 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 	{
 		return (response.setCode(404));
 	}
-
+	if (ft::is_directory(realPath))
+	{
+		try
+		{
+			std::string index = "/" + config.getParam("index").front();
+			realPath += index;
+		}
+		catch (std::exception& e)
+		{}
+	}
 	std::list<std::string> splitted = ft::split(realPath, "/");
 	std::string extension = ft::get_extension(splitted.back());
 	if ((!extension.empty() && config.getCGIExtensions().find(extension) != config.getCGIExtensions().end()) || (realPath.find(config.getParam("cgi_dir").front()) == 0))

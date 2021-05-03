@@ -104,7 +104,7 @@ void Request::parse()
 					{
 						VirtualHost vhost = VirtualHost::getServerByName(_headers[i]->getValue(), _port, g_webserv.vhosts);
 						std::stringstream	convert;
-						convert << vhost.getConfig().getParam("max_client_body_size").front();
+						convert << vhost.getConfig().getConfigPath(_url._path).getParam("max_client_body_size").front();
 						convert >> _max_body_size;
 					}
 					catch(const std::exception& e)
@@ -124,10 +124,9 @@ void Request::parse()
 	{
 		if (_method->requestHasBody())
 		{
-			if ((_raw.size() - _parse_start) > _max_body_size)
+			if (!_chunked && ((_raw.size() - _parse_start) > _max_body_size))
 			{
 				_error_code = 413;
-				std::cout << _raw.size() << std::endl;
 				throw std::invalid_argument("Request Entity too large.");
 			}
 			if ((_raw.size() - _parse_start) == _content_length)
@@ -141,10 +140,9 @@ void Request::parse()
 		}
 		_finished_parsing = true;
 	}
-	else if (_header_section_finished && _method->requestHasBody() && (_raw.size() - _parse_start) > _max_body_size)
+	else if (_header_section_finished && _method->requestHasBody() && !_chunked && (_raw.size() - _parse_start) > _max_body_size)
 	{
 		_error_code = 413;
-		std::cout << "OTHER " << _raw.size() << std::endl;
 		throw std::invalid_argument("Request Entity too large.");
 	}
 }
@@ -155,8 +153,8 @@ std::string		Request::dechunk(const std::string& str)
 		return (str);
 	size_t		start = 0;
 	size_t		end = 0;
-	int			len;
-	int			total_len = 0;
+	size_t		len;
+	size_t		total_len = 0;
 	std::string	output;
 
 	while ((end = str.find("\r\n", start)) != std::string::npos)
@@ -171,7 +169,11 @@ std::string		Request::dechunk(const std::string& str)
 					delete (*it);
 					_headers.erase(it);
 					Header* header = g_webserv.headers.createByType_ignore_case(ContentLengthHeader().getType());
-					header->parse(ft::toString(total_len)+"\r\n");
+					std::stringstream	ss;
+					std::string			converted;
+					ss << total_len;
+					ss >> converted;
+					header->parse(converted+"\r\n");
 					_headers.push_back(header);
 					return (output);
 				}
@@ -183,6 +185,11 @@ std::string		Request::dechunk(const std::string& str)
 			return ("");
 		}
 		total_len += len;
+		if (total_len > _max_body_size)
+		{
+			_error_code = 413;
+			return ("");
+		}
 		output += str.substr(end, len);
 		start = end + len + 2;
 	}

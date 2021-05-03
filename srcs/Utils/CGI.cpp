@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/02 19:11:01 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/03 03:46:41 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	m_env.push_back("SERVER_PORT="+socket.getServerPort_Str());
 	m_env.push_back("SERVER_PROTOCOL=HTTP/1.1");
 	m_env.push_back("SERVER_SOFTWARE=Webserv");
+	m_env.push_back("HTTP_X_SECRET_HEADER_FOR_TEST=1"); //TEMP DEBUG - (WIP add headers HTTP_*)
 	convert.str("");
 	convert << socket.GetSocket();
 	m_tmpfilename = "/tmp/webserv_" + convert.str() + "-";
@@ -262,16 +263,17 @@ void	CGI::process(Response& response)
 		{
 			convert << content.substr(8, content.find(' ', 8) - 8);
 			convert >> status;
-			if (status != 200)
+			response.setCode(status);
+			if (status >= 400)
 			{
 				Logger::print("CGI returned status "+convert.str(), NULL, ERROR, NORMAL);
-				response.setCode(status);
 				return;
 			}
 		}
 		while (content.find(": ") < content.find("\r\n\r\n"))
 		{
 			size_t found = content.find(": ");
+			if (content.substr(0, found) != "Status")
 			response.addHeader(content.substr(0, found), content.substr(found + 2, (content.find("\r\n")) - found - 2));
 			content.erase(0, content.find("\r\n"));
 			if (content.find(": ") < content.find("\r\n\r\n"))

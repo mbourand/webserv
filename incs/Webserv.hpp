@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 19:37:11 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/27 03:13:36 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/03 03:26:28 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class Credentials;
 typedef struct						s_webserv
 {
 	bool							run;
+	bool							debug;
 	HashTable						*file_formatname;
 	std::map<int, ServerSocket*>	sockets;
 	std::string						cwd;
