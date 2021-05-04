@@ -6,21 +6,16 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/03 19:33:31 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/26 17:43:42 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/04 18:57:27 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "Threadpool.hpp"
 #include <unistd.h>
 
-
-
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
-
-
 
 Threadpool::Threadpool(unsigned int numworkers) : m_numworkers(numworkers), m_maxqueuedjobs(100)
 {
@@ -38,13 +33,9 @@ Threadpool::Threadpool(unsigned int numworkers) : m_numworkers(numworkers), m_ma
 	}
 }
 
-
-
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
-
-
 
 Threadpool::~Threadpool()
 {
@@ -64,13 +55,9 @@ Threadpool::~Threadpool()
 	pthread_mutex_destroy(&m_jobsmutex);
 }
 
-
-
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
 */
-
-
 
 Threadpool &				Threadpool::operator=(Threadpool const &rhs)
 {
@@ -85,13 +72,9 @@ Threadpool &				Threadpool::operator=(Threadpool const &rhs)
 	return *this;
 }
 
-
-
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
-
-
 
 void					Threadpool::Lock(void)
 {
@@ -150,13 +133,9 @@ void					*Threadpool::WaitForWork(void *)
 	return (NULL);
 }
 
-
-
 /*
 ** --------------------------------- ACCESSOR ---------------------------------
 */
-
-
 
 const std::deque<Client*>& Threadpool::getJobs() const { return m_jobs; }
 const std::list<Client*>& Threadpool::getCurrentJobs() const { return m_currentjobs; }

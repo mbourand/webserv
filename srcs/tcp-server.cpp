@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/03 03:44:45 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/03 22:39:51 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,13 +98,11 @@ bool	handle_client_request(Client &client)
 	}
 	catch(ServerSocket::ServerSocketException &e)
 	{
-		Logger::print(e.what(), NULL, ERROR, NORMAL);
-		return true;
+		return (Logger::print(e.what(), true, ERROR, NORMAL));
 	}
 	catch(std::invalid_argument &e)
 	{
-		Logger::print(e.what(), NULL, ERROR, SILENT);
-		return true;
+		return (Logger::print(e.what(), true, ERROR, SILENT));
 	}
 	return false;
 }

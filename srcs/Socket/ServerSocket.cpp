@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/27 19:47:19 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/04 00:09:44 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ ServerSocket::ServerSocket(const ServerSocket &src) : m_port(src.m_port)
 		throw ServerSocketException("Counldn't listen to socket.");
 }
 
-
 /*
 ** -------------------------------- DESTRUCTOR --------------------------------
 */
@@ -47,7 +46,6 @@ ServerSocket::ServerSocket(const ServerSocket &src) : m_port(src.m_port)
 ServerSocket::~ServerSocket()
 {
 }
-
 
 /*
 ** --------------------------------- OVERLOAD ---------------------------------
@@ -59,7 +57,6 @@ const ServerSocket &	ServerSocket::operator<<(const std::string &s) const
 		throw ServerSocketException("Couldn't write to socket.");
 	return *this;
 }
-
 
 const ServerSocket &	ServerSocket::operator>>(std::string& s) const
 {
@@ -104,6 +101,5 @@ std::string				ServerSocket::getIPAddress() const
 {
 	return m_ipaddr;
 }
-
 
 /* ************************************************************************** */
