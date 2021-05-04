@@ -276,9 +276,13 @@ bool Request::parse_headers()
 	if (_raw.find(':', _parse_start) == std::string::npos)
 		throw std::invalid_argument("Invalid header field in request");
 	std::string header_name = _raw.substr(_parse_start, _raw.find(':', _parse_start) - _parse_start);
-	if (g_webserv.headers.contains_ignore_case(header_name))
+	if ((header_name.find("X-") == 0) || g_webserv.headers.contains_ignore_case(header_name))
 	{
-		Header* header = g_webserv.headers.createByType_ignore_case(header_name);
+		Header* header;
+		if (header_name.find("X-") == 0)
+			header = CustomHeader(header_name).clone();
+		else
+			header = g_webserv.headers.createByType_ignore_case(header_name);
 		if (header == NULL)
 			throw std::invalid_argument("Out of memory");
 		try

@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/04 18:58:12 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/04 19:46:06 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	m_env.push_back("SERVER_PORT="+socket.getServerPort_Str());
 	m_env.push_back("SERVER_PROTOCOL=HTTP/1.1");
 	m_env.push_back("SERVER_SOFTWARE=Webserv");
-	m_env.push_back("HTTP_X_SECRET_HEADER_FOR_TEST=1"); //TEMP DEBUG
 	add_http_headers(request._headers);
 	convert.str("");
 	convert << socket.GetSocket();
@@ -138,7 +137,8 @@ void			CGI::add_http_headers(const Request::HeadersVector& headers)
 	{
 		if ((*it)->getType() == AcceptCharsetsHeader().getType() || (*it)->getType() == AcceptEncodingHeader().getType()
 			|| (*it)->getType() == AcceptLanguageHeader().getType() || (*it)->getType() == HostHeader().getType()
-			|| (*it)->getType() == RefererHeader().getType() || (*it)->getType() == UserAgentHeader().getType()) // TODO: || custom Header (*it)->getType().find("X-") == 0
+			|| (*it)->getType() == RefererHeader().getType() || (*it)->getType() == UserAgentHeader().getType()
+			|| (*it)->getType().find("X-") == 0)
 		{
 			std::string	temp;
 			temp = "HTTP_" + (*it)->getType();
