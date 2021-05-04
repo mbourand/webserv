@@ -251,7 +251,12 @@ bool Request::parse_headers()
 	if (_raw.find(':', _parse_start) == std::string::npos)
 		throw std::invalid_argument("Invalid header field in request");
 	std::string header_name = _raw.substr(_parse_start, _raw.find(':', _parse_start) - _parse_start);
-	if (g_webserv.headers.contains_ignore_case(header_name))
+	if (header_name.substr(0, 2) == "X-")
+	{
+		_custom_headers.insert(std::make_pair(header_name, Header::parseValue(_raw.substr(_parse_start + header_name.size() + 1))));
+		_parse_start += header_len;
+	}
+	else if (g_webserv.headers.contains_ignore_case(header_name))
 	{
 		Header* header = g_webserv.headers.createByType_ignore_case(header_name);
 		if (header == NULL)
