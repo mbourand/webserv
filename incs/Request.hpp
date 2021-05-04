@@ -34,7 +34,6 @@ class Request
 		bool			_finished_parsing;
 		bool			_chunked;
 		size_t			_parse_start;
-		std::map<std::string, std::string> _custom_headers;
 
 	private:
 

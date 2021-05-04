@@ -16,9 +16,6 @@ class Header
 		virtual size_t parse(std::string value);
 
 		const std::string& getValue() const;
-
-		static std::string parseValue(std::string content);
-
 };
 
 #endif
