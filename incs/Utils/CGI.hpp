@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CGI.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/16 15:08:21 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/05/04 18:11:23 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ class CGI
 	private:
 
 		std::string		find_first_file(const std::string &path, const ConfigContext& config);
+		void			add_http_headers(const Request::HeadersVector& headers);
 		void			execute(const std::string & body);
 		int				ParseURI(const Request& req, const ConfigContext& config);
 		void			VectorToArray(void);

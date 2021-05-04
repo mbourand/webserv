@@ -260,10 +260,8 @@ void ConfigContext::parse_cgi_ext(const std::string& directive_value)
 	for (std::map<std::string, std::string>::iterator it = _cgi_exts.begin(); it != _cgi_exts.end(); it++)
 	{
 		it->second = ft::simplify_path(it->second);
-		if (it->second != "/" && it->second != "")
-			it->second.erase(--(it->second.end()));
 		if (!ft::is_executable(it->second.c_str()))
-			throw std::invalid_argument("cg_ext parameter is not an executable in config");
+			throw std::invalid_argument("cgi_ext parameter is not an executable in config");
 	}
 }
 
@@ -275,8 +273,6 @@ void ConfigContext::set_auth_basic_user_file_default()
 		return;
 
 	_params["auth_basic_user_file"].front() = ft::simplify_path(_params["auth_basic_user_file"].front());
-	if (_params["auth_basic_user_file"].front() != "/" && _params["auth_basic_user_file"].front() != "")
-		_params["auth_basic_user_file"].front().erase(--_params["auth_basic_user_file"].front().end());
 	if (!ft::is_regular_file(_params["auth_basic_user_file"].front().c_str()))
 		throw std::invalid_argument("Auth Basic User File parameter is not a regular file");
 }
@@ -290,8 +286,6 @@ void ConfigContext::set_root_default()
 	else
 	{
 		_params["root"].front() = ft::simplify_path(_params["root"].front());
-		if (_params["root"].front() != "/" && _params["root"].front() != "")
-			_params["root"].front().erase(--_params["root"].front().end());
 		if (!ft::is_directory(_params["root"].front().c_str()))
 			throw std::invalid_argument("Root parameter is not a folder in config");
 	}
@@ -306,8 +300,6 @@ void ConfigContext::set_cgi_dir_default()
 	else
 	{
 		_params["cgi_dir"].front() = ft::simplify_path(_params["cgi_dir"].front());
-		if (_params["cgi_dir"].front() != "/" && !_params["cgi_dir"].front().empty())
-			_params["cgi_dir"].front().erase(--_params["cgi_dir"].front().end());
 		if (!ft::is_directory(_params["cgi_dir"].front().c_str()))
 			throw std::invalid_argument("cgi_dir parameter is not a folder in config");
 	}
@@ -392,8 +384,6 @@ void ConfigContext::set_uploads_default()
 	else
 	{
 		_params["uploads"].front() = ft::simplify_path(_params["uploads"].front());
-		if (_params["uploads"].front() != "/" && _params["uploads"].front() != "")
-			_params["uploads"].front().erase(--_params["uploads"].front().end());
 		if (!ft::is_directory(_params["uploads"].front().c_str()))
 			throw std::invalid_argument("Uploads parameter is not a folder in config");
 	}

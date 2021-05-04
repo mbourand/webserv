@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/11 19:37:11 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/28 13:24:53 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/05/04 21:59:34 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class Credentials;
 typedef struct						s_webserv
 {
 	bool							run;
+	bool							debug;
 	HashTable						*file_formatname;
 	HashTable						*languages;
 	std::map<int, ServerSocket*>	sockets;

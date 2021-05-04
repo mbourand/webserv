@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/27 19:46:33 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/04 19:46:06 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
 */
-
-
 
 CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket& socket, const std::string& realPath)
 	: m_realPath(realPath)
@@ -71,7 +69,12 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 			m_args.push_back(document_root + m_env_Path_Info);
 	}
 	if (auth_type)
+	{
 		m_env.push_back("AUTH_TYPE="+auth_type->getValue());
+		//m_env.push_back("REMOTE_IDENT=something"); //REMOTE_IDENT This variable stores the user ID running the CGI script. The user ID is stored only if the ident process is running since ident returns a response containing not only user ID information, but also the name of the OS running the script.
+		//if ((header_found = request._headerFactory.getByType(WWWAuthenticateHeader().getType())) != NULL)
+		//	m_env.push_back("REMOTE_USER=something"); //REMOTE_USER Querying the REMOTE_USER variable will give the user name information of the entity making the request. This is only valid if authentication is enabled.
+	}
 	if (request._method->requestHasBody() && !request._body.empty())
 	{
 		convert << request._body.size();
@@ -82,32 +85,28 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 			m_env.push_back("CONTENT_TYPE=US-ASCII");
 	}
 	m_env.push_back("GATEWAY_INTERFACE=CGI/1.1");
-	if (!m_env_Path_Info.empty())
+	if (m_args[0].find("ubuntu_cgi_tester") != std::string::npos)
+		m_env.push_back("PATH_INFO="+request._url._path);
+	else if (!m_env_Path_Info.empty())
 		m_env.push_back("PATH_INFO="+m_env_Path_Info);
-	else if (m_env_Script_Name.find("ubuntu_cgi_tester") != std::string::npos)
-		m_env.push_back("PATH_INFO="+m_env_Script_Name);
 	if (document_root.find("..") != std::string::npos)
 	{
 		chdir(document_root.substr(0, document_root.find_last_of('/')).c_str());
 		document_root = ft::get_cwd();
 		chdir(g_webserv.cwd.c_str());
 	}
-	if (document_root[document_root.size() - 1] == '/')
-		document_root.erase(document_root.size() - 1);
 	m_env.push_back("PATH_TRANSLATED=" + document_root + m_env_Script_Name);
 	if (!request._url._query.empty())
 		m_env.push_back("QUERY_STRING="+request._url._query);
 	m_env.push_back("REMOTE_ADDR="+socket.getIPAddress());
-	//m_env.push_back("REMOTE_IDENT=something"); //REMOTE_IDENT This variable stores the user ID running the CGI script. The user ID is stored only if the ident process is running since ident returns a response containing not only user ID information, but also the name of the OS running the script.
-	//if ((header_found = request._headerFactory.getByType(WWWAuthenticateHeader().getType())) != NULL)
-	//	m_env.push_back("REMOTE_USER=something"); //REMOTE_USER Querying the REMOTE_USER variable will give the user name information of the entity making the request. This is only valid if authentication is enabled.
 	m_env.push_back("REQUEST_METHOD="+request._method->getType());
 	m_env.push_back("REQUEST_URI="+request._url._path);
 	m_env.push_back("SCRIPT_NAME="+m_env_Script_Name);
-	m_env.push_back("SERVER_NAME="+config.getNames().front()); //TODO switch better function call get server_name (localhost)
+	m_env.push_back("SERVER_NAME="+config.getNames().front());
 	m_env.push_back("SERVER_PORT="+socket.getServerPort_Str());
 	m_env.push_back("SERVER_PROTOCOL=HTTP/1.1");
 	m_env.push_back("SERVER_SOFTWARE=Webserv");
+	add_http_headers(request._headers);
 	convert.str("");
 	convert << socket.GetSocket();
 	m_tmpfilename = "/tmp/webserv_" + convert.str() + "-";
@@ -131,6 +130,30 @@ CGI::~CGI()
 /*
 ** --------------------------------- METHODS ----------------------------------
 */
+
+void			CGI::add_http_headers(const Request::HeadersVector& headers)
+{
+	for (Request::HeadersVector::const_iterator it = headers.begin(); it != headers.end(); it++)
+	{
+		if ((*it)->getType() == AcceptCharsetsHeader().getType() || (*it)->getType() == AcceptEncodingHeader().getType()
+			|| (*it)->getType() == AcceptLanguageHeader().getType() || (*it)->getType() == HostHeader().getType()
+			|| (*it)->getType() == RefererHeader().getType() || (*it)->getType() == UserAgentHeader().getType()
+			|| (*it)->getType().find("X-") == 0)
+		{
+			std::string	temp;
+			temp = "HTTP_" + (*it)->getType();
+			for (std::string::iterator its = temp.begin() + 6; its != temp.end(); its++)
+			{
+				if (*its == '-')
+					*its = '_';
+				else
+					*its = std::toupper(*its);
+			}
+			temp += '=' + (*it)->getValue();
+			m_env.push_back(temp);
+		}
+	}
+}
 
 std::string		CGI::find_first_file(const std::string &, const ConfigContext& config)
 {
@@ -244,7 +267,6 @@ void	CGI::VectorToArray(void)
 	m_c_args[m_args.size()] = NULL;
 }
 
-
 void	CGI::process(Response& response)
 {
 	std::ifstream		inputFileStream(m_tmpfilename.c_str());
@@ -264,16 +286,17 @@ void	CGI::process(Response& response)
 		{
 			convert << content.substr(8, content.find(' ', 8) - 8);
 			convert >> status;
-			if (status != 200)
+			response.setCode(status);
+			if (status >= 400)
 			{
 				Logger::print("CGI returned status "+convert.str(), NULL, ERROR, NORMAL);
-				response.setCode(status);
 				return;
 			}
 		}
 		while (content.find(": ") < content.find("\r\n\r\n"))
 		{
 			size_t found = content.find(": ");
+			if (content.substr(0, found) != "Status")
 			response.addHeader(content.substr(0, found), content.substr(found + 2, (content.find("\r\n")) - found - 2));
 			content.erase(0, content.find("\r\n"));
 			if (content.find(": ") < content.find("\r\n\r\n"))

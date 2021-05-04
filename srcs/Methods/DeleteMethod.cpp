@@ -45,11 +45,8 @@ Response DeleteMethod::process(const Request& request, const ConfigContext& conf
 		return Response(404, url._path);
 	}
 	Response response(200, url._path);
-	if (realPath.rfind('/') == realPath.size() - 1)
-		realPath = realPath.erase(realPath.size() - 1);
 	std::string file_path = config.getParam("uploads").front() + realPath.substr(realPath.find('/'));
 	struct stat	file_stats;
-	std::cout << file_path << std::endl;
 	if (lstat(file_path.c_str(), &file_stats) == 0 && S_ISREG(file_stats.st_mode))
 	{
 		if (unlink(file_path.c_str()) == 0)
