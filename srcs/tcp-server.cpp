@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/01 13:19:19 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/05/04 22:09:31 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,6 @@
 #include "VirtualHost.hpp"
 #include "Threadpool.hpp"
 #include "Utils.hpp"
-
-#ifndef DEBUG
-# define DEBUG 0
-#endif
 
 t_webserv	g_webserv;
 
@@ -96,31 +92,17 @@ bool	handle_client_request(Client &client)
 	try
 	{
 		*client.sckt >> data;
-		client.req->append(data);
-		if (DEBUG)
+		if (g_webserv.debug && !client.req->_header_section_finished)
 			hexdump_str(data, 24);
+		client.req->append(data);
 	}
 	catch(ServerSocket::ServerSocketException &e)
 	{
-		Logger::print(e.what(), NULL, ERROR, NORMAL);
-		return true;
+		return (Logger::print(e.what(), true, ERROR, NORMAL));
 	}
 	catch(std::invalid_argument &e)
 	{
-		Logger::print(e.what(), NULL, ERROR, SILENT);
-		try
-		{
-			Response response(400, "");
-			if (client.req->_error_code)
-				response.setCode(client.req->_error_code);
-			ConfigContext bad_request_context;
-			*client.sckt << response.getResponseText(bad_request_context);
-		}
-		catch (std::exception& e)
-		{
-			Logger::print(e.what(), NULL, ERROR, NORMAL);
-		}
-		return true;
+		return (Logger::print(e.what(), true, ERROR, SILENT));
 	}
 	return false;
 }
@@ -129,11 +111,13 @@ bool	handle_server_response(Client &client)
 {
 	try
 	{
-		if (DEBUG)
+		if (g_webserv.debug)
 			std::cout << *client.req << std::endl;
 		VirtualHost vhost = VirtualHost::getServerByName(client.req->getHeaderValue("Host"), client.sckt->getServerPort(), g_webserv.vhosts);
 		Response response;
-		if (!vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic").front().empty())
+		if (client.req->_error_code)
+			response.setCode(client.req->_error_code);
+		if (!response.getCode() && !vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic").front().empty())
 		{
 			std::string	credentials = client.req->getHeaderValue(AuthorizationHeader().getType());
 			if (credentials.empty())
@@ -152,6 +136,8 @@ bool	handle_server_response(Client &client)
 		if (!response.getCode())
 			response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_url._path), *client.sckt);
 		*client.sckt << response.getResponseText(vhost.getConfig().getConfigPath(client.req->_url._path));
+		if (g_webserv.debug)
+			std::cout << "served response " << response.getCode() << std::endl;
 		if (response.getCode() != 200)
 			return true;
 		Logger::print("Success", NULL, SUCCESS, VERBOSE);
@@ -173,7 +159,30 @@ static void		handle_terminal_input(const std::string& input, const std::list<Cli
 	if (input == "stop")
 		g_webserv.run = false;
 	else if (input == "help")
-		std::cout << "\e[34m" << "Available commands are: help|stop|gzip|deflate|info|workers|uptime" << "\e[39m" << std::endl;
+		std::cout << "\e[34m" << "Available commands are: help|stop|gzip|deflate|info|workers|uptime|logger|debug" << "\e[39m" << std::endl;
+	else if (input == "debug")
+	{
+		g_webserv.debug = !g_webserv.debug;
+		std::cout << "\e[34m" << "Debug print is now "+std::string(g_webserv.debug ? "enabled" : "disabled") << "\e[39m" << std::endl;
+	}
+	else if (input == "logger")
+	{
+		switch (Logger::getMode())
+		{
+		case VERBOSE:
+			Logger::setMode(NORMAL);
+			std::cout << "\e[34m" << "LoggerMode is now: NORMAL" << "\e[39m" << std::endl;
+			break;
+		case NORMAL:
+			Logger::setMode(SILENT);
+			std::cout << "\e[34m" << "LoggerMode is now: SILENT" << "\e[39m" << std::endl;
+			break;
+		default:
+			Logger::setMode(VERBOSE);
+			std::cout << "\e[34m" << "LoggerMode is now: VERBOSE" << "\e[39m" << std::endl;
+			break;
+		}
+	}
 	else if (input == "gzip")
 	{
 		g_webserv.compression_gzip = !g_webserv.compression_gzip;
@@ -247,7 +256,7 @@ static void		handle_terminal_input(const std::string& input, const std::list<Cli
 int	main(int argc, char **argv)
 {
 	std::cout << "\e[34m" << " __      __      ___.                              \n/  \\    /  \\ ____\\_ |__   ______ ______________  __\n\\   \\/\\/   // __ \\| __ \\ /  ___// __ \\_  __ \\  \\/ /\n \\        /\\  ___/| \\_\\ \\\\___ \\\\  ___/|  | \\/\\   / \n  \\__/\\  /  \\___  >___  /____  >\\___  >__|    \\_/  \n       \\/       \\/    \\/     \\/     \\/         V1.0.0\e[39m" << std::endl;
-	std::cout << "\e[34m" << "Available commands are: help|stop|gzip|deflate|info|workers|uptime" << "\e[39m" << std::endl;
+	std::cout << "\e[34m" << "Available commands are: help|stop|gzip|deflate|info|workers|uptime|logger|debug" << "\e[39m" << std::endl;
 	Logger::setMode(SILENT);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	if (argc > 2)
@@ -295,8 +304,7 @@ int	main(int argc, char **argv)
 			for (; it != clients.end(); ++it)
 			{
 				FD_SET(it->sckt->GetSocket(), &read_sockets);
-				if (it->req->isfinished())
-					FD_SET(it->sckt->GetSocket(), &write_sockets);
+				FD_SET(it->sckt->GetSocket(), &write_sockets);
 				FD_SET(it->sckt->GetSocket(), &error_sockets);
 				if (it->sckt->GetSocket() > highestFd)
 					highestFd = it->sckt->GetSocket();
@@ -307,7 +315,7 @@ int	main(int argc, char **argv)
 			{
 			case -1:
 				if (g_webserv.run)
-					Logger::print("Error select(): "+std::string(strerror(errno)), NULL, ERROR, NORMAL);
+					Logger::print("Error select(): "+std::string(strerror(errno)), NULL, ERROR, SILENT);
 				break;
 			case 0:
 				Logger::print(std::string("Idle.. Active Connections: ")+ft::toString(clients.size()), NULL, INFO, NORMAL);
@@ -335,7 +343,7 @@ int	main(int argc, char **argv)
 					if (FD_ISSET(it->sckt->GetSocket(), &error_sockets))
 					{
 						error = true;
-						Logger::print("FD Error flagged by Select", NULL, WARNING, NORMAL);
+						Logger::print("FD Error flagged by Select", NULL, WARNING, SILENT);
 					}
 					if (!error && FD_ISSET(it->sckt->GetSocket(), &read_sockets))
 					{
@@ -344,7 +352,8 @@ int	main(int argc, char **argv)
 					}
 					if (!error && FD_ISSET(it->sckt->GetSocket(), &write_sockets))
 					{
-						error = workers->AddJob((*it));
+						if (it->req->isfinished())
+							error = workers->AddJob((*it));
 						readyfd--;
 					}
 					if (error)
@@ -396,6 +405,7 @@ int	main(int argc, char **argv)
 	for (std::map<int, ServerSocket*>::iterator its = g_webserv.sockets.begin(); its != g_webserv.sockets.end(); its++)
 		delete its->second;
 	delete g_webserv.file_formatname;
+	delete g_webserv.languages;
 	delete g_webserv.creds;
 	Logger::print("Webserv Shutdown complete", NULL, SUCCESS, SILENT);
 	std::cout << std::flush;

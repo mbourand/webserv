@@ -11,6 +11,7 @@
 #include "ContentLengthHeader.hpp"
 #include "ContentLocationHeader.hpp"
 #include "ContentTypeHeader.hpp"
+#include "CustomHeader.hpp"
 #include "DateHeader.hpp"
 #include "HostHeader.hpp"
 #include "LastModifiedHeader.hpp"

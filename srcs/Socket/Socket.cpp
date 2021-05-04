@@ -6,14 +6,13 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/27 19:56:11 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/04 18:56:37 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Socket.hpp"
 #include "Logger.hpp"
 #include "Utils.hpp"
-#include <sstream>
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -158,12 +157,13 @@ int						Socket::Recieve(std::string &str) const
 	str = "";
 	ft::bzero(buff, MAX_RECIEVE + 1);
 	int ret = recv(this->m_sockfd, buff, MAX_RECIEVE, 0);
-	if (ret == -1)
-		return Logger::print("Error in Socket::Recieve", 0, ERROR, NORMAL);
-	else if (ret == 0)
-		return (0);
-	else
+	switch (ret)
 	{
+	case -1:
+		return (Logger::print("Error in Socket::Recieve", 0, ERROR, SILENT));
+	case 0:
+		return (0);
+	default:
 		str = buff;
 		return (ret);
 	}

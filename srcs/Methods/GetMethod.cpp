@@ -172,9 +172,6 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 
 	if (realPath[0] != '/')
 		realPath = g_webserv.cwd + "/" + realPath;
-	if (!realPath.empty() && realPath != "/")
-		realPath.erase(--realPath.end());
-
 
 	if (ft::is_directory(realPath))
 	{
@@ -229,8 +226,8 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 
 		AcceptLanguageHeader* ach;
 		for (Request::HeadersVector::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
-			if (!(ach = dynamic_cast<AcceptLanguageHeader*>(*it)))
-				continue;
+			if ((*it)->getType() == AcceptLanguageHeader().getType())
+				ach = reinterpret_cast<AcceptLanguageHeader*>(*it);
 
 		std::multimap<float, std::string, std::greater<float> > language_preferences = ach->getLanguages();
 		for (std::map<float, std::string, std::greater<float> >::const_iterator it = language_preferences.begin(); it != language_preferences.end(); it++)

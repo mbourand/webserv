@@ -18,6 +18,7 @@ Header* AcceptLanguageHeader::clone() const { return new AcceptLanguageHeader();
 
 std::multimap<float, std::string, std::greater<float> > AcceptLanguageHeader::getLanguages() const
 {
+	std::cout << _value << std::endl;
 	std::multimap<float, std::string, std::greater<float> > language_preferences;
 	std::list<std::string> language_tokens = ft::split(_value, ",");
 

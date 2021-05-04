@@ -26,7 +26,7 @@ class Request
 		HeadersVector	_headers;
 		std::string		_body;
 		size_t 			_content_length;
-		size_t			_max_body_size; //default size 1000000(1M), parse config for custom size
+		size_t			_max_body_size;
 		int				_error_code;
 		int				_port;
 		bool			_header_section_finished;
