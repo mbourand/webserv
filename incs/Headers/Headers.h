@@ -22,5 +22,6 @@
 #include "TransferEncodingHeader.hpp"
 #include "UserAgentHeader.hpp"
 #include "WWWAuthenticateHeader.hpp"
+#include "PreferenceHeader.hpp"
 
 #endif

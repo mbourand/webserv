@@ -229,7 +229,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 			if ((*it)->getType() == AcceptLanguageHeader().getType())
 				ach = reinterpret_cast<AcceptLanguageHeader*>(*it);
 
-		std::multimap<float, std::string, std::greater<float> > language_preferences = ach->getLanguages();
+		std::multimap<float, std::string, std::greater<float> > language_preferences = ach->getPreferences();
 		for (std::map<float, std::string, std::greater<float> >::const_iterator it = language_preferences.begin(); it != language_preferences.end(); it++)
 		{
 			if (g_webserv.languages->GetNode(it->second) == NULL)

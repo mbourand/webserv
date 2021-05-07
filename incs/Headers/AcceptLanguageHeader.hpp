@@ -1,10 +1,10 @@
 #ifndef ACCEPT_LANGUAGE_HEADER_HPP
 #define ACCEPT_LANGUAGE_HEADER_HPP
 
-#include "Header.hpp"
+#include "PreferenceHeader.hpp"
 #include <map>
 
-class AcceptLanguageHeader : public Header
+class AcceptLanguageHeader : public PreferenceHeader
 {
 	public:
 		AcceptLanguageHeader();
@@ -14,8 +14,6 @@ class AcceptLanguageHeader : public Header
 
 		std::string getType() const;
 		Header* clone() const;
-
-		std::multimap<float, std::string, std::greater<float> > getLanguages() const;
 };
 
 #endif
