@@ -1,9 +1,9 @@
 #ifndef ACCEPT_CHARSETS_HEADER_HPP
 #define ACCEPT_CHARSETS_HEADER_HPP
 
-#include "Header.hpp"
+#include "PreferenceHeader.hpp"
 
-class AcceptCharsetsHeader : public Header
+class AcceptCharsetsHeader : public PreferenceHeader
 {
 	public:
 		AcceptCharsetsHeader();

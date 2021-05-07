@@ -1,9 +1,9 @@
 #ifndef ACCEPT_ENCODING_HEADER_HPP
 #define ACCEPT_ENCODING_HEADER_HPP
 
-#include "Header.hpp"
+#include "PreferenceHeader.hpp"
 
-class AcceptEncodingHeader : public Header
+class AcceptEncodingHeader : public PreferenceHeader
 {
 	public:
 		AcceptEncodingHeader();
