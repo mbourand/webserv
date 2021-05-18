@@ -172,7 +172,7 @@ std::string Response::getResponseText(const ConfigContext& config)
 		}
 		else
 			this->addHeader("Content-Length", ft::toString(config.getErrorPage(_code).size()));
-		this->addHeader("Content-Type", "text/html");
+		this->addHeader("Content-Type", "text/html; charset=UTF-8");
 		this->addHeader("Connection", "keep-alive");
 		this->addDateHeader();
 		this->addHeader("Server", "Webserv");

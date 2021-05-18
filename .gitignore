@@ -5,7 +5,6 @@ objs/
 webserv
 client
 *.bin
-.vscode/
+.vscode
 www/uploads/
 vegeta/
-

@@ -149,7 +149,7 @@ Response GetMethod::directory_listing(const Request& request, const ConfigContex
 	convert.str("");
 	response.addDateHeader();
 	response.addHeader("Server", "Webserv");
-	response.addHeader("Content-Type", "text/html");
+	response.addHeader("Content-Type", "text/html; charset=UTF-8");
 
 	return response;
 }
@@ -289,7 +289,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	response.addHeader("Server", "Webserv");
 	t_hnode	*hnode = g_webserv.file_formatname->GetNode(realPath.substr(realPath.find_last_of('.') + 1));
 	if (hnode != NULL)
-		response.addHeader("Content-Type", hnode->value);
+		response.addHeader("Content-Type", hnode->value + "; charset=UTF-8");
 
 
 	response.setBody(content);

@@ -16,21 +16,20 @@ std::multimap<float, std::string, std::greater<float> > PreferenceHeader::getPre
 	if (language_tokens.empty())
 		return std::multimap<float, std::string, std::greater<float> >();
 
-	std::list<std::string> same_preference;
 	for (std::list<std::string>::const_iterator it = language_tokens.begin(); it != language_tokens.end(); it++)
 	{
 		std::list<std::string> splitted = ft::split(*it, ";");
 		if (splitted.size() == 0 || splitted.size() > 2)
 			return std::multimap<float, std::string, std::greater<float> >();
 
-		if (splitted.size() >= 1)
+		if (splitted.size() == 1)
 		{
 			if (splitted.front().find_first_not_of(" ") == std::string::npos)
 				return std::multimap<float, std::string, std::greater<float> >();
 
-			same_preference.push_back(splitted.front().substr(splitted.front().find_first_not_of(" ")));
+			language_preferences.insert(std::make_pair(1.f, splitted.front().substr(splitted.front().find_first_not_of(" "))));
 		}
-		if (splitted.size() == 2)
+		else if (splitted.size() == 2)
 		{
 			if (splitted.front().find_first_not_of(" ") == std::string::npos || splitted.back().find_first_not_of(" ") == std::string::npos)
 				return std::multimap<float, std::string, std::greater<float> >();
@@ -42,10 +41,7 @@ std::multimap<float, std::string, std::greater<float> > PreferenceHeader::getPre
 			try { preference = ft::toFloat(splitted.back().substr(2)); }
 			catch (std::exception& e) { return std::multimap<float, std::string, std::greater<float> >(); }
 
-			for (std::list<std::string>::const_iterator lang_it = same_preference.begin(); lang_it != same_preference.end(); lang_it++)
-				language_preferences.insert(std::make_pair(preference, *lang_it));
-
-			same_preference.clear();
+			language_preferences.insert(std::make_pair(preference, splitted.front().substr(splitted.front().find_first_not_of(" "))));
 		}
 	}
 

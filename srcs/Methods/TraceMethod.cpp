@@ -31,7 +31,7 @@ Response TraceMethod::process(const Request& request, const ConfigContext&, cons
 {
 	const URL& url = request._url;
 	Response response(200, url._path);
-	response.addHeader("Content-Type", "message/http");
+	response.addHeader("Content-Type", "message/http; charset=UTF-8");
 	response.addHeader("Server", "Webserv");
 	response.addDateHeader();
 	response.setBody(request._raw);
