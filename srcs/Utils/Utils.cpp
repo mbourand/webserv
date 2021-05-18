@@ -86,6 +86,22 @@ std::list<std::string> ft::split(const std::string& str, const std::string& char
 	return ret;
 }
 
+std::list<std::string> ft::split(const std::string& str, const char &needle)
+{
+	std::list<std::string> ret;
+
+	size_t i = str.find_first_not_of(needle, 0);
+	while (i < str.size())
+	{
+		size_t word_start = i;
+		i = str.find_first_of(needle, i);
+		size_t word_end = i;
+		i = str.find_first_not_of(needle, i);
+		ret.push_back(str.substr(word_start, word_end - word_start));
+	}
+	return ret;
+}
+
 std::pair<std::string, int> ft::complete_ip(const std::string& incomplete_ip)
 {
 	std::pair<std::string, int> ret;

@@ -179,8 +179,8 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		{
 			std::string index = "/" + config.getParam("index").front();
 			realPath += index;
-			std::string extension = index.substr(index.rfind('.')); // Vérifier que ça va pas throw est inutile, vu qu'on est dans un try catch
-			if (config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() || (realPath.find(config.getParam("cgi_dir").front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+			std::string extension = index.substr(index.rfind('.'));
+			if (config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() || (realPath.find(config.getParam("cgi_dir").front()) == 0))
 				return process_cgi(realPath, url, config, socket, request);
 		}
 		catch (std::exception& e)
@@ -195,7 +195,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	}
 
 
-	std::list<std::string> splitted = ft::split(realPath, "/");
+	std::list<std::string> splitted = ft::split(realPath, '/');
 	std::string current_path;
 	current_path.reserve(realPath.size());
 	if (realPath[0] == '/')
@@ -213,7 +213,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		if (file_name.rfind('.') != std::string::npos)
 		{
 			std::string extension = file_name.substr(file_name.rfind('.'));
-			if (config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() || (realPath.find(config.getParam("cgi_dir").front()) == 0))	// Parse config, if file ext. associated with CGI or CGI bin found in path
+			if (config.getCGIExtensions().find(extension) != config.getCGIExtensions().end() || (realPath.find(config.getParam("cgi_dir").front()) == 0))
 				return process_cgi(realPath, url, config, socket, request);
 		}
 	}
@@ -222,24 +222,27 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	if (!request.getHeaderValue("Accept-Language").empty())
 	{
 		std::string filename = realPath.substr((realPath.rfind('/') == std::string::npos ? 0 : realPath.rfind('/')));
-		std::string folder = (realPath.size() == filename.size() ? "" : realPath.substr(0, realPath.rfind(filename)));
+		std::string folder = (realPath.size() == filename.size() ? "" : realPath.substr(0, realPath.rfind(filename))) + "/.langs/";
 
-		AcceptLanguageHeader* ach;
-		for (Request::HeadersVector::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
-			if ((*it)->getType() == AcceptLanguageHeader().getType())
-				ach = reinterpret_cast<AcceptLanguageHeader*>(*it);
-
-		std::multimap<float, std::string, std::greater<float> > language_preferences = ach->getPreferences();
-		for (std::map<float, std::string, std::greater<float> >::const_iterator it = language_preferences.begin(); it != language_preferences.end(); it++)
+		if (ft::is_directory(folder))
 		{
-			if (g_webserv.languages->GetNode(it->second) == NULL)
-				continue;
+			AcceptLanguageHeader* ach;
+			for (Request::HeadersVector::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
+				if ((*it)->getType() == AcceptLanguageHeader().getType())
+					ach = reinterpret_cast<AcceptLanguageHeader*>(*it);
 
-			file.open((folder + "/.langs/" + it->second + "/" + filename).c_str());
-			if (file.good() && file.is_open())
+			std::multimap<float, std::string, std::greater<float> > language_preferences = ach->getPreferences();
+			for (std::map<float, std::string, std::greater<float> >::const_iterator it = language_preferences.begin(); it != language_preferences.end(); it++)
 			{
-				response.addHeader("Content-Language", it->second);
-				break;
+				if (g_webserv.languages->GetNode(it->second) == NULL)
+					continue;
+
+				file.open((folder + it->second + "/" + filename).c_str());
+				if (file.good() && file.is_open())
+				{
+					response.addHeader("Content-Language", it->second);
+					break;
+				}
 			}
 		}
 	}
