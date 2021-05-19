@@ -68,7 +68,10 @@ void Request::parse()
 		if (_parse_start + 1 >= _raw.size())
 			return;
 		if (_raw[_parse_start + 1] == ' ')
+		{
+			_error_code = 400;
 			throw std::invalid_argument("Bad whitespace after method.");
+		}
 
 		parse_uri();
 	}
@@ -80,7 +83,10 @@ void Request::parse()
 		if (_parse_start + 1 >= _raw.size())
 			return;
 		if (_raw[_parse_start + 1] == ' ')
+		{
+			_error_code = 400;
 			throw std::invalid_argument("Bad whitespace after uri.");
+		}
 		parse_protocol_version();
 	}
 	if (_protocolVersion.empty())
@@ -113,9 +119,15 @@ void Request::parse()
 			}
 		}
 		if (cnt > 1)
+		{
+			_error_code = 400;
 			throw std::invalid_argument("Multiple Host header in request");
+		}
 		if (cnt == 0)
+		{
+			_error_code = 400;
 			throw std::invalid_argument("No Host header in request");
+		}
 
 	}
 
@@ -201,7 +213,10 @@ void Request::parse_method()
 {
 	std::string method = _raw.substr(0, _raw.find(' '));
 	if (!g_webserv.methods.hasCandidates(method))
+	{
+		_error_code = 400;
 		throw std::invalid_argument("Method could not be recognized.");
+	}
 	if (ft::contains(_raw, ' ') && g_webserv.methods.getByType(method) != NULL)
 	{
 		Logger::print("Request method is " + method + ".", true, INFO, VERBOSE);
@@ -216,7 +231,10 @@ void Request::parse_uri()
 	{
 		std::string urlRaw = _raw.substr(_parse_start + 1, _raw.find(' ', _parse_start + 1) - (_parse_start + 1));;
 		if (!is_valid_URI(urlRaw))
+		{
+			_error_code = 400;
 			throw std::invalid_argument("Bad URI format in request.");
+		}
 		_url = URL(urlRaw);
 		_parse_start = _raw.find(' ', _parse_start + 1);
 		_url_finished = true;
@@ -230,7 +248,10 @@ void Request::parse_protocol_version()
 		return;
 	std::string version = _raw.substr(_parse_start + 1, _raw.find("\r\n", _parse_start + 1) - (_parse_start + 1));
 	if (std::string("HTTP/1.1").substr(0, version.size()) != version)
+	{
+		_error_code = 400;
 		throw std::invalid_argument("Request protocol version could not be recognized.");
+	}
 	if (_raw.find("\r\n", _parse_start + 1) != std::string::npos && version == "HTTP/1.1")
 	{
 		Logger::print("Request protocol version is HTTP/1.1.", true, INFO, VERBOSE);
@@ -274,7 +295,10 @@ bool Request::parse_headers()
 		return (_header_section_finished = true);
 	}
 	if (_raw.find(':', _parse_start) == std::string::npos)
+	{
+		_error_code = 400;
 		throw std::invalid_argument("Invalid header field in request");
+	}
 	std::string header_name = _raw.substr(_parse_start, _raw.find(':', _parse_start) - _parse_start);
 	if ((header_name.find("X-") == 0) || g_webserv.headers.contains_ignore_case(header_name))
 	{
@@ -284,7 +308,10 @@ bool Request::parse_headers()
 		else
 			header = g_webserv.headers.createByType_ignore_case(header_name);
 		if (header == NULL)
+		{
+			_error_code = 500;
 			throw std::invalid_argument("Out of memory");
+		}
 		try
 		{
 			_parse_start += header_name.size() + 1;
@@ -298,6 +325,7 @@ bool Request::parse_headers()
 		}
 		catch(const std::exception& e)
 		{
+			_error_code = 400;
 			throw std::invalid_argument("Invalid header field in request");
 		}
 	}
@@ -343,7 +371,7 @@ bool Request::is_valid_URI(const std::string& uri) const
 
 bool Request::isfinished(void) const
 {
-	return (_finished_parsing);
+	return (_finished_parsing || _error_code != 0);
 }
 
 size_t Request::count_concurrent_occurences(size_t index, char c) const
