@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/23 19:27:25 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/27 19:45:08 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/19 03:21:24 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@ ClientSocket::ClientSocket()
 
 ClientSocket::ClientSocket(const std::string &host, int port)
 {
-	if (!Socket::Create())
+	if (!Socket::Create(false))
     {
 		throw ClientSocketException("Could not create client socket.");
     }
 	if (!Socket::Connect(host, port))
     {
-		throw ClientSocketException("Could not bind to port.");
+		throw ClientSocketException("Could not Connect to host.");
     }
 }
 

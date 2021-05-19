@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/04 18:56:37 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/19 03:18:42 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ Socket &				Socket::operator=(Socket const &rhs)
 ** --------------------------------- METHODS ----------------------------------
 */
 
-bool					Socket::Create(void)
+bool					Socket::Create(bool nonblocking)
 {
 	m_sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (!this->Success())
@@ -64,7 +64,9 @@ bool					Socket::Create(void)
 	int optval = 1;
 	if (setsockopt(this->m_sockfd, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&optval), sizeof(optval)))
 		return (false);
-	return (fcntl(this->m_sockfd, F_SETFL, O_NONBLOCK) != -1);
+	if (nonblocking)
+		return (fcntl(this->m_sockfd, F_SETFL, O_NONBLOCK) != -1);
+	return (true);
 }
 
 static std::string		my_inet_ntoa(struct in_addr in)
@@ -103,7 +105,7 @@ bool					Socket::Bind(int const port)
 	if (!this->Success())
 		return (false);
 	this->m_addr_in.sin_family = AF_INET;
-	this->m_addr_in.sin_addr.s_addr = htonl(INADDR_ANY);
+	this->m_addr_in.sin_addr.s_addr = INADDR_ANY;
 	this->m_addr_in.sin_port = htons(port);
 	if (bind(this->m_sockfd, reinterpret_cast<sockaddr*>(&this->m_addr_in), sizeof(this->m_addr_in)) != 0)
 		return (false);

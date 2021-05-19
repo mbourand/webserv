@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:34:16 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/04 00:09:44 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/19 02:57:52 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 ServerSocket::ServerSocket(int port) : m_port(port)
 {
-	if (!Socket::Create())
+	if (!Socket::Create(true))
 		throw ServerSocketException("Counldn't create socket.");
 	if (!Socket::Bind(this->m_port))
 		throw ServerSocketException("Counldn't bind to port.");
@@ -31,7 +31,7 @@ ServerSocket::ServerSocket(int port) : m_port(port)
 
 ServerSocket::ServerSocket(const ServerSocket &src) : m_port(src.m_port)
 {
-	if (!Socket::Create())
+	if (!Socket::Create(true))
 		throw ServerSocketException("Counldn't create socket.");
 	if (!Socket::Bind(this->m_port))
 		throw ServerSocketException("Counldn't bind to port.");

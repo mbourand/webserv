@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/04 00:09:16 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/19 03:18:51 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ class Socket
 
 		Socket &		operator=(Socket const &rhs);
 
-		bool	Create(void);
+		bool	Create(bool nonblocking);
 		bool	Bind(int const port);
 		bool	Connect(std::string const &host, int const port);
 
@@ -46,7 +46,7 @@ class Socket
 		bool	Send(const std::string &msg) const;
 		int		Recieve(std::string &str) const;
 		bool	Success(void) const;
-		int		GetSocket(void) const;
+		int 	GetSocket(void) const;
 
 	protected:
 
