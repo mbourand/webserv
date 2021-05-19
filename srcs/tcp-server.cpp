@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/04 22:09:31 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/19 14:12:07 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,8 @@ bool	handle_client_request(Client &client)
 	}
 	catch(std::invalid_argument &e)
 	{
-		return (Logger::print(e.what(), true, ERROR, SILENT));
+		// Si error_code est set on considère que ce n'est pas une erreur étant donné qu'on va pouvoir répondre avec _error_code de la request
+		return (Logger::print(e.what(), (client.req->_error_code == 0), ERROR, SILENT));
 	}
 	return false;
 }
