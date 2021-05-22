@@ -18,10 +18,6 @@ TestCategory test_request_head_line_parsing()
 {
 	TestCategory cat("Request head line parsing", 0);
 
-	cat.addTest<StringStartsWithTest>("Request Entity Too Large",
-		[]() { return send_request("POST / HTTP/1.1\r\nHost: localhost\r\n\r\nzuyeghiuzehgiuzyehgiszeuhgeziughzeiughziuhfezziuhezhiuerzgiuhhiugzehiu\r\n\r\n", 8080); },
-		[]() { return std::string("HTTP/1.1 413 Request Entity Too Large"); });
-
 
 	cat.addTest<StringStartsWithTest>("Method Not Allowed",
 		[]() { return send_request("PUT / HTTP/1.1\r\nHost: localhost\r\n\r\nAAA\r\n\r\n", 8080); },
@@ -101,9 +97,63 @@ TestCategory test_request_headers_parsing()
 		[]() { return send_request("GET / HTTP/1.1\r\nhOsT: localhost\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 200 OK"); });
 
+
+	cat.addTest<StringStartsWithTest>("Preference Headers",
+		[]() { return send_request("GET / HTTP/1.1\r\nHost: localhost\r\nAccept-Language: fr, da, en-CA;q=0.9 *;q=0.8\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 200 OK"); });
+
 	return cat;
 }
 
+
+TestCategory test_request_body_parsing()
+{
+	TestCategory cat("Body Parsing", 0);
+
+
+	cat.addTest<StringStartsWithTest>("Request Entity Too Large",
+		[]() { return send_request("POST / HTTP/1.1\r\nHost: localhost\r\n\r\nzuyeghiuzehgiuzyehgiszeuhgeziughzeiughziuhfezziuhezhiuerzgiuhhiugzehiu\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 413 Request Entity Too Large"); });
+
+	return cat;
+}
+
+
+TestCategory test_get_requests()
+{
+	TestCategory cat("GET Requests", 0);
+
+
+	cat.addTest<StringStartsWithTest>("Path uri",
+		[]() { return send_request("GET /index.html HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 200 OK"); });
+
+	cat.addTest<StringStartsWithTest>("Full uri",
+		[]() { return send_request("GET http://localhost/index.html HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 200 OK"); });
+
+	cat.addTest<StringStartsWithTest>("Inexistant file",
+		[]() { return send_request("GET /zdehjfgrdesuzygzeuyfgeyjg HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 404 Not Found"); });
+
+	cat.addTest<StringStartsWithTest>("Directory",
+		[]() { return send_request("GET /dir HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 301 Moved Permanently"); });
+
+	cat.addTest<StringStartsWithTest>("Auto Index",
+		[]() { return send_request("GET /sources/bonsoir HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 200 OK"); });
+
+	cat.addTest<StringStartsWithTest>("Directory extra /",
+		[]() { return send_request("GET /dir/ HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 403 Forbidden"); });
+
+	cat.addTest<StringStartsWithTest>("Auto Index extra /",
+		[]() { return send_request("GET /sources/bonsoir/ HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 200 OK"); });
+
+	return cat;
+}
 
 
 int main()
@@ -111,25 +161,12 @@ int main()
 	TestCategory requests("Request Parsing", 0);
 	requests.addSubcategory(test_request_head_line_parsing());
 	requests.addSubcategory(test_request_headers_parsing());
+	requests.addSubcategory(test_request_body_parsing());
 
 	requests.run();
 
-	TestCategory category("Basic tests", 0);
-	category.addTest<NoThrowTest>("Basic get request", []()
-	{
-		std::string response;
-		ClientSocket socket("localhost", 8080);
-		socket << "GET / HTTP/1.1\r\nHost: localhost\r\n\r\n";
-		socket >> response;
-	});
-
-	category.addTest<NoThrowTest>("Accept-Encoding request", []()
-	{
-		std::string response;
-		ClientSocket socket("localhost", 8080);
-		socket << "GET / HTTP/1.1\r\nHost: localhost\r\n\r\n";
-		socket >> response;
-	});
+	TestCategory category("Methods", 0);
+	category.addSubcategory(test_get_requests());
 
 	category.run();
 }
