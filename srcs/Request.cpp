@@ -431,15 +431,18 @@ bool Request::operator!=(const Request& other) const
 
 std::ostream& operator<<(std::ostream& out, const Request& request)
 {
-	out <<	"Method: " << request._method->getType() << '\n' <<
-			"Path: " << request._url._path << '\n' <<
-			"Protocol Version: " << request._protocolVersion << '\n' <<
-			"Headers: " << std::endl;
-	for (Request::HeadersVector::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
-		out << "  \"" << (*it)->getType() << "\" -> \"" << (*it)->getValue() << '"' << std::endl;
-	if (request._body.size() < 100)
-		out << "Body:\n\"" << request._body << "\"" << std::endl;
-	else
-		out << "Body:\n\"" << "<<<BODY TOO LONG>>>" << "\"" << std::endl;
+	if (request._error_code < 400)
+	{
+		out <<	"Method: " << request._method->getType() << '\n' <<
+				"Path: " << request._url._path << '\n' <<
+				"Protocol Version: " << request._protocolVersion << '\n' <<
+				"Headers: " << std::endl;
+		for (Request::HeadersVector::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
+			out << "  \"" << (*it)->getType() << "\" -> \"" << (*it)->getValue() << '"' << std::endl;
+		if (request._body.size() < 100)
+			out << "Body:\n\"" << request._body << "\"" << std::endl;
+		else
+			out << "Body:\n\"" << "<<<BODY TOO LONG>>>" << "\"" << std::endl;
+	}
 	return out;
 }
