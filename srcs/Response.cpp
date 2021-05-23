@@ -3,12 +3,13 @@
 #include <sys/time.h>
 #include "Utils.hpp"
 #include <iostream>
+#include <algorithm>
 #include "Compress.hpp"
 #include "Logger.hpp"
 #include "Webserv.hpp"
 
 #define MIN_COMPRESS_SIZE 100
-#define CHUNK_SIZE 100ul
+#define CHUNK_SIZE ((size_t)100)
 
 /*
 ** ------------------------------- CONSTRUCTOR --------------------------------
@@ -93,6 +94,14 @@ void Response::addDateHeader(void)
 
 void	Response::compressBody(const std::string &str)
 {
+	for (std::map<std::string, std::string>::iterator it = _headers.begin(); it != _headers.end(); it++) {
+		if (it->first == "Content-Type") {
+			if (it->second == "image/jpg" || it->second == "video/mp4" || it->second == "audio/mpeg") //skip format that are already compressed
+				return;
+			else
+				break;
+		}
+	}
 	try
 	{
 		_body = str;
@@ -135,16 +144,24 @@ int	Response::getCode() const { return _code; }
 void Response::setMessage(const std::string& message) { _message = message; }
 void Response::setBody(const std::string& body) { _body = body; }
 
-void	Response::setCompression(const std::string& str)
+void	Response::setCompression(const std::vector<Header*>& headers)
 {
-	if (str == "gzip, deflate")
-		_candeflate = _cangzip = true;
-	else if (str.find("deflate") != std::string::npos)
-		_candeflate = true;
-	else if (str.find("gzip") != std::string::npos)
-		_cangzip = true;
-	else
-		_candeflate = _cangzip = false;
+	AcceptEncodingHeader* aeh = NULL;
+	for (std::vector<Header*>::const_iterator it = headers.begin(); it != headers.end(); it++)
+		if ((*it)->getType() == AcceptEncodingHeader().getType()) {
+			aeh = reinterpret_cast<AcceptEncodingHeader*>(*it);
+			break;
+		}
+	if (!aeh)
+		return;
+	std::multimap<float, std::string, std::greater<float> > encoding_preferences = aeh->getPreferences();
+	for (std::map<float, std::string, std::greater<float> >::const_iterator it = encoding_preferences.begin(); it != encoding_preferences.end(); it++)
+	{
+		if (it->second == "gzip" && it->first == encoding_preferences.begin()->first)
+			_cangzip = true;
+		else if (it->second == "deflate" && it->first == encoding_preferences.begin()->first)
+			_candeflate = true;
+	}
 }
 
 /**

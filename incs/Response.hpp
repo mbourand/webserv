@@ -4,6 +4,8 @@
 #include <string>
 #include <map>
 #include <ctime>
+#include <vector>
+#include "Headers.h"
 #include "ConfigContext.hpp"
 
 class Response
@@ -32,7 +34,7 @@ class Response
 		void		removeHeader(const std::string& header_name);
 
 		void		setBody(const std::string& body);
-		void		setCompression(const std::string& str);
+		void		setCompression(const std::vector<Header*>& headers);
 		void		compressBody(const std::string &str);
 		std::string	Chunk(const std::string& str);
 

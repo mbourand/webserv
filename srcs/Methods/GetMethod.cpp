@@ -158,7 +158,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 {
 	const URL& url = request._url;
 	Response response(200, url._path);
-	response.setCompression(request.getHeaderValue("Accept-Encoding"));
+	response.setCompression(request._headers);
 	int base_depth = 0;
 	std::string realPath = config.rootPath(url._path, base_depth);
 	try
@@ -304,7 +304,7 @@ Response GetMethod::process_cgi(const std::string& realPath, const URL& url, con
 {
 	Response response(200, url._path);
 	if (!request.getHeaderValue("Accept-Encoding").empty())
-		response.setCompression(request.getHeaderValue("Accept-Encoding"));
+		response.setCompression(request._headers);
 	try
 	{
 		CGI	cgi(request, config, socket, realPath);
