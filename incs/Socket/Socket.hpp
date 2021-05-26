@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/19 03:18:51 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/26 18:11:50 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include <arpa/inet.h>
 # include "Utils.hpp"
 
-const int MAX_CONNECTIONS = 10;
+const int MAX_CONNECTIONS = 1000;
 const int MAX_RECIEVE = 65534;
 
 class Socket

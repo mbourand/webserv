@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/19 14:12:07 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/05/26 16:12:50 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,26 +55,22 @@ std::string string_strip_undisplayable(const std::string& input)
     return output;
 }
 
-void	handle_new_connection(ServerSocket &server, std::list<Client> &clients)
+int		handle_new_connection(ServerSocket &server, std::list<Client> &clients)
 {
-	Client	new_client;
-	new_client.sckt = new ServerSocket;
-	new_client.req = new Request(server.getServerPort());
-	new_client.sckt->setServerPort(server.getServerPort());
-	server.Accept(*new_client.sckt);
-	if (clients.size() >= g_webserv.max_connections)
+	if (clients.size() <= g_webserv.max_connections)
 	{
-		Logger::print("Webserv overloaded, New Client bounced back ("+new_client.sckt->getIPAddress()+")", NULL, ERROR, NORMAL);
-		Response response(503, new_client.req->_url._path);
-		response.addHeader("Connection", "close");
-		response.addHeader("Retry-After", "120");
-		*new_client.sckt << response.getResponseText(g_webserv.vhosts.front().getConfig());
-		delete new_client.sckt;
-		delete new_client.req;
-		return;
+		Client	new_client;
+		new_client.sckt = new ServerSocket;
+		new_client.req = new Request(server.getServerPort());
+		new_client.sckt->setServerPort(server.getServerPort());
+		server.Accept(*new_client.sckt);
+		clients.push_back(new_client);
+		return (Logger::print("New Client Connected ("+new_client.sckt->getIPAddress()+")", new_client.sckt->GetSocket(), SUCCESS, NORMAL));
 	}
-	clients.push_back(new_client);
-	Logger::print("New Client Connected ("+new_client.sckt->getIPAddress()+")", NULL, SUCCESS, NORMAL);
+	else
+	{
+		return (Logger::print("Connections limit reached, client pending connection.", 0, ERROR, NORMAL));
+	}
 }
 
 void	hexdump_str(const std::string &data, int size)
@@ -145,6 +141,11 @@ bool	handle_server_response(Client &client)
 	}
 	catch(ServerSocket::ServerSocketException &e)
 	{
+		Logger::print(e.what(), NULL, ERROR, NORMAL);
+	}
+	catch(std::invalid_argument &e)
+	{
+		client.req->_error_code = 500;
 		Logger::print(e.what(), NULL, ERROR, NORMAL);
 	}
 	if (client.req && client.sckt->Success())
@@ -295,21 +296,13 @@ int	main(int argc, char **argv)
 			FD_SET(its->second->GetSocket(), &read_sockets_z);
 		}
 		FD_SET(STDIN_FILENO, &read_sockets_z);
+		highestFd = serverFd;
 		while (g_webserv.run)
 		{
 			it = clients.begin();
 			read_sockets = read_sockets_z;
 			write_sockets = write_sockets_z;
 			error_sockets = error_sockets_z;
-			highestFd = serverFd;
-			for (; it != clients.end(); ++it)
-			{
-				FD_SET(it->sckt->GetSocket(), &read_sockets);
-				FD_SET(it->sckt->GetSocket(), &write_sockets);
-				FD_SET(it->sckt->GetSocket(), &error_sockets);
-				if (it->sckt->GetSocket() > highestFd)
-					highestFd = it->sckt->GetSocket();
-			}
 			struct timeval timeout = {30, 0};
 			readyfd = select(highestFd + 1, &read_sockets, &write_sockets, &error_sockets, &timeout);
 			switch (readyfd)
@@ -333,7 +326,15 @@ int	main(int argc, char **argv)
 				{
 					if (FD_ISSET(its->second->GetSocket(), &read_sockets))
 					{
-						handle_new_connection(*its->second, clients);
+						int fd = 0;
+						if ((fd = handle_new_connection(*its->second, clients)))
+						{
+							FD_SET(fd, &read_sockets_z);
+							FD_SET(fd, &write_sockets_z);
+							FD_SET(fd, &error_sockets_z);
+							if (fd > highestFd)
+								highestFd = fd;
+						}
 						readyfd--;
 					}
 				}
@@ -360,6 +361,7 @@ int	main(int argc, char **argv)
 					if (error)
 					{
 						bool busy = false;
+						workers->Lock();
 						if (!workers->getJobs().empty())
 							for (std::deque<Client*>::const_iterator jobs_it = workers->getJobs().begin(); jobs_it != workers->getJobs().end(); jobs_it++)
 								if (it->sckt == (*jobs_it)->sckt)
@@ -368,12 +370,15 @@ int	main(int argc, char **argv)
 							for (std::list<Client*>::const_iterator jobs_it = workers->getCurrentJobs().begin(); jobs_it != workers->getCurrentJobs().end(); jobs_it++)
 								if (it->sckt == (*jobs_it)->sckt)
 									busy = true;
+						workers->Unlock();
 						if (busy)
 							continue;
 						Logger::print("Client Disconnected", NULL, SUCCESS, NORMAL);
 						FD_CLR(it->sckt->GetSocket(), &read_sockets_z);
 						FD_CLR(it->sckt->GetSocket(), &write_sockets_z);
 						FD_CLR(it->sckt->GetSocket(), &error_sockets_z);
+						if (highestFd == it->sckt->GetSocket())
+							highestFd = 0;
 						delete it->sckt;
 						delete it->req;
 						it = clients.erase(it);
@@ -381,6 +386,15 @@ int	main(int argc, char **argv)
 					else
 					{
 						++it;
+					}
+				}
+				if (!highestFd)
+				{
+					highestFd = serverFd;
+					for (std::list<Client>::iterator its = clients.begin(); its != clients.end(); ++its)
+					{
+						if (its->sckt->GetSocket() > highestFd)
+							highestFd = its->sckt->GetSocket();
 					}
 				}
 				break;
