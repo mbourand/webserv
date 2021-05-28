@@ -264,19 +264,17 @@ size_t is_header_field_finished(std::string str)
 {
 	size_t i = 0;
 
-	if (str.find("\r\n", 0) == std::string::npos)
-		return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
-	else if (str.find("\r\n", 0) == 0)
-		return Logger::print("Header field is finished", 0, INFO, VERBOSE);
-	//while (str.find("\r\n", i) != std::string::npos)
-	//{
-	if (!str[str.find("\r\n", i) + 2])
-		return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
-	//if (str[str.find("\r\n", i) + 2] != ' ' && str[str.find("\r\n", i) + 2] != '\t')
-	return Logger::print("Header field is finished", str.find("\r\n", i) + 2, INFO, VERBOSE);
-		//i = str.find("\r\n", i) + 2;
-	//}
-	//return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
+	while (str.find("\r\n", i) != std::string::npos)
+	{
+		if (str.find("\r\n", i) == 0)
+			return (0);
+		if (!str[str.find("\r\n", i) + 2])
+			return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
+		if (str[str.find("\r\n", i) + 2] != ' ' && str[str.find("\r\n", i) + 2] != '\t')
+			return Logger::print("Header field is finished", str.find("\r\n", i) + 2, INFO, VERBOSE);
+		i = str.find("\r\n", i) + 2;
+	}
+	return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
 }
 
 bool Request::parse_headers()

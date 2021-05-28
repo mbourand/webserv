@@ -1,24 +1,18 @@
 #include "Header.hpp"
 #include <stdexcept>
 
+#include <iostream>
 size_t Header::parse(std::string content)
 {
 	size_t len = 0;
-	do
-	{
-		size_t start_len = len;
-		while (content[len] == ' ' || content[len] == '\t')
-			len++;
-		while (len < content.find("\r\n", start_len))
-			_value += content[len++];
-		if (_value == "")
-			throw std::invalid_argument("Bad line folding");
-		len += 2;
-	} while (content[len] == ' ' || content[len] == '\t');
-	while (_value[_value.size() - 1] == ' ' || _value[_value.size() - 1] == '\t')
-		_value.erase(_value.size() - 1);
 
-	return len;
+	_value = content.substr(1);
+	if (_value.find_first_not_of(" \t\v\f\r\n") || _value.empty())
+		throw std::invalid_argument("Bad line folding");
+	_value.erase(_value.find_last_not_of(" \t\v\f\r\n") + 1);
+	while ((len = _value.find("\r\n", len)) != std::string::npos)
+		_value.erase(len, _value.find_first_not_of(" \t\v\f\r\n", len) - len);
+	return (content.size() - 2);
 }
 
 const std::string& Header::getValue() const
