@@ -8,7 +8,7 @@
 #endif
 
 s_webserv::s_webserv()
-	: run(true), debug(DEBUG), file_formatname(new HashTable(256)), languages(new HashTable(256)), cwd(ft::get_cwd()), workers_amount(0), max_connections(100), compression_deflate(true), compression_gzip(true), compression_level(6)
+	: run(true), debug(DEBUG), file_formatname(new HashTable(256)), languages(new HashTable(256)), cwd(ft::get_cwd()), workers_amount(0), max_connections(100), compression_deflate(false), compression_gzip(false), compression_level(6)
 {
 	init_factories();
 	parse_types_file(file_formatname, (cwd+"/config/mime.types").c_str());
@@ -62,6 +62,38 @@ void s_webserv::init_config(const std::string& filename)
 				throw std::invalid_argument("Bad integer value in config");
 
 			workers_amount = ft::toInt(amount_str);
+			i += directive_value.size();
+		}
+		else if (directive_name == "gzip")
+		{
+			i += directive_name.size();
+			while (raw[i] == ' ' || raw[i] == '\t')
+				i++;
+			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+			if (directive_value.empty())
+				throw std::invalid_argument("Empty directive value in config");
+			else if (directive_value == "on")
+				compression_gzip = true;
+			else if (directive_value == "off")
+				compression_gzip = false;
+			else
+				throw std::invalid_argument("Bad string value in config");
+			i += directive_value.size();
+		}
+		else if (directive_name == "deflate")
+		{
+			i += directive_name.size();
+			while (raw[i] == ' ' || raw[i] == '\t')
+				i++;
+			std::string directive_value = raw.substr(i, raw.find('\n', i) - i);
+			if (directive_value.empty())
+				throw std::invalid_argument("Empty directive value in config");
+			else if (directive_value == "on")
+				compression_deflate = true;
+			else if (directive_value == "off")
+				compression_deflate = false;
+			else
+				throw std::invalid_argument("Bad string value in config");
 			i += directive_value.size();
 		}
 		else if (directive_name == "max_connections")
