@@ -1,7 +1,6 @@
 #include "Header.hpp"
 #include <stdexcept>
 
-#include <iostream>
 size_t Header::parse(std::string content)
 {
 	size_t len = 0;

@@ -323,6 +323,7 @@ bool Request::parse_headers()
 		}
 		catch(const std::exception& e)
 		{
+			delete header;
 			_error_code = 400;
 			throw std::invalid_argument("Invalid header field in request");
 		}
