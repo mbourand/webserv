@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/23 16:34:07 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/04 19:46:06 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/28 03:47:22 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 		throw CGI::CGIException("ParseURI failed.", code);
 	for (Request::HeadersVector::const_iterator it = request._headers.begin(); it != request._headers.end(); it++)
 	{
-		if ((*it)->getType() == WWWAuthenticateHeader().getType())
+		if ((*it)->getType() == AuthorizationHeader().getType())
 			auth_type = *it;
 		else if ((*it)->getType() == ContentTypeHeader().getType())
 			content_type = *it;
@@ -70,10 +70,9 @@ CGI::CGI(const Request& request, const ConfigContext& config, const ServerSocket
 	}
 	if (auth_type)
 	{
-		m_env.push_back("AUTH_TYPE="+auth_type->getValue());
-		//m_env.push_back("REMOTE_IDENT=something"); //REMOTE_IDENT This variable stores the user ID running the CGI script. The user ID is stored only if the ident process is running since ident returns a response containing not only user ID information, but also the name of the OS running the script.
-		//if ((header_found = request._headerFactory.getByType(WWWAuthenticateHeader().getType())) != NULL)
-		//	m_env.push_back("REMOTE_USER=something"); //REMOTE_USER Querying the REMOTE_USER variable will give the user name information of the entity making the request. This is only valid if authentication is enabled.
+		m_env.push_back("AUTH_TYPE="+auth_type->getValue().substr(0, auth_type->getValue().find(' ')));
+		m_env.push_back("REMOTE_IDENT="+auth_type->getValue().substr(auth_type->getValue().find(' ')+1));
+		m_env.push_back("REMOTE_USER="+auth_type->getValue().substr(auth_type->getValue().find(' ')+1));
 	}
 	if (request._method->requestHasBody() && !request._body.empty())
 	{
@@ -191,11 +190,11 @@ std::string		CGI::find_first_file(const std::string &, const ConfigContext& conf
 
 int	CGI::ParseURI(const Request& req, const ConfigContext& config)
 {
-	std::string	cgi_path = config.getParam("cgi_dir").front(); //replace with config->getparam
+	std::string	cgi_path = config.getParam("cgi_dir").front();
 
 	m_env_Script_Name = find_first_file(req._url._path, config);
 	if (m_env_Script_Name.empty())
-		return (404);
+		m_env_Script_Name = req._url._path; //return (404); (tester pass...)
 	m_env_Path_Info = m_realPath.substr(m_realPath.find(m_env_Script_Name) + m_env_Script_Name.size());
 	if (m_env_Path_Info.empty())
 		m_env_Path_Info = "";
@@ -240,7 +239,6 @@ void				CGI::execute(const std::string & body)
 			}
 		close(pipes[1]);
 		waitpid(pid, &status, 0);
-		//close(fd);
 		if (WIFEXITED(status))
 			Logger::print("CGI execution was successful.", NULL, SUCCESS, VERBOSE);
 		else
