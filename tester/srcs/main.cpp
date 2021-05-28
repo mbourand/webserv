@@ -97,6 +97,21 @@ TestCategory test_request_headers_parsing()
 		[]() { return send_request("GET / HTTP/1.1\r\nhOsT: localhost\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 200 OK"); });
 
+	cat.addTest<StringStartsWithTest>("Valid line folding 1",
+		[]() { return send_request("GET / HTTP/1.1\r\nHost: l\r\n o\r\n c\r\n      alh\r\n	   o\r\n	   s\r\n	   t\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 200 OK"); });
+
+	cat.addTest<StringStartsWithTest>("Valid line folding 1",
+		[]() { return send_request("GET / HTTP/1.1\r\nHost: l\r\n 	o\r\n 			c\r\n      alh\r\n	 	  o\r\n		   s\r\n					  	 t\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 200 OK"); });
+
+	cat.addTest<StringStartsWithTest>("Valid line folding 1",
+		[]() { return send_request("GET / HTTP/1.1\r\nHost: loc\r\n \r\n  \r\n   \r\n	\r\n \r\n     alhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 200 OK"); });
+
+	cat.addTest<StringStartsWithTest>("Invalid line folding",
+		[]() { return send_request("GET / HTTP/1.1\r\nHost:\r\n \r\n \r\n loc\r\n \r\n  \r\n   \r\n	\r\n \r\n     alhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
 
 	cat.addTest<StringStartsWithTest>("Preference Headers",
 		[]() { return send_request("GET / HTTP/1.1\r\nHost: localhost\r\nAccept-Language: fr, da, en-CA;q=0.9 *;q=0.8\r\n\r\n", 8080); },
