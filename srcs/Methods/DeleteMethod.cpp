@@ -45,16 +45,23 @@ Response DeleteMethod::process(const Request& request, const ConfigContext& conf
 		return Response(404, url._path);
 	}
 	Response response(200, url._path);
-	std::string file_path = config.getParam("uploads").front() + realPath.substr(realPath.find('/'));
-	struct stat	file_stats;
-	if (lstat(file_path.c_str(), &file_stats) == 0 && S_ISREG(file_stats.st_mode))
+	try
 	{
-		if (unlink(file_path.c_str()) == 0)
-			response.setCode(204);
+		std::string file_path = realPath;
+		struct stat	file_stats;
+		if (lstat(file_path.c_str(), &file_stats) == 0 && S_ISREG(file_stats.st_mode))
+		{
+			if (unlink(file_path.c_str()) == 0)
+				response.setCode(204);
+			else
+				response.setCode(202);
+		}
 		else
-			response.setCode(202);
+			response.setCode(404);
 	}
-	else
-		response.setCode(404);
+	catch (std::exception& e)
+	{
+		response.setCode(500);
+	}
 	return (response);
 }

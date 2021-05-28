@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Credentials.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/27 01:39:22 by nforay            #+#    #+#             */
-/*   Updated: 2021/04/27 19:58:53 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/28 22:25:05 by mbourand         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,16 @@
 
 Credentials::Credentials()
 {
-	for (std::list<VirtualHost>::iterator it = g_webserv.vhosts.begin(); it != g_webserv.vhosts.end(); it++)
+	try
 	{
-		const std::string	&path = it->getConfig().getParam("auth_basic_user_file").front();
-		if (!path.empty() && !Is_Cache_Uptodate(path))
-			Parse_user_file(path);
+		for (std::list<VirtualHost>::iterator it = g_webserv.vhosts.begin(); it != g_webserv.vhosts.end(); it++)
+		{
+			const std::string	&path = it->getConfig().getParam("auth_basic_user_file").front();
+			if (!path.empty() && !Is_Cache_Uptodate(path))
+				Parse_user_file(path);
+		}
 	}
+	catch (std::exception& e) {}
 }
 
 Credentials::Credentials(const Credentials &src)

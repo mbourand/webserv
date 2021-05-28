@@ -167,7 +167,7 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 	}
 	catch (std::exception& e)
 	{
-		return Logger::print("Path is not safe", response.setCode(404), ERROR, VERBOSE);
+		return Logger::print("Path is not safe", response.setCode(400), ERROR, VERBOSE);
 	}
 
 	if (realPath[0] != '/')
@@ -187,12 +187,15 @@ Response GetMethod::process(const Request& request, const ConfigContext& config,
 		{
 			if (config.hasAutoIndex())
 				return directory_listing(request, config, realPath);
+			if (!url._is_directory)
+			{
+				response.addHeader("Location", url._path + "/");
+				return response.setCode(301);
+			}
 		}
 	}
 	else if (url._is_directory)
-	{
 		return Logger::print("File not found", response.setCode(404), ERROR, VERBOSE);
-	}
 
 
 	std::list<std::string> splitted = ft::split(realPath, '/');
