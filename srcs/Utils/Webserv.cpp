@@ -11,6 +11,7 @@ s_webserv::s_webserv()
 	: run(true), debug(DEBUG), file_formatname(new HashTable(256)), languages(new HashTable(256)), cwd(ft::get_cwd()), workers_amount(0), max_connections(100), compression_deflate(true), compression_gzip(true), compression_level(6)
 {
 	init_factories();
+	parse_types_file(file_formatname, (cwd+"/config/mime.types").c_str());
 	parse_types_file(file_formatname, "/etc/mime.types");
 	init_languages();
 }

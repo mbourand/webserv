@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/26 16:12:50 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/28 16:22:53 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,9 @@ static void		handle_terminal_input(const std::string& input, const std::list<Cli
 	if (input == "stop")
 		g_webserv.run = false;
 	else if (input == "help")
-		std::cout << "\e[34m" << "Available commands are: help|stop|gzip|deflate|info|workers|uptime|logger|debug" << "\e[39m" << std::endl;
+		std::cout << "\e[34m" << "Available commands are: help|stop|gzip|deflate|info|workers|uptime|logger|types|debug" << "\e[39m" << std::endl;
+	else if (input == "types")
+		g_webserv.file_formatname->Print();
 	else if (input == "debug")
 	{
 		g_webserv.debug = !g_webserv.debug;
@@ -258,7 +260,7 @@ static void		handle_terminal_input(const std::string& input, const std::list<Cli
 int	main(int argc, char **argv)
 {
 	std::cout << "\e[34m" << " __      __      ___.                              \n/  \\    /  \\ ____\\_ |__   ______ ______________  __\n\\   \\/\\/   // __ \\| __ \\ /  ___// __ \\_  __ \\  \\/ /\n \\        /\\  ___/| \\_\\ \\\\___ \\\\  ___/|  | \\/\\   / \n  \\__/\\  /  \\___  >___  /____  >\\___  >__|    \\_/  \n       \\/       \\/    \\/     \\/     \\/         V1.0.0\e[39m" << std::endl;
-	std::cout << "\e[34m" << "Available commands are: help|stop|gzip|deflate|info|workers|uptime|logger|debug" << "\e[39m" << std::endl;
+	std::cout << "\e[34m" << "Available commands are: help|stop|gzip|deflate|info|workers|uptime|logger|types|debug" << "\e[39m" << std::endl;
 	Logger::setMode(SILENT);
 	Logger::print("Webserv is starting...", NULL, INFO, SILENT);
 	if (argc > 2)
