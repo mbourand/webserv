@@ -113,11 +113,11 @@ TestCategory test_request_headers_parsing()
 		[]() { return send_request("GET / HTTP/1.1\r\nHost: l\r\n o\r\n c\r\n      alh\r\n	   o\r\n	   s\r\n	   t\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 200 OK"); });
 
-	cat.addTest<StringStartsWithTest>("Valid line folding 1",
+	cat.addTest<StringStartsWithTest>("Valid line folding 2",
 		[]() { return send_request("GET / HTTP/1.1\r\nHost: l\r\n 	o\r\n 			c\r\n      alh\r\n	 	  o\r\n		   s\r\n					  	 t\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 200 OK"); });
 
-	cat.addTest<StringStartsWithTest>("Valid line folding 1",
+	cat.addTest<StringStartsWithTest>("Valid line folding 3",
 		[]() { return send_request("GET / HTTP/1.1\r\nHost: loc\r\n \r\n  \r\n   \r\n	\r\n \r\n     alhost\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 200 OK"); });
 
