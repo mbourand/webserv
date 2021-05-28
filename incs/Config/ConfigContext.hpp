@@ -23,7 +23,7 @@ class ConfigContext
 
 	private:
 		size_t find_closing_bracket(const std::string& str, size_t start) const;
-		void set_root_default();
+		void set_root_default(const ConfigContext* parent);
 		void set_max_body_size_default();
 		void set_cgi_dir_default();
 		void set_uploads_default();
