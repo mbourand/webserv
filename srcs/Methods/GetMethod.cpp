@@ -38,9 +38,26 @@ bool GetMethod::isIdempotent() const { return true; }
 bool GetMethod::isCacheable() const { return true; }
 bool GetMethod::isAllowedInHTMLForms() const { return true; }
 
+bool compare_nocase(const std::string& first, const std::string& second)
+{
+	if (first == "./" || first == "../") 
+		return (true);
+	unsigned int i=0;
+	while ( (i < first.length()) && (i < second.length()) )
+	{
+		if (tolower(first[i]) < tolower(second[i]))
+			return true;
+		else if (tolower(first[i]) > tolower(second[i]))
+			return false;
+		++i;
+	}
+	return (first.length() < second.length());
+}
+
 std::list<std::string> GetMethod::list_directory(const std::string& realPath)
 {
 	std::list<std::string> list;
+	std::list<std::string> files;
 	DIR* dir;
 	struct dirent *ent;
 
@@ -50,9 +67,18 @@ std::list<std::string> GetMethod::list_directory(const std::string& realPath)
 		throw std::invalid_argument("Error while trying to open directory");
 	}
 	while ((ent = readdir(dir)) != NULL)
-		list.push_back(std::string(ent->d_name) + (ent->d_type == DT_DIR ? "/" : ""));
+	{
+		if (ent->d_type == DT_DIR)
+			list.push_back(std::string(ent->d_name) + "/");
+		else
+			files.push_back(std::string(ent->d_name));
+	}
 	closedir(dir);
-	return list;
+	files.sort(compare_nocase);
+	list.sort(compare_nocase);
+	std::list<std::string>::iterator it = files.begin();
+	files.insert(it, list.begin(), list.end());
+	return files;
 }
 
 std::string GetMethod::get_last_modified_format(const std::string& realPath, const std::string& format)
@@ -104,6 +130,19 @@ Response GetMethod::directory_listing(const Request& request, const ConfigContex
 "<html>\r\n\
 	<head>\r\n\
 		<title>Index</title>\r\n\
+		<style>\r\n\
+			table{\r\n\
+				width:100%;\r\n\
+			}\r\n\
+			table td{\r\n\
+				white-space: nowrap;\r\n\
+				border: none;\r\n\
+				padding-right: 20;\r\n\
+			}\r\n\
+			table td:last-child{\r\n\
+				width:100%;\r\n\
+			}\r\n\
+		</style>\r\n\
 	</head>\r\n\
 	<body>\r\n\
 		<style>\r\n\
@@ -119,11 +158,16 @@ Response GetMethod::directory_listing(const Request& request, const ConfigContex
 \r\n\
 		<h1 align=\"center\">Index of " + url._path + "/</h1>\r\n\
 		<hr>\r\n\
-		<table>\r\n\
-			<tbody>\r\n";
+		<table style=\"border: none;\">\r\n\
+			<tbody>\r\n\
+				<tr>\r\n\
+					<th>Name</th>\r\n\
+					<th>Last Modified</th>\r\n\
+					<th>Size</th>\r\n\
+					<th></th>\r\n\
+				</tr>";
 
-
-	for (std::list<std::string>::iterator it = ++list.begin(); it != list.end(); it++)
+	for (std::list<std::string>::iterator it = list.begin(); it != list.end(); it++)
 	{
 		std::string path = realPath + "/" + *it;
 		body +=
@@ -131,6 +175,7 @@ Response GetMethod::directory_listing(const Request& request, const ConfigContex
 					<td><a href=\"" + url._path + "/" + *it + "\">" + *it + "</a></td>\r\n\
 					<td>" + (path[path.size() - 1] == '/' ? "-" : get_last_modified_format(path, "%d-%b-%Y %H:%M")) + "</td>\r\n\
 					<td>" + (path[path.size() - 1] == '/' ? "-" : get_file_size(path)) + "</td>\r\n\
+					<td></td>\r\n\
 				</tr>\r\n";
 	}
 	body +=
