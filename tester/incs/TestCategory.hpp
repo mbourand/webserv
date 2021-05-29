@@ -24,6 +24,7 @@ class TestCategory
 		void addSubcategory(const TestCategory& category)
 		{
 			m_subcategories.push_back(category);
+			m_subcategories.back().m_nesting++;
 		}
 
 		template<auto TestType, class... Args>
@@ -39,8 +40,7 @@ class TestCategory
 			for (auto& test : m_tests)
 				std::cout << std::string((m_nesting + 1) * 2, ' ') << test << std::endl;
 			for (auto& sub : m_subcategories)
-				for (auto& test : sub.m_tests)
-					std::cout << std::string((sub.m_nesting + 1) * 2, ' ') << test << std::endl;
+				sub.run();
 		}
 
 	friend std::ostream& operator<<(std::ostream& out, const TestCategory& category);

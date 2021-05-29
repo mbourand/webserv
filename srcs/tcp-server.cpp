@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/28 16:22:53 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/29 16:34:35 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,16 +114,23 @@ bool	handle_server_response(Client &client)
 		Response response;
 		if (client.req->_error_code)
 			response.setCode(client.req->_error_code);
-		if (!response.getCode() && !vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic").front().empty())
+		try
 		{
-			std::string	credentials = client.req->getHeaderValue(AuthorizationHeader().getType());
-			if (credentials.empty())
+			if (!response.getCode() && !vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic").front().empty())
 			{
-				response.setCode(401); //Unauthorized (force sign-in)
-				response.addHeader(WWWAuthenticateHeader().getType(), "Basic realm=\""+vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic").front()+"\"");
+				std::string	credentials = client.req->getHeaderValue(AuthorizationHeader().getType());
+					if (credentials.empty())
+					{
+						response.setCode(401); //Unauthorized (force sign-in)
+						response.addHeader(WWWAuthenticateHeader().getType(), "Basic realm=\""+vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic").front()+"\"");
+					}
+					else if (!g_webserv.creds->Check_Credentials(vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic_user_file").front(), credentials.substr(6))) //TODO: comparer credentials avec ceux dans le fichier	login:password -> bG9naW46cGFzc3dvcmQ=
+						response.setCode(403); //forbidden (wrong credentials)
 			}
-			else if (!g_webserv.creds->Check_Credentials(vhost.getConfig().getConfigPath(client.req->_url._path).getParam("auth_basic_user_file").front(), credentials.substr(6))) //TODO: comparer credentials avec ceux dans le fichier	login:password -> bG9naW46cGFzc3dvcmQ=
-				response.setCode(403); //forbidden (wrong credentials)
+		}
+		catch (std::exception& e)
+		{
+			response.setCode(500);
 		}
 		if (!response.getCode())
 		{
@@ -132,6 +139,8 @@ bool	handle_server_response(Client &client)
 		}
 		if (!response.getCode())
 			response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_url._path), *client.sckt);
+		if (client.req->_protocolVersion == "HTTP/1.0")
+			response.addHeader("Connection", "keep-alive");
 		*client.sckt << response.getResponseText(vhost.getConfig().getConfigPath(client.req->_url._path));
 		if (g_webserv.debug)
 			std::cout << "served response " << response.getCode() << std::endl;

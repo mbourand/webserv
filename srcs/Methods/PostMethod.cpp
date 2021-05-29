@@ -45,7 +45,7 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 	}
 	catch (std::exception& e)
 	{
-		return (response.setCode(404));
+		return (response.setCode(400));
 	}
 	if (ft::is_directory(realPath))
 	{

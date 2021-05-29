@@ -136,6 +136,11 @@ void Request::parse()
 	{
 		if (_method->requestHasBody())
 		{
+			if (!_chunked && !_content_length)
+			{
+				_error_code = 411;
+				throw std::invalid_argument("Body Length Required.");
+			}
 			if (!_chunked && ((_raw.size() - _parse_start) > _max_body_size))
 			{
 				_error_code = 413;
@@ -247,16 +252,22 @@ void Request::parse_protocol_version()
 	if (_raw.find('\r', _parse_start + 1) != std::string::npos && _raw.find("\r\n", _parse_start + 1) == std::string::npos)
 		return;
 	std::string version = _raw.substr(_parse_start + 1, _raw.find("\r\n", _parse_start + 1) - (_parse_start + 1));
-	if (std::string("HTTP/1.1").substr(0, version.size()) != version)
-	{
-		_error_code = 400;
-		throw std::invalid_argument("Request protocol version could not be recognized.");
-	}
 	if (_raw.find("\r\n", _parse_start + 1) != std::string::npos && version == "HTTP/1.1")
 	{
 		Logger::print("Request protocol version is HTTP/1.1.", true, INFO, VERBOSE);
 		_protocolVersion = version;
 		_parse_start = _raw.find("\r\n") + 2;
+	}
+	else if (_raw.find("\r\n", _parse_start + 1) != std::string::npos && version == "HTTP/1.0")
+	{
+		Logger::print("Request protocol version is HTTP/1.0.", true, INFO, VERBOSE);
+		_protocolVersion = version;
+		_parse_start = _raw.find("\r\n") + 2;
+	}
+	else
+	{
+		_error_code = 400;
+		throw std::invalid_argument("Request protocol version could not be recognized.");
 	}
 }
 
@@ -264,19 +275,17 @@ size_t is_header_field_finished(std::string str)
 {
 	size_t i = 0;
 
-	if (str.find("\r\n", 0) == std::string::npos)
-		return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
-	else if (str.find("\r\n", 0) == 0)
-		return Logger::print("Header field is finished", 0, INFO, VERBOSE);
-	//while (str.find("\r\n", i) != std::string::npos)
-	//{
-	if (!str[str.find("\r\n", i) + 2])
-		return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
-	//if (str[str.find("\r\n", i) + 2] != ' ' && str[str.find("\r\n", i) + 2] != '\t')
-	return Logger::print("Header field is finished", str.find("\r\n", i) + 2, INFO, VERBOSE);
-		//i = str.find("\r\n", i) + 2;
-	//}
-	//return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
+	while (str.find("\r\n", i) != std::string::npos)
+	{
+		if (str.find("\r\n", i) == 0)
+			return (0);
+		if (!str[str.find("\r\n", i) + 2])
+			return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
+		if (str[str.find("\r\n", i) + 2] != ' ' && str[str.find("\r\n", i) + 2] != '\t')
+			return Logger::print("Header field is finished", str.find("\r\n", i) + 2, INFO, VERBOSE);
+		i = str.find("\r\n", i) + 2;
+	}
+	return Logger::print("Header field is not finished", -1, INFO, VERBOSE);
 }
 
 bool Request::parse_headers()
@@ -325,6 +334,7 @@ bool Request::parse_headers()
 		}
 		catch(const std::exception& e)
 		{
+			delete header;
 			_error_code = 400;
 			throw std::invalid_argument("Invalid header field in request");
 		}

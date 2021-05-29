@@ -140,7 +140,7 @@ ConfigContext::ConfigContext(const std::string& raw, const std::string& name, co
 	if (ft::contains(_directive_names, "listen") && _params.find("listen") == _params.end())
 		throw std::invalid_argument("No listen in config");
 	set_uploads_default();
-	set_root_default();
+	set_root_default(parent);
 	set_max_body_size_default();
 	set_cgi_dir_default();
 	set_auth_basic_default();
@@ -279,10 +279,13 @@ void ConfigContext::set_auth_basic_user_file_default()
 
 
 
-void ConfigContext::set_root_default()
+void ConfigContext::set_root_default(const ConfigContext* parent)
 {
 	if (_params.find("root") == _params.end())
-		_params["root"].push_back("./");
+	{
+		if (parent)
+			throw std::invalid_argument("No root in location");
+	}
 	else
 	{
 		_params["root"].front() = ft::simplify_path(_params["root"].front());
