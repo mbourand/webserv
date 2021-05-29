@@ -20,7 +20,7 @@ TestCategory test_request_head_line_parsing()
 
 
 	cat.addTest<StringStartsWithTest>("Method Not Allowed",
-		[]() { return send_request("PUT / HTTP/1.1\r\nHost: localhost\r\n\r\nAAA\r\n\r\n", 8080); },
+		[]() { return send_request("PUT / HTTP/1.1\r\nHost: localhost\r\nContent-Length: 3\r\n\r\nAAA\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 405 Method Not Allowed"); });
 
 
@@ -139,7 +139,7 @@ TestCategory test_request_body_parsing()
 
 
 	cat.addTest<StringStartsWithTest>("Request Entity Too Large",
-		[]() { return send_request("POST / HTTP/1.1\r\nHost: localhost\r\n\r\nzuyeghiuzehgiuzyehgiszeuhgeziughzeiughziuhfezziuhezhiuerzgiuhhiugzehiu\r\n\r\n", 8080); },
+		[]() { return send_request("POST / HTTP/1.1\r\nHost: localhost\r\nContent-Length: 70\r\n\r\nzuyeghiuzehgiuzyehgiszeuhgeziughzeiughziuhfezziuhezhiuerzgiuhhiugzehiu\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 413 Request Entity Too Large"); });
 
 	return cat;
