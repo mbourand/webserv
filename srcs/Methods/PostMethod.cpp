@@ -45,7 +45,7 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 	}
 	catch (std::exception& e)
 	{
-		return (response.setCode(400));
+		return (response.setCode(404));
 	}
 	if (ft::is_directory(realPath))
 	{
@@ -78,7 +78,7 @@ Response PostMethod::process(const Request& request, const ConfigContext& config
 		if (!file.good() || !file.is_open())
 		{
 			if (errno == ENOENT || errno == ENOTDIR)
-				return Logger::print("File not found", response.setCode(400), ERROR, VERBOSE);
+				return Logger::print("File not found", response.setCode(404), ERROR, VERBOSE);
 			if (errno == EACCES || errno == EISDIR)
 				return Logger::print("Permission denied", response.setCode(403), ERROR, VERBOSE);
 			return Logger::print("Unexpected error while trying to open file: " + std::string(strerror(errno)), response.setCode(500), ERROR, VERBOSE);

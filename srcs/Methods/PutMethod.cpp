@@ -57,19 +57,18 @@ Response PutMethod::process(const Request& request, const ConfigContext& config,
 		|| request.getHeaderValue("Content-Type") != g_webserv.file_formatname->Lookup(extension.substr(1)))
 			return Response(415, url._path);
 	}
-	std::string file_path = config.getParam("uploads").front() + realPath.substr(realPath.find('/'));
 	std::fstream file;
 	struct stat	file_stats;
-	if (lstat(file_path.c_str(), &file_stats) < 0 || static_cast<unsigned int>(file_stats.st_size) != request._body.size())
+	if (lstat(realPath.c_str(), &file_stats) < 0)
 	{
-		file.open(file_path.c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
+		file.open(realPath.c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
 		response.setCode(201);
 		response.addHeader("Location", realPath.substr(realPath.find('/')));
 	}
 	else if (!S_ISREG(file_stats.st_mode))
 		return Response(500, url._path);
 	else
-		file.open(file_path.c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
+		file.open(realPath.c_str(), std::fstream::in | std::fstream::out | std::fstream::trunc);
 	if (!file.good() || !file.is_open())
 		return Response(500, url._path);
 	response.addHeader("Content-Location", realPath.substr(realPath.find('/')));

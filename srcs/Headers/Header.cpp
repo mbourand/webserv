@@ -17,7 +17,12 @@ size_t Header::parse(std::string content)
 	return (result);
 }
 
-const std::string& Header::getValue() const
+void	Header::setValue(const std::string &value)
+{
+	_value = value;
+}
+
+const	std::string& Header::getValue() const
 {
 	return _value;
 }

@@ -141,7 +141,8 @@ void Request::parse()
 				_error_code = 411;
 				throw std::invalid_argument("Body Length Required.");
 			}
-			if (!_chunked && ((_raw.size() - _parse_start) > _max_body_size))
+			if (!_chunked && ((_raw.size() - _parse_start) > _max_body_size)
+				&& _raw.find("\r\n", _parse_start + _max_body_size) != (_parse_start + _max_body_size))
 			{
 				_error_code = 413;
 				throw std::invalid_argument("Request Entity too large.");
@@ -151,13 +152,14 @@ void Request::parse()
 			else
 				_body = dechunk(_raw.substr(_parse_start, _raw.substr(_parse_start).size() - 2));
 			if (_body.size() < 100)
-				Logger::print("Request body is " + _body, NULL, INFO, VERBOSE);
+				Logger::print("Request body is \"" + _body + "\"", NULL, INFO, VERBOSE);
 			else
 				Logger::print("Request body is <<<BODY TOO LONG>>>", NULL, INFO, VERBOSE);
 		}
 		_finished_parsing = true;
 	}
-	else if (_header_section_finished && _method->requestHasBody() && !_chunked && (_raw.size() - _parse_start) > _max_body_size)
+	else if (_header_section_finished && _method->requestHasBody() && !_chunked && (_raw.size() - _parse_start) > _max_body_size
+		&& _raw.find("\r\n", _parse_start + _max_body_size) != (_parse_start + _max_body_size))
 	{
 		_error_code = 413;
 		throw std::invalid_argument("Request Entity too large.");
@@ -190,7 +192,7 @@ std::string		Request::dechunk(const std::string& str)
 					std::string			converted;
 					ss << total_len;
 					ss >> converted;
-					header->parse(converted+"\r\n");
+					header->setValue(converted);
 					_headers.push_back(header);
 					return (output);
 				}
@@ -220,6 +222,7 @@ void Request::parse_method()
 	if (!g_webserv.methods.hasCandidates(method))
 	{
 		_error_code = 400;
+		std::cout << "error method: " << method << std::endl;
 		throw std::invalid_argument("Method could not be recognized.");
 	}
 	if (ft::contains(_raw, ' ') && g_webserv.methods.getByType(method) != NULL)
@@ -252,6 +255,11 @@ void Request::parse_protocol_version()
 	if (_raw.find('\r', _parse_start + 1) != std::string::npos && _raw.find("\r\n", _parse_start + 1) == std::string::npos)
 		return;
 	std::string version = _raw.substr(_parse_start + 1, _raw.find("\r\n", _parse_start + 1) - (_parse_start + 1));
+	if (std::string("HTTP/1.1").substr(0, version.size()) != version)
+	{
+		_error_code = 400;
+		throw std::invalid_argument("Request protocol version could not be recognized.");
+	}
 	if (_raw.find("\r\n", _parse_start + 1) != std::string::npos && version == "HTTP/1.1")
 	{
 		Logger::print("Request protocol version is HTTP/1.1.", true, INFO, VERBOSE);
@@ -263,11 +271,6 @@ void Request::parse_protocol_version()
 		Logger::print("Request protocol version is HTTP/1.0.", true, INFO, VERBOSE);
 		_protocolVersion = version;
 		_parse_start = _raw.find("\r\n") + 2;
-	}
-	else
-	{
-		_error_code = 400;
-		throw std::invalid_argument("Request protocol version could not be recognized.");
 	}
 }
 

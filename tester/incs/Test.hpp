@@ -20,6 +20,8 @@ constexpr auto LessEqualTest = [](auto a, auto b) { return a() <= b(); };
 
 constexpr auto StringStartsWithTest = [](auto str, auto startswith) { auto s = str(); auto s2 = startswith(); return s.size() >= s2.size() && s.substr(0, s2.size()) == s2; };
 constexpr auto StringContainsTest = [](auto str, auto contains) { auto s = str(); auto s2 = contains(); return s.find(s2) != std::string::npos; };
+constexpr auto StringStartsWithTestAndContains = [](auto str, auto startswith, auto contains) { auto s = str(); auto s2 = startswith(); auto s3 = contains(); return s.size() >= s2.size() && s.substr(0, s2.size()) == s2 && s.find(s3) != std::string::npos; };
+constexpr auto StringStartsWithTestAndContainsNot = [](auto str, auto startswith, auto contains) { auto s = str(); auto s2 = startswith(); auto s3 = contains(); return s.size() >= s2.size() && s.substr(0, s2.size()) == s2 && s.find(s3) == std::string::npos; };
 
 
 class Test

@@ -15,6 +15,7 @@ class Header
 		virtual Header* clone() const = 0;
 		virtual size_t parse(std::string value);
 
+		void setValue(const std::string &value);
 		const std::string& getValue() const;
 };
 

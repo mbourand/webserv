@@ -47,8 +47,12 @@ TestCategory test_request_head_line_parsing()
 		[]() { return send_request("GET / HTTP/1.1 \r\nHost: localhost\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
 
-	cat.addTest<StringStartsWithTest>("Bad protocol",
+	cat.addTest<StringStartsWithTest>("Protocol 1.0",
 		[]() { return send_request("GET / HTTP/1.0\r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 200 OK"); });
+
+	cat.addTest<StringStartsWithTest>("Bad protocol",
+		[]() { return send_request("GET / HTTP/0.9\r\nHost: localhost\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
 
 	cat.addTest<StringStartsWithTest>("Bad protocol case sensitive 1",
@@ -218,12 +222,69 @@ TestCategory test_get_requests()
 TestCategory test_post_requests()
 {
 	TestCategory cat("POST Requests", 0);
+
+	cat.addTest<StringStartsWithTest>("Valid 1",
+	[]() { return send_request("POST /index.php HTTP/1.1\r\nHost: localhost\r\nContent-Length: 5\r\n\r\nHello", 8080); },
+	[]() { return std::string("HTTP/1.1 200 OK"); });
+
+	cat.addTest<StringStartsWithTest>("Valid 2",
+	[]() { return send_request("POST /index.html HTTP/1.1\r\nHost: localhost\r\nContent-Length: 5\r\n\r\nHello", 8080); },
+	[]() { return std::string("HTTP/1.1 200 OK"); });
+
+	cat.addTest<StringStartsWithTest>("Not found",
+	[]() { return send_request("POST /notfound.html HTTP/1.1\r\nHost: localhost\r\nContent-Length: 5\r\n\r\nHello", 8080); },
+	[]() { return std::string("HTTP/1.1 404 Not Found"); });
+
+	cat.addTest<StringStartsWithTest>("Unauthorized",
+	[]() { return send_request("POST /admin/ HTTP/1.1\r\nHost: localhost\r\nContent-Length: 5\r\n\r\nHello", 8080); },
+	[]() { return std::string("HTTP/1.1 401 Unauthorized"); });
 	return cat;
 }
 
 TestCategory test_put_requests()
 {
 	TestCategory cat("PUT Requests", 0);
+
+	cat.addTest<StringStartsWithTestAndContains>("Create small File",
+	[]() { return send_request("PUT /put/test.txt HTTP/1.1\r\nHost: localhost\r\nContent-Type: text/plain\r\nContent-Length: 10\r\n\r\nHelloWorld", 8080); },
+	[]() { return std::string("HTTP/1.1 201 Created"); },
+	[]() { return std::string("Content-Location: /uploads/test.txt"); });
+
+	cat.addTest<StringStartsWithTestAndContains>("Same small File",
+	[]() { return send_request("PUT /put/test.txt HTTP/1.1\r\nHost: localhost\r\nContent-Type: text/plain\r\nContent-Length: 10\r\n\r\nHelloWorld", 8080); },
+	[]() { return std::string("HTTP/1.1 200 OK"); },
+	[]() { return std::string("Content-Location: /uploads/test.txt"); });
+
+	cat.addTest<StringStartsWithTest>("Modified small File",
+	[]() { return send_request("PUT /put/test.txt HTTP/1.1\r\nHost: localhost\r\nContent-Type: text/plain\r\nContent-Length: 5\r\n\r\nHello", 8080); },
+	[]() { return std::string("HTTP/1.1 200 OK"); });
+
+	cat.addTest<StringStartsWithTestAndContains>("Same modified small File",
+	[]() { return send_request("PUT /put/test.txt HTTP/1.1\r\nHost: localhost\r\nContent-Type: text/plain\r\nContent-Length: 10\r\n\r\nHelloWorld\r\n", 8080); },
+	[]() { return std::string("HTTP/1.1 200 OK"); },
+	[]() { return std::string("Content-Location: /uploads/test.txt"); });
+
+	cat.addTest<StringStartsWithTest>("Unsupported media type",
+	[]() { return send_request("PUT /put/test.sh HTTP/1.1\r\nHost: localhost\r\nContent-Type: application/x-sh\r\nContent-Length: 10\r\n\r\necho \"42!\"", 8080); },
+	[]() { return std::string("HTTP/1.1 415 Unsupported Media Type"); });
+
+	cat.addTest<StringStartsWithTestAndContains>("Create File with only CRLF",
+	[]() { return send_request("PUT /put/newlines.txt HTTP/1.1\r\nHost: localhost\r\nContent-Type: text/plain\r\nContent-Length: 10\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n", 8080); },
+	[]() { return std::string("HTTP/1.1 201 Created"); },
+	[]() { return std::string("Content-Location: /uploads/newlines.txt"); });
+
+	cat.addTest<StringStartsWithTest>("Not allowed",
+	[]() { return send_request("PUT /delete/test.txt HTTP/1.1\r\nHost: localhost\r\nContent-Type: text/plain\r\nContent-Length: 5\r\n\r\nHello", 8080); },
+	[]() { return std::string("HTTP/1.1 405 Method Not Allowed"); });
+
+	cat.addTest<StringStartsWithTest>("Not allowed2",
+	[]() { return send_request("PUT /nonothing/test.txt HTTP/1.1\r\nHost: localhost\r\nContent-Type: text/plain\r\nContent-Length: 5\r\n\r\nHello", 8080); },
+	[]() { return std::string("HTTP/1.1 405 Method Not Allowed"); });
+
+	cat.addTest<StringStartsWithTest>("Unauthorized",
+	[]() { return send_request("PUT /admin/test.txt HTTP/1.1\r\nHost: localhost\r\nContent-Type: text/plain\r\nContent-Length: 5\r\n\r\nHello", 8080); },
+	[]() { return std::string("HTTP/1.1 401 Unauthorized"); });
+
 	return cat;
 }
 
@@ -243,12 +304,16 @@ TestCategory test_options_requests()
 	[]() { return send_request("OPTIONS /noget/ HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
 	[]() { return std::string("CONNECT, DELETE, HEAD, OPTIONS, POST, PUT, TRACE"); });
 
+	cat.addTest<StringStartsWithTest>("Unauthorized",
+	[]() { return send_request("OPTIONS /admin/ HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+	[]() { return std::string("HTTP/1.1 401 Unauthorized"); });
+
 	return cat;
 }
 
 TestCategory test_connect_requests()
 {
-	TestCategory cat("CONNECT Requests", 0);
+	TestCategory cat("CONNECT Requests (Bonus)", 0);
 	return cat;
 }
 
@@ -288,6 +353,10 @@ TestCategory test_head_requests()
 		[]() { return send_request("HEAD / HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 200 OK"); });
 
+	cat.addTest<StringStartsWithTest>("Unauthorized",
+	[]() { return send_request("HEAD /admin/ HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+	[]() { return std::string("HTTP/1.1 401 Unauthorized"); });
+
 	return cat;
 }
 
@@ -299,6 +368,10 @@ TestCategory test_delete_requests()
 		[]() { return send_request("DELETE /delete/test.txt HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 204 No Content"); });
 
+	cat.addTest<StringStartsWithTest>("Valid delete2",
+		[]() { return send_request("DELETE /delete/newlines.txt HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 204 No Content"); });
+
 	cat.addTest<StringStartsWithTest>("Inexistant file",
 		[]() { return send_request("DELETE /delete/ikzehgfiuezhgiuze.txt HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 404 Not Found"); });
@@ -307,6 +380,13 @@ TestCategory test_delete_requests()
 		[]() { return send_request("DELETE /delete/dir HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 404 Not Found"); });
 
+	cat.addTest<StringContainsTest>("Not allowed",
+		[]() { return send_request("DELETE /nonothing/index.html HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 405 Method Not Allowed"); });
+
+	cat.addTest<StringStartsWithTest>("Unauthorized",
+	[]() { return send_request("DELETE /admin/ HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+	[]() { return std::string("HTTP/1.1 401 Unauthorized"); });
 
 	return cat;
 }
@@ -322,6 +402,15 @@ TestCategory test_trace_requests()
 	cat.addTest<StringContainsTest>("Basic Body",
 		[]() { return send_request("TRACE /index.html HTTP/1.1\r\nHost: localhost\r\n\r\noijuzerjgiouz jgoize jioezsjioez joiez eioz jezoi jezio ezioez ioezoeizeozi", 8080); },
 		[]() { return std::string("TRACE /index.html HTTP/1.1\r\nHost: localhost\r\n\r\noijuzerjgiouz jgoize jioezsjioez joiez eioz jezoi jezio ezioez ioezoeizeozi"); });
+
+	cat.addTest<StringContainsTest>("Not allowed",
+		[]() { return send_request("TRACE /nonothing/index.html HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 405 Method Not Allowed"); });
+
+	cat.addTest<StringStartsWithTest>("Unauthorized",
+	[]() { return send_request("TRACE /admin/ HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+	[]() { return std::string("HTTP/1.1 401 Unauthorized"); });
+
 	return cat;
 }
 
