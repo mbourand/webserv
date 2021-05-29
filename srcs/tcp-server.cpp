@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/28 22:23:00 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/05/29 15:17:28 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,9 @@ bool	handle_server_response(Client &client)
 			}
 		}
 		catch (std::exception& e)
-		{}
+		{
+			response.setCode(500);
+		}
 		if (!response.getCode())
 		{
 			if (!ft::contains(vhost.getConfig().getConfigPath(client.req->_url._path).getAllowedMethods(), client.req->_method))
@@ -141,6 +143,8 @@ bool	handle_server_response(Client &client)
 		}
 		if (!response.getCode())
 			response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_url._path), *client.sckt);
+		if (client.req->_protocolVersion == "HTTP/1.0")
+			response.addHeader("Connection", "keep-alive");
 		*client.sckt << response.getResponseText(vhost.getConfig().getConfigPath(client.req->_url._path));
 		if (g_webserv.debug)
 			std::cout << "served response " << response.getCode() << std::endl;

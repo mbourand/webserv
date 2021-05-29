@@ -252,16 +252,22 @@ void Request::parse_protocol_version()
 	if (_raw.find('\r', _parse_start + 1) != std::string::npos && _raw.find("\r\n", _parse_start + 1) == std::string::npos)
 		return;
 	std::string version = _raw.substr(_parse_start + 1, _raw.find("\r\n", _parse_start + 1) - (_parse_start + 1));
-	if (std::string("HTTP/1.1").substr(0, version.size()) != version)
-	{
-		_error_code = 400;
-		throw std::invalid_argument("Request protocol version could not be recognized.");
-	}
 	if (_raw.find("\r\n", _parse_start + 1) != std::string::npos && version == "HTTP/1.1")
 	{
 		Logger::print("Request protocol version is HTTP/1.1.", true, INFO, VERBOSE);
 		_protocolVersion = version;
 		_parse_start = _raw.find("\r\n") + 2;
+	}
+	else if (_raw.find("\r\n", _parse_start + 1) != std::string::npos && version == "HTTP/1.0")
+	{
+		Logger::print("Request protocol version is HTTP/1.0.", true, INFO, VERBOSE);
+		_protocolVersion = version;
+		_parse_start = _raw.find("\r\n") + 2;
+	}
+	else
+	{
+		_error_code = 400;
+		throw std::invalid_argument("Request protocol version could not be recognized.");
 	}
 }
 
