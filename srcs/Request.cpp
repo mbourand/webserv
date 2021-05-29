@@ -269,7 +269,6 @@ size_t is_header_field_finished(std::string str)
 {
 	size_t i = 0;
 
-	std::cout << "is_header_field_finished : " << str << std::endl;
 	while (str.find("\r\n", i) != std::string::npos)
 	{
 		if (str.find("\r\n", i) == 0)

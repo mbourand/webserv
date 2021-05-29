@@ -4,13 +4,11 @@
 size_t Header::parse(std::string content)
 {
 	size_t len = 0;
-	size_t result = 0;
+	size_t result = content.find("\r\n") + 2;
 
-	do
-	{
+	while (content.find_first_not_of(" \t\v\f", result) != result)
 		result = content.find("\r\n", result) + 2;
-	} while (!result && content.find_first_not_of(" \t\v\f\r\n", result) != 0);
-	_value = content.substr(1);
+	_value = content.substr(1, result - 2);
 	if (_value.find_first_not_of(" \t\v\f\r\n") || _value.empty())
 		throw std::invalid_argument("Bad line folding");
 	_value.erase(_value.find_last_not_of(" \t\v\f\r\n") + 1);
