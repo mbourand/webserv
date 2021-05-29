@@ -55,9 +55,9 @@ clean:
 	@make clean -C tester
 
 fclean: clean
-	@rm -rf $(NAME) client
+	@rm -rf $(NAME)
 	@echo "$(RED)[$(NAME)] : $(DEF)Full Cleaning $(GRN)[OK]$(DEF)"
-	@make fclean -C tester
+	@rm -rf $(NAME_TESTER)
 
 re: fclean all
 
