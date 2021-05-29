@@ -23,29 +23,40 @@ TestCategory test_request_head_line_parsing()
 		[]() { return send_request("PUT / HTTP/1.1\r\nHost: localhost\r\nContent-Length: 3\r\n\r\nAAA\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 405 Method Not Allowed"); });
 
-
-	cat.addTest<StringStartsWithTest>("Bad Method Name",
+	cat.addTest<StringStartsWithTest>("Bad Method Name 1",
 		[]() { return send_request("GZEGEZRGEZ / HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
 
-
-	cat.addTest<StringStartsWithTest>("Method case sensitive",
-		[]() { return send_request("get / HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+	cat.addTest<StringStartsWithTest>("Bad Method Name 2",
+		[]() { return send_request("GETT / HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
 
+	cat.addTest<StringStartsWithTest>("Method case sensitive 1",
+		[]() { return send_request("get / HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
 
 	cat.addTest<StringStartsWithTest>("Bad space 1",
 		[]() { return send_request("get  / HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
 
-
 	cat.addTest<StringStartsWithTest>("Bad space 2",
 		[]() { return send_request("GET /  HTTP/1.1\r\nHost: localhost\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
 
+	cat.addTest<StringStartsWithTest>("Bad space 3",
+		[]() { return send_request("GET / HTTP/1.1 \r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
 
 	cat.addTest<StringStartsWithTest>("Bad protocol",
 		[]() { return send_request("GET / HTTP/1.0\r\nHost: localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
+
+	cat.addTest<StringStartsWithTest>("Bad protocol case sensitive 1",
+		[]() { return send_request("GET / HttP/1.1\r\nHost: localhost\r\nAccept-Language: fr\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
+
+	cat.addTest<StringStartsWithTest>("Bad protocol case sensitive 2",
+		[]() { return send_request("GET / http/1.1\r\nHost: localhost\r\nAccept-Language: fr\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
 
 	cat.addTest<StringStartsWithTest>("URI Without /",
@@ -76,6 +87,22 @@ TestCategory test_request_headers_parsing()
 	cat.addTest<StringStartsWithTest>("No Host",
 		[]() { return send_request("GET / HTTP/1.1\r\n\r\n", 8080); },
 		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
+
+	cat.addTest<StringStartsWithTest>("Invalid Header delimiter 1",
+		[]() { return send_request("GET / HTTP/1.1\r\nHostlocalhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
+
+	cat.addTest<StringStartsWithTest>("Invalid Header delimiter 2",
+		[]() { return send_request("GET / HTTP/1.1\r\nHost localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 400 Bad Request"); });
+
+	cat.addTest<StringStartsWithTest>("Valid Header delimiter 1",
+		[]() { return send_request("GET / HTTP/1.1\r\nHost:           localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 200 OK"); });
+
+	cat.addTest<StringStartsWithTest>("Valid Header delimiter 2",
+		[]() { return send_request("GET / HTTP/1.1\r\nHost:localhost\r\n\r\n", 8080); },
+		[]() { return std::string("HTTP/1.1 200 OK"); });
 
 	cat.addTest<StringStartsWithTest>("Bad space",
 		[]() { return send_request("GET / HTTP/1.1\r\nHost : localhost\r\n\r\n", 8080); },
