@@ -1,4 +1,5 @@
 NAME	= webserv
+NAME_TESTER	= webserv-tester
 CC		= clang++
 CFLAGS	= -Wall -Werror -Wextra -std=c++98
 SRC_PATH= srcs/
@@ -46,6 +47,7 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.cpp
 
 tester:
 	@make -C tester
+	@mv tester/$(NAME_TESTER) $(NAME_TESTER)
 
 clean:
 	@rm -rf $(OBJ_PATH)
