@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/29 16:34:35 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/29 19:26:45 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ bool	handle_client_request(Client &client)
 	catch(std::invalid_argument &e)
 	{
 		// Si error_code est set on considère que ce n'est pas une erreur étant donné qu'on va pouvoir répondre avec _error_code de la request
-		return (Logger::print(e.what(), (client.req->_error_code == 0), ERROR, SILENT));
+		return (Logger::print(e.what(), (client.req->_error_code == 0), ERROR, NORMAL));
 	}
 	return false;
 }

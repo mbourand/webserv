@@ -6,7 +6,7 @@
 /*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/15 21:29:28 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/19 03:18:42 by nforay           ###   ########.fr       */
+/*   Updated: 2021/05/29 19:27:10 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ int						Socket::Recieve(std::string &str) const
 	switch (ret)
 	{
 	case -1:
-		return (Logger::print("Error in Socket::Recieve", 0, ERROR, SILENT));
+		return (Logger::print("Error in Socket::Recieve", 0, ERROR, NORMAL));
 	case 0:
 		return (0);
 	default:
