@@ -222,7 +222,6 @@ void Request::parse_method()
 	if (!g_webserv.methods.hasCandidates(method))
 	{
 		_error_code = 400;
-		std::cout << "error method: " << method << std::endl;
 		throw std::invalid_argument("Method could not be recognized.");
 	}
 	if (ft::contains(_raw, ' ') && g_webserv.methods.getByType(method) != NULL)
@@ -255,7 +254,7 @@ void Request::parse_protocol_version()
 	if (_raw.find('\r', _parse_start + 1) != std::string::npos && _raw.find("\r\n", _parse_start + 1) == std::string::npos)
 		return;
 	std::string version = _raw.substr(_parse_start + 1, _raw.find("\r\n", _parse_start + 1) - (_parse_start + 1));
-	if (std::string("HTTP/1.1").substr(0, version.size()) != version)
+	if (std::string("HTTP/1.1").substr(0, version.size()) != version && std::string("HTTP/1.0").substr(0, version.size()) != version)
 	{
 		_error_code = 400;
 		throw std::invalid_argument("Request protocol version could not be recognized.");
