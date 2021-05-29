@@ -136,6 +136,11 @@ void Request::parse()
 	{
 		if (_method->requestHasBody())
 		{
+			if (!_chunked && !_content_length)
+			{
+				_error_code = 411;
+				throw std::invalid_argument("Body Length Required.");
+			}
 			if (!_chunked && ((_raw.size() - _parse_start) > _max_body_size))
 			{
 				_error_code = 413;
@@ -264,6 +269,7 @@ size_t is_header_field_finished(std::string str)
 {
 	size_t i = 0;
 
+	std::cout << "is_header_field_finished : " << str << std::endl;
 	while (str.find("\r\n", i) != std::string::npos)
 	{
 		if (str.find("\r\n", i) == 0)
