@@ -219,7 +219,7 @@ std::string		Request::dechunk(const std::string& str)
 void Request::parse_method()
 {
 	std::string method = _raw.substr(0, _raw.find(' '));
-	if (!g_webserv.methods.hasCandidates(method))
+	if (!g_webserv.methods.hasCandidates(method) || method.empty())
 	{
 		_error_code = 400;
 		throw std::invalid_argument("Method could not be recognized.");
@@ -270,6 +270,11 @@ void Request::parse_protocol_version()
 		Logger::print("Request protocol version is HTTP/1.0.", true, INFO, VERBOSE);
 		_protocolVersion = version;
 		_parse_start = _raw.find("\r\n") + 2;
+	}
+	else
+	{
+		_error_code = 400;
+		throw std::invalid_argument("Request protocol version could not be recognized.");
 	}
 }
 
