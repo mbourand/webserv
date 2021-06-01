@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tcp-server.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbourand <mbourand@student.42.fr>          +#+  +:+       +#+        */
+/*   By: nforay <nforay@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/16 01:13:41 by nforay            #+#    #+#             */
-/*   Updated: 2021/05/31 17:38:50 by mbourand         ###   ########.fr       */
+/*   Updated: 2021/06/01 15:13:44 by nforay           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ bool	handle_server_response(Client &client)
 			response = client.req->_method->process(*client.req, vhost.getConfig().getConfigPath(client.req->_url._path), *client.sckt);
 		if (client.req->_protocolVersion == "HTTP/1.0")
 			response.addHeader("Connection", "keep-alive");
-		*client.sckt << response.getResponseText(vhost.getConfig().getConfigPath(client.req->_url._path), client.req->_method->getType() != "HEAD");
+		*client.sckt << response.getResponseText(vhost.getConfig().getConfigPath(client.req->_url._path), (client.req->_method ? client.req->_method->getType() != "HEAD" : true));
 		if (g_webserv.debug)
 			std::cout << "served response " << response.getCode() << std::endl;
 		if (response.getCode() != 200)

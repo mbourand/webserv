@@ -25,7 +25,5 @@ Response HeadMethod::process(const Request& request, const ConfigContext& config
 {
 	Response response = _getMethod.process(request, config, socket);
 	response.setBody("");
-	response.removeHeader("Content-Length");
-	response.addHeader("Content-Length", "0");
 	return response;
 }

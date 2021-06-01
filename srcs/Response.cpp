@@ -197,9 +197,10 @@ std::string Response::getResponseText(const ConfigContext& config, bool generate
 	else
 	{
 		if (_body.size() > MIN_COMPRESS_SIZE && (g_webserv.compression_deflate || g_webserv.compression_gzip))
+		{
 			compressBody(_body);
-		this->removeHeader("Content-Length");
-		this->addHeader("Content-Length", ft::toString(_body.size()));
+			this->addHeader("Content-Length", ft::toString(_body.size()));
+		}
 	}
 	std::stringstream ss;
 	ss << _code;
