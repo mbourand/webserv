@@ -38,7 +38,7 @@ class Response
 		void		compressBody(const std::string &str);
 		std::string	Chunk(const std::string& str);
 
-		std::string getResponseText(const ConfigContext& config);
+		std::string getResponseText(const ConfigContext& config, bool generate_body);
 		int			getCode(void) const;
 };
 

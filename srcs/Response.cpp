@@ -170,7 +170,7 @@ void	Response::setCompression(const std::vector<Header*>& headers)
  * @param ConfigContext de la location qui correspond à l'url à laquelle on doit répondre
  * @return Le texte de la réponse
  */
-std::string Response::getResponseText(const ConfigContext& config)
+std::string Response::getResponseText(const ConfigContext& config, bool generate_body)
 {
 	if (_code >= 300)
 	{
@@ -197,9 +197,10 @@ std::string Response::getResponseText(const ConfigContext& config)
 	else
 	{
 		if (_body.size() > MIN_COMPRESS_SIZE && (g_webserv.compression_deflate || g_webserv.compression_gzip))
+		{
 			compressBody(_body);
-		this->removeHeader("Content-Length");
-		this->addHeader("Content-Length", ft::toString(_body.size()));
+			this->addHeader("Content-Length", ft::toString(_body.size()));
+		}
 	}
 	std::stringstream ss;
 	ss << _code;
@@ -213,7 +214,7 @@ std::string Response::getResponseText(const ConfigContext& config)
 	str += "\r\n";
 
 
-	if (!_body.empty())
+	if (!_body.empty() && generate_body)
 		str += _body;
 	if (_body.empty() && _code >= 300)
 		str += config.getErrorPage(_code);

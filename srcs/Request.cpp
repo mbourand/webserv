@@ -123,15 +123,19 @@ void Request::parse()
 			_error_code = 400;
 			throw std::invalid_argument("Multiple Host header in request");
 		}
-		if (cnt == 0)
+		if (cnt == 0 && _protocolVersion != "HTTP/1.0")
 		{
 			_error_code = 400;
 			throw std::invalid_argument("No Host header in request");
 		}
 
 	}
-
-	if (_header_section_finished && ((_raw.find("\r\n\r\n", _parse_start) != std::string::npos)
+	if (_header_section_finished && !_chunked && !_content_length && _method->getType() != "PUT" && _method->requestHasBody())
+	{
+		_body = "";
+		_finished_parsing = true;
+	}
+	else if (_header_section_finished && ((_raw.find("\r\n\r\n", _parse_start) != std::string::npos)
 		|| (_content_length && ((_raw.size() - _parse_start) >= _content_length))))
 	{
 		if (_method->requestHasBody())
@@ -219,7 +223,7 @@ std::string		Request::dechunk(const std::string& str)
 void Request::parse_method()
 {
 	std::string method = _raw.substr(0, _raw.find(' '));
-	if (!g_webserv.methods.hasCandidates(method))
+	if (!g_webserv.methods.hasCandidates(method) || method.empty())
 	{
 		_error_code = 400;
 		throw std::invalid_argument("Method could not be recognized.");
@@ -270,6 +274,11 @@ void Request::parse_protocol_version()
 		Logger::print("Request protocol version is HTTP/1.0.", true, INFO, VERBOSE);
 		_protocolVersion = version;
 		_parse_start = _raw.find("\r\n") + 2;
+	}
+	else
+	{
+		_error_code = 400;
+		throw std::invalid_argument("Request protocol version could not be recognized.");
 	}
 }
 
