@@ -1,6 +1,15 @@
-# webserv
-
 <img src="https://cdn.discordapp.com/attachments/487745404054536202/850395771307294730/unknown.png">
+
+
+# Sommaire
+
+1. [Description](#description)
+2. [Installation](#installation)
+3. [Documentation](#documentation)
+   1. [Methodes HTTP Implémentées](#méthodes-http-implémentées)
+   2. [Headers HTTP Implémentés](#headers-http-implémentés)
+   3. [Configuration](#directives-de-configuration)
+   5. [Langues](#langues)
 
 
 ## Description
@@ -16,7 +25,9 @@ Webserv est un serveur web minimaliste permettant de répondre à des requêtes 
 4. ```./webserv <fichier_de_config>```
 
 
-## Méthodes HTTP implémentées
+# Documentation
+
+## Méthodes HTTP Implémentées
 
 | Méthode | Description                                                       |
 |---------|-------------------------------------------------------------------|
@@ -82,7 +93,7 @@ Webserv est un serveur web minimaliste permettant de répondre à des requêtes 
 | auth_basic_user_file | server, location | path                              | Définit le fichier contenant les logins et mot de passes pour accéder à la ressource             |
 
 
-### Exemple simple de configuation
+#### Exemple simple de configuation
 
 ```
 # En considérant qu'il existe un dossier www qui contient un fichier index.html
@@ -106,7 +117,7 @@ Dans chaque dossier contentant des fichiers, vous pouvez créer un sous-dossier 
 Dans le dossier .langs, vous pourrez créer des sous-dossier au nom de la langue dans laquelle seront écrit les fichiers dans ce dossier, vous pouvez retrouver la liste des langues [ici](https://www.w3schools.com/tags/ref_language_codes.asp)
 La bonne langue pour un client est automatiquement déterminée via le header HTTP ```Accept-Language```
 
-### Arborescence :
+#### Arborescence
 ```
 www/
 ├───.langs/
