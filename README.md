@@ -57,7 +57,7 @@ Webserv est un serveur web minimaliste permettant de répondre à des requêtes 
 | max_connections      | global           | number                            | Définit le nombre maximum de clients pouvant être connectés sur webserv en même temps            |
 | compression_level    | global           | number                            | Définit le niveau de compression [0;9]                                                           |
 | server { ... }       | global           |                                   | Indique le début de la configuration d'un serveur                                                |
-| server_name          | server           | name                              | Change le nom du server{}                                                                        |
+| server_name          | server           | name1 name2 ...                   | Change le nom du server{}                                                                        |
 | listen               | server           | port1 port2 ...                   | Change les ports que le server{} écoute                                                          |
 | location             | server           | name { ... }                      | Indique la création d'une location name, qui pourra être utilisée dans un url                    |
 | root                 | server, location | path                              | Utilisé dans un location{}, relie le name dans un url au dossier path                            |
@@ -72,3 +72,22 @@ Webserv est un serveur web minimaliste permettant de répondre à des requêtes 
 | uploads_exts         | server, location | ext1 ext2 ...                     | Définit les extensions qui peuvent être uploadées par PUT                                        |
 | auth_basic           | server, location | string                            | Change le nom de la popup d'authentification pour les ressources protégées par un mot de passe   |
 | auth_basic_user_file | server, location | path                              | Définit le fichier contenant les logins et mot de passes pour accéder à la ressource             |
+
+
+### Exemple simple de configuation
+
+```
+# En considérant qu'il existe un dossier www qui contient un fichier index.html
+# URL : http://localhost:8080/
+server {
+
+	listen 8080
+	server_name localhost
+
+	location / {
+		root www/
+		index index.html
+	}
+
+}
+```
