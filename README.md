@@ -45,3 +45,30 @@ Webserv est un serveur web minimaliste permettant de répondre à des requêtes 
 | User-Agent        |                                                                              |
 | WWW-Authenticate  |                                                                              |
 | X-*               | Header customisé, qui peut-être envoyé à un CGI                              |
+
+
+## Directives de Configuration
+
+| Directive            | Scope            | Arguments                         | Description                                                                                      |
+|----------------------|------------------|-----------------------------------|--------------------------------------------------------------------------------------------------|
+| workers              | global           | workers_amount                    | Définit le nombre de threads lancés en simultané                                                 |
+| gzip                 | global           | on/off                            | Active/Désactive la compression gzip                                                             |
+| deflate              | global           | on/off                            | Active/Désactive la compression deflate                                                          |
+| max_connections      | global           | number                            | Définit le nombre maximum de clients pouvant être connectés sur webserv en même temps            |
+| compression_level    | global           | number                            | Définit le niveau de compression [0;9]                                                           |
+| server { ... }       | global           |                                   | Indique le début de la configuration d'un serveur                                                |
+| server_name          | server           | name                              | Change le nom du server{}                                                                        |
+| listen               | server           | port1 port2 ...                   | Change les ports que le server{} écoute                                                          |
+| location             | server           | name { ... }                      | Indique la création d'une location name, qui pourra être utilisée dans un url                    |
+| root                 | server, location | path                              | Utilisé dans un location{}, relie le name dans un url au dossier path                            |
+| error_page           | server, location | code1 code2 ... path              | Change les pages d'erreur des codes pour le fichier path                                         |
+| index                | server, location | path                              | Si une requête est faite sur le name d'une location, le fichier path sera renvoyé par défaut     |
+| autoindex            | server, location | on/off                            | Si une requête est faite sur un dossier, l'autoindex liste les fichiers présents dans le dossier |
+| max_client_body_size | server, location | size                              | Taille maximale du body d'une requête                                                            |
+| disable_methods      | server, location | method1/none method2/none ...     | Désactive des méthodes, "none", réactive toutes les méthodes                                     |
+| cgi_dir              | server, location | path                              |                                                                                                  |
+| cgi_ext              | server, location | ext path                          | Lance le cgi path si une ressource avec l'extension ext doit être servi                          |
+| uploads              | server, location | path                              | Définit le dossier dans lequel les ressources créés par PUT seront créés                         |
+| uploads_exts         | server, location | ext1 ext2 ...                     | Définit les extensions qui peuvent être uploadées par PUT                                        |
+| auth_basic           | server, location | string                            | Change le nom de la popup d'authentification pour les ressources protégées par un mot de passe   |
+| auth_basic_user_file | server, location | path                              | Définit le fichier contenant les logins et mot de passes pour accéder à la ressource             |
