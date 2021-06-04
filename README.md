@@ -104,17 +104,20 @@ server {
 
 Dans chaque dossier contentant des fichiers, vous pouvez créer un sous-dossier ```.langs``` qui contiendra les variantes des fichiers des dossiers dans différentes langues.
 Dans le dossier .langs, vous pourrez créer des sous-dossier au nom de la langue dans laquelle seront écrit les fichiers dans ce dossier, vous pouvez retrouver la liste des langues [ici](https://www.w3schools.com/tags/ref_language_codes.asp)
-La bonne langue pour un client est automatiquement déterminée via le header ```Accept-Language```
+La bonne langue pour un client est automatiquement déterminée via le header HTTP ```Accept-Language```
 
 ### Arborescence :
 ```
 www/
-├───.langs
-│   ├───fr
+├───.langs/
+│   ├───fr/
 │   │   ├─── index.html # En français
 |   |   └─── ...
-│   ├───en-US
-│   ├───en
-│   └───fr-FR
+│   ├───en-US/
+|   |   └─── ... # En anglais des États-Unis
+│   ├───en/
+|   |   └─── ... # En anglais
+│   └───fr-FR/
+|       └─── ... # En français de France
 └─── index.html # Version originale
 ```
