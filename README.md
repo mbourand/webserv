@@ -48,22 +48,22 @@ Webserv est un serveur web minimaliste permettant de répondre à des requêtes 
 | Accept-Charsets   | Indique les préférences du client quant au charset utilisé dans la réponse   |
 | Accept-Encoding   | Indique les préférences du client quant à l'encodage utilisé dans la réponse |
 | Accept-Language   | Indique les préférences linguistiques du client                              |
-| Allow             |                                                                              |
-| Authorization     |                                                                              |
+| Allow             | Contient la liste des Méthodes supportées par le serveur à cette adresse     |
+| Authorization     | Contient les identifiants encodés en Base64 utilisés pour s'identifier       |
 | Content-Language  | Indique la langue du body de la réponse                                      |
 | Content-Length    | Indique la taille du body de la réponse                                      |
-| Content-Location  |                                                                              |
+| Content-Location  | Indique une adresse alternative vers laquelle des données ont été renvoyées  |
 | Content-Type      | Indique le type de fichier envoyé dans le body de la réponse                 |
-| Date              |                                                                              |
-| Host              |                                                                              |
-| Last-Modified     |                                                                              |
-| Location          |                                                                              |
-| Referer           |                                                                              |
-| Retry-After       |                                                                              |
+| Date              | Contient la Date locale du serveur                                           |
+| Host              | Indique le nom de domaine du serveur et optionnellement le port              |
+| Last-Modified     | Indique la date de la dernière modification du fichier                       |
+| Location          | Indique l'URL vers laquelle rediriger le client                              |
+| Referer           | Indique l'adresse de la page d'origine d'une requête                         |
+| Retry-After       | Indique le temps que le client devrait attendre avant de renvoyer une requête|
 | Server            | Indique le nom du serveur qui a fourni la réponse                            |
-| Transfer-Encoding |                                                                              |
-| User-Agent        |                                                                              |
-| WWW-Authenticate  |                                                                              |
+| Transfer-Encoding | Indique l'encodage utilisé pour transférer le corps du message               |
+| User-Agent        | Renseigne l'application utilisée par le client, sa version, son OS ...       |
+| WWW-Authenticate  | Indique la méthode d'authentification utilisée pour accéder à une ressource  |
 | X-*               | Header customisé, qui peut-être envoyé à un CGI                              |
 
 
