@@ -10,6 +10,7 @@
    2. [Headers HTTP Implémentés](#headers-http-implémentés)
    3. [Configuration](#directives-de-configuration)
    5. [Langues](#langues)
+4. [Pour votre webserv](#pour-votre-webserv)
 
 
 ## Description
@@ -113,8 +114,11 @@ server {
 
 ## Langues
 
-Dans chaque dossier contentant des fichiers, vous pouvez créer un sous-dossier ```.langs``` qui contiendra les variantes des fichiers des dossiers dans différentes langues.
-Dans le dossier .langs, vous pourrez créer des sous-dossier au nom de la langue dans laquelle seront écrit les fichiers dans ce dossier, vous pouvez retrouver la liste des langues [ici](https://www.w3schools.com/tags/ref_language_codes.asp)
+Dans chaque dossier contentant des fichiers, vous pouvez créer un sous-dossier ```.langs``` qui contiendra les variantes des fichiers dans différentes langues.
+
+Dans le dossier .langs, vous pouves créer des sous-dossiers au nom de la langue dans laquelle seront écrit les fichiers.
+Vous pouvez retrouver la liste des langues [ici](https://www.w3schools.com/tags/ref_language_codes.asp).
+
 La bonne langue pour un client est automatiquement déterminée via le header HTTP ```Accept-Language```
 
 #### Arborescence
