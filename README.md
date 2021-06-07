@@ -21,7 +21,7 @@ Webserv est un serveur web minimaliste permettant de répondre à des requêtes 
 ## Installation
 
 1. ```git clone https://www.github.com/mbourand/webserv && cd webserv```
-2. ```sudo apt-get update && sudo apt-get upgrade && sudo apt-get install zlib1g-dev g++ make```
+2. ```sudo apt-get update && sudo apt-get upgrade && sudo apt-get install zlib1g-dev build-essential```
 3. ```make```
 4. ```./webserv <fichier_de_config>```
 
@@ -94,7 +94,7 @@ Webserv est un serveur web minimaliste permettant de répondre à des requêtes 
 | auth_basic_user_file | server, location | path                              | Définit le fichier contenant les logins et mot de passes pour accéder à la ressource             |
 
 
-#### Exemple simple de configuation
+#### Exemple simple de configuration
 
 ```
 # En considérant qu'il existe un dossier www qui contient un fichier index.html
@@ -116,7 +116,7 @@ server {
 
 Dans chaque dossier contentant des fichiers, vous pouvez créer un sous-dossier ```.langs``` qui contiendra les variantes des fichiers dans différentes langues.
 
-Dans le dossier .langs, vous pouves créer des sous-dossiers au nom de la langue dans laquelle seront écrit les fichiers.
+Dans le dossier .langs, vous pouvez créer des sous-dossiers au nom de la langue dans laquelle seront écrit les fichiers.
 Vous pouvez retrouver la liste des langues [ici](https://www.w3schools.com/tags/ref_language_codes.asp).
 
 La bonne langue pour un client est automatiquement déterminée via le header HTTP ```Accept-Language```
