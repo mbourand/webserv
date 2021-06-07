@@ -17,6 +17,7 @@
 
 Webserv est un serveur web minimaliste permettant de répondre à des requêtes HTTP/1.0 et HTTP/1.1.
 
+<img src="https://cdn.discordapp.com/attachments/487745404054536202/851456576505249802/unknown.png">
 
 ## Installation
 
