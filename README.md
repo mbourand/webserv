@@ -1,5 +1,6 @@
 <img src="https://cdn.discordapp.com/attachments/487745404054536202/850395771307294730/unknown.png">
 
+___Projet réalisé avec [@nforay](https://github.com/nforay)___
 
 # Sommaire
 
@@ -21,7 +22,7 @@ Webserv est un serveur web minimaliste permettant de répondre à des requêtes 
 ## Installation
 
 1. ```git clone https://www.github.com/mbourand/webserv && cd webserv```
-2. ```sudo apt-get update && sudo apt-get upgrade && sudo apt-get install zlib1g-dev build-essential```
+2. ```sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt-get install -y zlib1g-dev build-essential php-cgi```
 3. ```make```
 4. ```./webserv <fichier_de_config>```
 
