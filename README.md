@@ -87,7 +87,7 @@ Webserv est un serveur web minimaliste permettant de répondre à des requêtes 
 | autoindex            | server, location | on/off                            | Si une requête est faite sur un dossier, l'autoindex liste les fichiers présents dans le dossier |
 | max_client_body_size | server, location | size                              | Taille maximale du body d'une requête                                                            |
 | disable_methods      | server, location | method1/none method2/none ...     | Désactive des méthodes, "none", réactive toutes les méthodes                                     |
-| cgi_dir              | server, location | path                              |                                                                                                  |
+| cgi_dir              | server, location | path                              | Indique le chemin du dossier contenant des exécutables CGI                                       |
 | cgi_ext              | server, location | ext path                          | Lance le cgi path si une ressource avec l'extension ext doit être servi                          |
 | uploads              | server, location | path                              | Définit le dossier dans lequel les ressources créés par PUT seront créés                         |
 | uploads_exts         | server, location | ext1 ext2 ...                     | Définit les extensions qui peuvent être uploadées par PUT                                        |
