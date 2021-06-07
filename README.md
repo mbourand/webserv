@@ -10,7 +10,6 @@
    2. [Headers HTTP Implémentés](#headers-http-implémentés)
    3. [Configuration](#directives-de-configuration)
    5. [Langues](#langues)
-4. [Pour votre webserv](#pour-votre-webserv)
 
 
 ## Description
