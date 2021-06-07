@@ -1,4 +1,4 @@
-<img src="https://cdn.discordapp.com/attachments/487745404054536202/850395771307294730/unknown.png">
+<img src="https://github.com/mbourand/webserv/blob/README/README_IMAGES/webserv.png?raw=true">
 
 ___Projet réalisé avec [@nforay](https://github.com/nforay)___
 
@@ -17,7 +17,7 @@ ___Projet réalisé avec [@nforay](https://github.com/nforay)___
 
 Webserv est un serveur web minimaliste permettant de répondre à des requêtes HTTP/1.0 et HTTP/1.1.
 
-<img src="https://cdn.discordapp.com/attachments/487745404054536202/851456576505249802/unknown.png">
+<img src="https://github.com/mbourand/webserv/blob/README/README_IMAGES/diagramme.png?raw=true">
 
 ## Installation
 
